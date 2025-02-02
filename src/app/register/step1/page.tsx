@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 
 const RegisterStep1 = () => {
   const router = useRouter()
+  const [showTerms, setShowTerms] = useState(false)
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -21,12 +22,57 @@ const RegisterStep1 = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you can add validation logic
+    // Show terms and conditions modal instead of direct navigation
+    setShowTerms(true)
+  }
+
+  const handleAcceptTerms = () => {
+    setShowTerms(false)
     router.push('/register/step2')
+  }
+
+  const handleDeclineTerms = () => {
+    setShowTerms(false)
   }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      {/* Terms and Conditions Modal */}
+      {showTerms && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg max-w-lg w-full mx-4">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Terms and Conditions</h3>
+            <div className="max-h-60 overflow-y-auto mb-6 text-sm text-gray-600">
+              <p className="mb-4">
+                Welcome to Swapnapurti Camping! By proceeding with registration, you agree to the following terms:
+              </p>
+              <ol className="list-decimal pl-4 space-y-2">
+                <li>You must be at least 18 years old to use our services.</li>
+                <li>All information provided during registration must be accurate and truthful.</li>
+                <li>You are responsible for maintaining the confidentiality of your account.</li>
+                <li>We reserve the right to modify or terminate services at any time.</li>
+                <li>You agree to follow all camping site rules and regulations.</li>
+                <li>Cancellation policies and refunds are subject to our current terms.</li>
+              </ol>
+            </div>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={handleDeclineTerms}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+              >
+                Decline
+              </button>
+              <button
+                onClick={handleAcceptTerms}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              >
+                Accept & Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Create your account

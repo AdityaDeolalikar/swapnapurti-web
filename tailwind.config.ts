@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      buttonColor:{
+        backgroundColor: "#5dbea3"
+      }
     },
   },
   plugins: [],

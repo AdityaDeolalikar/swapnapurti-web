@@ -3,7 +3,7 @@ import React from 'react';
 
 const AdminDashboard = () => {
   return (
-    <div className="p-6">
+    <div className="p-6 md:ml-5">
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Summary Cards */}
@@ -21,15 +21,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Recent Activity Section */}
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-4">
-            <p className="text-gray-600">No recent activity</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
