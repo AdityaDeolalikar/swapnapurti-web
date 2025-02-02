@@ -1,7 +1,12 @@
+import Navbar from './components/common/Navbar'
+
 export default function Home() {
   return (
     <>
-       <h1 className="text-3xl font-bold">Home!</h1>
+      <Navbar />
+      <main className="pt-16">
+        
+      </main> 
     </>
   );
 }
