@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import Image from 'next/image'
+import admin from '../../../../public/icons/admin.png'
 
 interface UserCardProps {
   id: string;
@@ -15,6 +17,8 @@ interface UserCardProps {
   dateOfBirth: string;
   visitedCamps?: string[];
   avatarUrl?: string;
+  onUpdate: (id: string, updatedData: Partial<UserCardProps>) => void;
+  onDelete: (id: string) => void;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -31,17 +35,49 @@ const UserCard: React.FC<UserCardProps> = ({
   dateOfBirth,
   visitedCamps = [],
   avatarUrl = "https://via.placeholder.com/40",
+  onUpdate,
+  onDelete,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedData, setEditedData] = useState({
+    name,
+    email,
+    mobileNumber,
+    role,
+    state,
+    nationality,
+    district,
+    bloodGroup,
+    gender,
+    dateOfBirth,
+  });
 
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Handle edit action
+    setIsEditing(true);
   };
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Handle delete action
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      onDelete(id);
+    }
+  };
+
+  const handleSave = () => {
+    onUpdate(id, editedData);
+    setIsEditing(false);
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setEditedData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   return (
@@ -53,7 +89,7 @@ const UserCard: React.FC<UserCardProps> = ({
         <div className="p-6">
           <div className="flex items-center space-x-4">
             <div className="relative w-10 h-10 rounded-full overflow-hidden">
-              <img src={avatarUrl} alt={name} className="object-cover" />
+              <Image src={admin} alt="" className="object-cover" />
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
@@ -101,7 +137,17 @@ const UserCard: React.FC<UserCardProps> = ({
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-gray-800">
-                    {name}
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        name="name"
+                        value={editedData.name}
+                        onChange={handleInputChange}
+                        className="border rounded px-2 py-1"
+                      />
+                    ) : (
+                      name
+                    )}
                   </h3>
                 </div>
               </div>
@@ -112,43 +158,169 @@ const UserCard: React.FC<UserCardProps> = ({
                     <p className="text-sm text-gray-500">ID</p>
                     <p className="text-gray-800">{id}</p>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Name</p>
-                    <p className="text-gray-800">{name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Email</p>
-                    <p className="text-gray-800">{email}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Mobile</p>
-                    <p className="text-gray-800">{mobileNumber}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">State</p>
-                    <p className="text-gray-800">{state}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">District</p>
-                    <p className="text-gray-800">{district}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Nationality</p>
-                    <p className="text-gray-800">{nationality}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Blood Group</p>
-                    <p className="text-gray-800">{bloodGroup}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Gender</p>
-                    <p className="text-gray-800">{gender}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Date of Birth</p>
-                    <p className="text-gray-800">{dateOfBirth}</p>
-                  </div>
-                 
+                  {isEditing ? (
+                    <>
+                      <div>
+                        <p className="text-sm text-gray-500">Name</p>
+                        <input
+                          type="text"
+                          name="name"
+                          value={editedData.name}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Email</p>
+                        <input
+                          type="email"
+                          name="email"
+                          value={editedData.email}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Mobile</p>
+                        <input
+                          type="text"
+                          name="mobileNumber"
+                          value={editedData.mobileNumber}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Role</p>
+                        <select
+                          name="role"
+                          value={editedData.role}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        >
+                          <option value="User">User</option>
+                          <option value="Admin">Admin</option>
+                          <option value="Event Manager">Event Manager</option>
+                          <option value="Accountant">Accountant</option>
+                          <option value="Promoting Manager">Promoting Manager</option>
+                        </select>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">State</p>
+                        <input
+                          type="text"
+                          name="state"
+                          value={editedData.state}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">District</p>
+                        <input
+                          type="text"
+                          name="district"
+                          value={editedData.district}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Nationality</p>
+                        <input
+                          type="text"
+                          name="nationality"
+                          value={editedData.nationality}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Blood Group</p>
+                        <select
+                          name="bloodGroup"
+                          value={editedData.bloodGroup}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        >
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                          <option value="O+">O+</option>
+                          <option value="O-">O-</option>
+                        </select>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Gender</p>
+                        <select
+                          name="gender"
+                          value={editedData.gender}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        >
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Date of Birth</p>
+                        <input
+                          type="date"
+                          name="dateOfBirth"
+                          value={editedData.dateOfBirth}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <p className="text-sm text-gray-500">Name</p>
+                        <p className="text-gray-800">{name}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Email</p>
+                        <p className="text-gray-800">{email}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Mobile</p>
+                        <p className="text-gray-800">{mobileNumber}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Role</p>
+                        <p className="text-gray-800">{role}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">State</p>
+                        <p className="text-gray-800">{state}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">District</p>
+                        <p className="text-gray-800">{district}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Nationality</p>
+                        <p className="text-gray-800">{nationality}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Blood Group</p>
+                        <p className="text-gray-800">{bloodGroup}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Gender</p>
+                        <p className="text-gray-800">{gender}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Date of Birth</p>
+                        <p className="text-gray-800">{dateOfBirth}</p>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Visited Camps Section */}
@@ -170,18 +342,37 @@ const UserCard: React.FC<UserCardProps> = ({
 
               {/* Action Buttons */}
               <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
-                <button
-                  onClick={handleEdit}
-                  className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800"
-                >
-                  Delete
-                </button>
+                {isEditing ? (
+                  <>
+                    <button
+                      onClick={() => setIsEditing(false)}
+                      className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSave}
+                      className="px-4 py-2 text-sm font-medium text-green-600 hover:text-green-800"
+                    >
+                      Save
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleEdit}
+                      className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800"
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>

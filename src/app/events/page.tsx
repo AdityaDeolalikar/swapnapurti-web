@@ -104,7 +104,7 @@ const EventsPage = () => {
 
   return (
     <div>
-      <nav className="w-full z-50 bg-white shadow-md fixed">
+      <nav className="w-full z-50  shadow-md fixed bg-[#03626b]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
             {/* Logo and brand */}
@@ -113,27 +113,28 @@ const EventsPage = () => {
                 href="/"
                 className="text-2xl font-bold text-gray-800 hover:text-blue-500 transition-colors duration-300"
               >
-                <span className="flex items-center">
+                <span className="flex items-center text-white">
                   <span className="mr-2">🏕️</span>
                   Swapnapurti Academy
                 </span>
               </Link>
             </div>
+            
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-6 ">
               {[
                 { href: "/", label: "Home" },
                 { href: "/#about", label: "About Us" },
-                { href: "/#contact", label: "Contact Us" },
-                { href: "/events", label: "Events" },
+                { href: "/events", label: "Upcoming Events" },
                 { href: "/gallery", label: "Gallery" },
-                { href: "/contribution", label: "My Contribution" },
+                { href: "/#contact", label: "Contact Us" },
+                
               ].map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative px-1 py-2 text-sm font-medium transition-all duration-300 group ${
+                  className={`relative px-1 text-white py-2 text-sm font-medium transition-all duration-300 group ${
                     isActive(item.href)
                       ? "text-blue-600"
                       : "text-gray-600 hover:text-blue-600"
@@ -200,14 +201,14 @@ const EventsPage = () => {
 
           {/* Mobile Navigation */}
           <div className={`md:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-[#03626b]">
               {[
                 { href: "/", label: "Home" },
                 { href: "/#about", label: "About Us" },
-                { href: "/#contact", label: "Contact Us" },
-                { href: "/events", label: "Events" },
+                { href: "/events", label: "Upcoming Events" },
                 { href: "/gallery", label: "Gallery" },
-                { href: "/contribution", label: "My Contribution" },
+                { href: "/#contact", label: "Contact Us" },
+                
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -215,25 +216,25 @@ const EventsPage = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-3 py-2 rounded-md text-base font-medium ${
                     isActive(item.href)
-                      ? "text-blue-600 bg-blue-50"
-                      : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                      ? "text-white bg-[#024950]"
+                      : "text-gray-100 hover:text-white hover:bg-[#024950]"
                   }`}
                 >
                   {item.label}
                 </Link>
               ))}
-              <div className="space-y-2 pt-2 pb-3 border-t border-gray-200">
+              <div className="space-y-2 pt-4 pb-3 border-t border-[#024950]">
                 <Link
                   href="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block text-center px-4 py-2 rounded-full text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/20"
+                  className="block text-center px-4 py-2 rounded-md text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-300"
                 >
                   Login
                 </Link>
                 <Link
                   href="/register/step1"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block text-center px-4 py-2 rounded-full text-sm font-medium bg-green-500 text-white hover:bg-green-600 shadow-lg shadow-green-500/20"
+                  className="block text-center px-4 py-2 rounded-md text-sm font-medium bg-green-500 text-white hover:bg-green-600 transition-colors duration-300"
                 >
                   Register
                 </Link>
@@ -244,13 +245,13 @@ const EventsPage = () => {
       </nav>
 
       {/* Events Content */}
-      <main className="md:pt-28 pt-28 px-4 sm:px-6 lg:px-8 pb-16 bg-gray-50">
+      <main className="md:pt-28 pt-28 px-4 sm:px-6 lg:px-8 pb-16  bg-[#aafefe]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-4xl font-bold  mb-4">
               Upcoming Events
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg  max-w-2xl mx-auto">
               Join our exciting camping adventures and create unforgettable
               memories
             </p>

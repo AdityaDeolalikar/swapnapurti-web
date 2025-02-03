@@ -18,16 +18,10 @@ const AddEventPage = () => {
     <div className="p-1 max-w-7xl mx-auto md:ml-10">
       <div className="flex items-center justify-between mb-8 ">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Add New Event</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Add Event</h1>
           <p className="mt-2 text-gray-600">Create a new camping event for participants</p>
         </div>
-        <button
-          type="submit"
-          form="event-form"
-          className="bg-blue-600 text-white px-4 py-2.5 rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-blue-200 flex items-center space-x-2 font-medium"
-        >
-          <span>Create Event</span>
-        </button>
+       
       </div>
 
       <form id="event-form" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -250,11 +244,19 @@ const AddEventPage = () => {
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
                   INR
                 </span>
+                
               </div>
             </div>
           </div>
         </div>
       </form>
+      <button
+          type="submit"
+          form="event-form"
+          className="mt-7 bg-blue-600 text-white px-4 py-2.5 rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-blue-200 flex items-center space-x-2 font-medium"
+        >
+          <span>Create Event</span>
+        </button>
     </div>
   );
 };

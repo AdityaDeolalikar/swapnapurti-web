@@ -1,6 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Image from 'next/image'
+import admin from '../../../../public/icons/admin.png'
+
 import {
   FaSearch,
   FaBell,
@@ -86,8 +89,8 @@ export default function Navbar() {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
             >
-              <img
-                src="https://via.placeholder.com/32"
+              <Image
+                src={admin}
                 alt="User"
                 className="w-8 h-8 rounded-full border-2 border-gray-200"
               />

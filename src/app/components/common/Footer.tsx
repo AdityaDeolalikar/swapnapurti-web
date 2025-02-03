@@ -52,11 +52,7 @@ const Footer = () => {
                   Gallery
                 </Link>
               </li>
-              <li>
-                <Link href="/contribution" className="text-gray-400 hover:text-white transition-colors">
-                  My Contribution
-                </Link>
-              </li>
+             
             </ul>
           </div>
 
@@ -72,25 +68,7 @@ const Footer = () => {
           </div>
 
           {/* Newsletter */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Newsletter</h3>
-            <p className="text-gray-400 text-sm">
-              Subscribe to our newsletter for updates and special offers.
-            </p>
-            <form className="space-y-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full px-4 py-2 rounded bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
-              >
-                Subscribe
-              </button>
-            </form>
-          </div>
+          
         </div>
 
         {/* Bottom Bar */}

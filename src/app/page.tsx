@@ -1,9 +1,11 @@
+'use client'
 import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
 import Image from "next/image";
 import homepage5 from "../../public/images/homepage5.jpg";
 import homepage2 from "../../public/images/homepage2.jpg";
 import Link from "next/link";
+import CountUp from "react-countup";
 
 export default function Home() {
   return (
@@ -91,6 +93,66 @@ export default function Home() {
                
                 
                
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Achievements section */}
+      <section className="py-24 bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              Our <span className="text-blue-500">Achievements</span>
+            </h2>
+            <p className="text-gray-400 text-lg">
+              Numbers that speak for themselves
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Visitors Card */}
+            <div className="bg-gray-800 p-8 rounded-2xl transform hover:scale-105 transition-all duration-300">
+              <div className="text-center">
+                <div className="text-4xl sm:text-5xl font-bold text-blue-500 mb-3">
+                  <CountUp end={5000} duration={2.5} enableScrollSpy scrollSpyOnce />+
+                </div>
+                <h3 className="text-white text-lg font-semibold">Visitors</h3>
+                <p className="text-gray-400 mt-2">And counting every day</p>
+              </div>
+            </div>
+
+            {/* Registered Users Card */}
+            <div className="bg-gray-800 p-8 rounded-2xl transform hover:scale-105 transition-all duration-300">
+              <div className="text-center">
+                <div className="text-4xl sm:text-5xl font-bold text-green-500 mb-3">
+                  <CountUp end={1200} duration={2.5} enableScrollSpy scrollSpyOnce />+
+                </div>
+                <h3 className="text-white text-lg font-semibold">Registered Users</h3>
+                <p className="text-gray-400 mt-2">Active community members</p>
+              </div>
+            </div>
+
+            {/* Events Card */}
+            <div className="bg-gray-800 p-8 rounded-2xl transform hover:scale-105 transition-all duration-300">
+              <div className="text-center">
+                <div className="text-4xl sm:text-5xl font-bold text-purple-500 mb-3">
+                  <CountUp end={150} duration={2.5} enableScrollSpy scrollSpyOnce />+
+                </div>
+                <h3 className="text-white text-lg font-semibold">Events</h3>
+                <p className="text-gray-400 mt-2">Successfully organized</p>
+              </div>
+            </div>
+
+            {/* Event Attendees Card */}
+            <div className="bg-gray-800 p-8 rounded-2xl transform hover:scale-105 transition-all duration-300">
+              <div className="text-center">
+                <div className="text-4xl sm:text-5xl font-bold text-yellow-500 mb-3">
+                  <CountUp end={3500} duration={2.5} enableScrollSpy scrollSpyOnce />+
+                </div>
+                <h3 className="text-white text-lg font-semibold">Event Attendees</h3>
+                <p className="text-gray-400 mt-2">Happy campers</p>
               </div>
             </div>
           </div>

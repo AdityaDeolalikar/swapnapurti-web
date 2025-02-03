@@ -2,6 +2,8 @@
 import React, { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
+import { FaArrowLeft, FaCalendarAlt, FaTint, FaMapMarkerAlt, FaBuilding, FaBriefcase, FaPhone, FaLock } from 'react-icons/fa'
 
 const RegisterStep2 = () => {
   const router = useRouter()
@@ -36,7 +38,6 @@ const RegisterStep2 = () => {
       [name]: value
     }))
 
-    // Password validation
     if (name === 'password' || name === 'confirmPassword') {
       validatePasswords(name === 'password' ? value : formData.password, 
                        name === 'confirmPassword' ? value : formData.confirmPassword)
@@ -64,7 +65,7 @@ const RegisterStep2 = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      if (file.size > 250 * 1024) { // 250KB in bytes
+      if (file.size > 250 * 1024) {
         setErrors(prev => ({
           ...prev,
           photo: 'File size must be less than 250KB'
@@ -81,7 +82,6 @@ const RegisterStep2 = () => {
         photo: ''
       }))
 
-      // Create preview URL
       const reader = new FileReader()
       reader.onloadend = () => {
         setPreviewUrl(reader.result as string)
@@ -93,173 +93,228 @@ const RegisterStep2 = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Validate all fields are filled and passwords match
     if (!errors.password && !errors.confirmPassword && !errors.photo) {
-      // Here you would typically send the data to your backend
       console.log('Form submitted:', formData)
-      router.push('/') // Redirect to homepage after successful submission
+      router.push('/')
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#03626b] to-[#024950] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
-        <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">Complete Your Profile</h2>
-          <p className="mt-2 text-sm text-gray-600">Step 2 of 2: Additional Information</p>
-        </div>
+        {/* Back to Step 1 Link */}
+        <Link 
+          href="/register/step1" 
+          className="inline-flex items-center text-white hover:text-blue-200 transition-colors duration-300 mb-8 group"
+        >
+          <FaArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
+          Back to Step 1
+        </Link>
 
-        <div className="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        {/* Form Card */}
+        <div className="bg-white rounded-2xl shadow-2xl p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Complete Your Profile</h2>
+            <p className="text-gray-600">Step 2 of 2: Additional Information</p>
+          </div>
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Date of Birth */}
               <div>
-                <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
                   Date of Birth
                 </label>
-                <input
-                  type="date"
-                  name="dateOfBirth"
-                  id="dateOfBirth"
-                  required
-                  value={formData.dateOfBirth}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaCalendarAlt className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    id="dateOfBirth"
+                    required
+                    value={formData.dateOfBirth}
+                    onChange={handleChange}
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  />
+                </div>
               </div>
 
               {/* Blood Group */}
               <div>
-                <label htmlFor="bloodGroup" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="bloodGroup" className="block text-sm font-medium text-gray-700 mb-2">
                   Blood Group
                 </label>
-                <select
-                  id="bloodGroup"
-                  name="bloodGroup"
-                  required
-                  value={formData.bloodGroup}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">Select Blood Group</option>
-                  {bloodGroups.map(group => (
-                    <option key={group} value={group}>{group}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaTint className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <select
+                    id="bloodGroup"
+                    name="bloodGroup"
+                    required
+                    value={formData.bloodGroup}
+                    onChange={handleChange}
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  >
+                    <option value="">Select Blood Group</option>
+                    {bloodGroups.map(group => (
+                      <option key={group} value={group}>{group}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
-            {/* Permanent Address */}
-            <div>
-              <label htmlFor="permanentAddress" className="block text-sm font-medium text-gray-700">
-                Permanent Address
-              </label>
-              <textarea
-                id="permanentAddress"
-                name="permanentAddress"
-                required
-                value={formData.permanentAddress}
-                onChange={handleChange}
-                rows={3}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
+            {/* Addresses */}
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="permanentAddress" className="block text-sm font-medium text-gray-700 mb-2">
+                  Permanent Address
+                </label>
+                <div className="relative">
+                  <div className="absolute top-3 left-3 pointer-events-none">
+                    <FaMapMarkerAlt className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <textarea
+                    id="permanentAddress"
+                    name="permanentAddress"
+                    required
+                    value={formData.permanentAddress}
+                    onChange={handleChange}
+                    rows={3}
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    placeholder="Enter your permanent address"
+                  />
+                </div>
+              </div>
 
-            {/* Temporary Address */}
-            <div>
-              <label htmlFor="temporaryAddress" className="block text-sm font-medium text-gray-700">
-                Temporary Address
-              </label>
-              <textarea
-                id="temporaryAddress"
-                name="temporaryAddress"
-                required
-                value={formData.temporaryAddress}
-                onChange={handleChange}
-                rows={3}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
+              <div>
+                <label htmlFor="temporaryAddress" className="block text-sm font-medium text-gray-700 mb-2">
+                  Temporary Address
+                </label>
+                <div className="relative">
+                  <div className="absolute top-3 left-3 pointer-events-none">
+                    <FaMapMarkerAlt className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <textarea
+                    id="temporaryAddress"
+                    name="temporaryAddress"
+                    required
+                    value={formData.temporaryAddress}
+                    onChange={handleChange}
+                    rows={3}
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    placeholder="Enter your temporary address"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* District */}
               <div>
-                <label htmlFor="district" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="district" className="block text-sm font-medium text-gray-700 mb-2">
                   District
                 </label>
-                <input
-                  type="text"
-                  name="district"
-                  id="district"
-                  required
-                  value={formData.district}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaMapMarkerAlt className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    name="district"
+                    id="district"
+                    required
+                    value={formData.district}
+                    onChange={handleChange}
+                    placeholder="Enter your district"
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  />
+                </div>
               </div>
 
               {/* Country */}
               <div>
-                <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
                   Country
                 </label>
-                <input
-                  type="text"
-                  name="country"
-                  id="country"
-                  required
-                  value={formData.country}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaMapMarkerAlt className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    name="country"
+                    id="country"
+                    required
+                    value={formData.country}
+                    onChange={handleChange}
+                    placeholder="Enter your country"
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  />
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Occupation */}
               <div>
-                <label htmlFor="occupation" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="occupation" className="block text-sm font-medium text-gray-700 mb-2">
                   Occupation
                 </label>
-                <input
-                  type="text"
-                  name="occupation"
-                  id="occupation"
-                  required
-                  value={formData.occupation}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaBriefcase className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    name="occupation"
+                    id="occupation"
+                    required
+                    value={formData.occupation}
+                    onChange={handleChange}
+                    placeholder="Enter your occupation"
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  />
+                </div>
               </div>
 
               {/* Organization */}
               <div>
-                <label htmlFor="organization" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="organization" className="block text-sm font-medium text-gray-700 mb-2">
                   Organization
                 </label>
-                <input
-                  type="text"
-                  name="organization"
-                  id="organization"
-                  required
-                  value={formData.organization}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaBuilding className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    name="organization"
+                    id="organization"
+                    required
+                    value={formData.organization}
+                    onChange={handleChange}
+                    placeholder="Enter your organization"
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  />
+                </div>
               </div>
             </div>
 
             {/* Photo Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Photo</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Photo</label>
               <div className="mt-1 flex items-center space-x-4">
                 <div className="flex-shrink-0">
                   {previewUrl ? (
-                    <div className="h-24 w-24 rounded-full overflow-hidden">
+                    <div className="h-24 w-24 rounded-full overflow-hidden ring-4 ring-[#03626b]/20">
                       <Image src={previewUrl} alt="Preview" width={96} height={96} className="h-full w-full object-cover" />
                     </div>
                   ) : (
-                    <div className="h-24 w-24 rounded-full bg-gray-200 flex items-center justify-center">
+                    <div className="h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center ring-4 ring-[#03626b]/20">
                       <svg className="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
@@ -277,7 +332,7 @@ const RegisterStep2 = () => {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
                   >
                     Upload Photo
                   </button>
@@ -289,63 +344,79 @@ const RegisterStep2 = () => {
 
             {/* Emergency Mobile */}
             <div>
-              <label htmlFor="emergencyMobile" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="emergencyMobile" className="block text-sm font-medium text-gray-700 mb-2">
                 Emergency Mobile Number
               </label>
-              <input
-                type="tel"
-                name="emergencyMobile"
-                id="emergencyMobile"
-                required
-                value={formData.emergencyMobile}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaPhone className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="tel"
+                  name="emergencyMobile"
+                  id="emergencyMobile"
+                  required
+                  value={formData.emergencyMobile}
+                  onChange={handleChange}
+                  placeholder="Enter emergency contact number"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaLock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Create a password"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
               {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
                 Confirm Password
               </label>
-              <input
-                type="password"
-                name="confirmPassword"
-                id="confirmPassword"
-                required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaLock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm your password"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
               {errors.confirmPassword && <p className="mt-1 text-xs text-red-500">{errors.confirmPassword}</p>}
             </div>
 
             {/* Submit Button */}
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Complete Registration
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-[#03626b] hover:bg-[#024950] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              Complete Registration
+            </button>
           </form>
         </div>
       </div>

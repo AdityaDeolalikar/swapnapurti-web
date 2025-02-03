@@ -1,6 +1,8 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { FaArrowLeft, FaUser, FaEnvelope, FaVenusMars, FaPhone } from 'react-icons/fa'
+import Link from 'next/link'
 
 const RegisterStep1 = () => {
   const router = useRouter()
@@ -22,7 +24,6 @@ const RegisterStep1 = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Show terms and conditions modal instead of direct navigation
     setShowTerms(true)
   }
 
@@ -36,14 +37,150 @@ const RegisterStep1 = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#03626b] to-[#024950] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        {/* Back to Home Link */}
+        <Link 
+          href="/" 
+          className="inline-flex items-center text-white hover:text-blue-200 transition-colors duration-300 mb-8 group"
+        >
+          <FaArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
+          Back to Home
+        </Link>
+
+        {/* Registration Form Card */}
+        <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Create Account
+            </h2>
+            <p className="text-gray-600">
+              Step 1 of 2: Personal Information
+            </p>
+          </div>
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* Full Name Input */}
+            <div>
+              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+                Full Name
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaUser className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  required
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  placeholder="Enter your full name"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
+            </div>
+
+            {/* Email Input */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaEnvelope className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
+            </div>
+
+            {/* Gender Dropdown */}
+            <div>
+              <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
+                Gender
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaVenusMars className="h-5 w-5 text-gray-400" />
+                </div>
+                <select
+                  id="gender"
+                  name="gender"
+                  required
+                  value={formData.gender}
+                  onChange={handleChange}
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                >
+                  <option value="">Select gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Mobile Number Input */}
+            <div>
+              <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 mb-2">
+                Mobile Number
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaPhone className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="mobile"
+                  name="mobile"
+                  type="tel"
+                  required
+                  value={formData.mobile}
+                  onChange={handleChange}
+                  placeholder="Enter your mobile number"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
+            </div>
+
+            {/* Next Button */}
+            <button
+              type="submit"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-[#03626b] hover:bg-[#024950] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              Next Step
+            </button>
+
+            {/* Login Link */}
+            <div className="text-center pt-4">
+              <p className="text-sm text-gray-600">
+                Already have an account?{' '}
+                <Link
+                  href="/login"
+                  className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-300"
+                >
+                  Sign in
+                </Link>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+
       {/* Terms and Conditions Modal */}
       {showTerms && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg max-w-lg w-full mx-4">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Terms and Conditions</h3>
-            <div className="max-h-60 overflow-y-auto mb-6 text-sm text-gray-600">
-              <p className="mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full mx-auto p-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Terms and Conditions</h3>
+            <div className="max-h-60 overflow-y-auto mb-6 text-gray-600 space-y-4">
+              <p>
                 Welcome to Swapnapurti Camping! By proceeding with registration, you agree to the following terms:
               </p>
               <ol className="list-decimal pl-4 space-y-2">
@@ -58,13 +195,13 @@ const RegisterStep1 = () => {
             <div className="flex justify-end space-x-4">
               <button
                 onClick={handleDeclineTerms}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-300"
               >
                 Decline
               </button>
               <button
                 onClick={handleAcceptTerms}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                className="px-4 py-2 text-sm font-medium text-white bg-[#03626b] rounded-lg hover:bg-[#024950] transition-colors duration-300"
               >
                 Accept & Continue
               </button>
@@ -72,106 +209,6 @@ const RegisterStep1 = () => {
           </div>
         </div>
       )}
-
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Create your account
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Step 1 of 2: Personal Information
-        </p>
-      </div>
-
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Full Name Input */}
-            <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <div className="mt-1">
-                <input
-                  id="fullName"
-                  name="fullName"
-                  type="text"
-                  required
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-
-            {/* Email Input */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-
-            {/* Gender Dropdown */}
-            <div>
-              <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
-                Gender
-              </label>
-              <div className="mt-1">
-                <select
-                  id="gender"
-                  name="gender"
-                  required
-                  value={formData.gender}
-                  onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">Select gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Mobile Number Input */}
-            <div>
-              <label htmlFor="mobile" className="block text-sm font-medium text-gray-700">
-                Mobile Number
-              </label>
-              <div className="mt-1">
-                <input
-                  id="mobile"
-                  name="mobile"
-                  type="tel"
-                  required
-                  value={formData.mobile}
-                  onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-
-            {/* Next Button */}
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Next Step
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
     </div>
   )
 }

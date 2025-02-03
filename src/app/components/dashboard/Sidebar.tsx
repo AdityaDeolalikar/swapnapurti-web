@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import Image from 'next/image'
+import admin from '../../../../public/icons/admin.png'
 import {
   FaHome,
   FaUsers,
@@ -46,6 +48,8 @@ export default function Sidebar() {
       { name: "Dashboard", path: "/dashboard/admin", icon: <FaHome className="w-5 h-5" /> },
       { name: "All Users", path: "/dashboard/admin/users", icon: <FaUsers className="w-5 h-5" /> },
       { name: "Add Event", path: "/dashboard/admin/add-event", icon: <FaCalendarPlus className="w-5 h-5" /> },
+      { name: "publish Event", path: "/dashboard/admin/publish-event", icon: <FaCalendarPlus className="w-5 h-5" /> },
+      { name: "Add Organization", path: "/dashboard/admin/add-organization", icon: <FaCalendarPlus className="w-5 h-5" /> },
       { name: "Bookings & Payments", path: "/dashboard/admin/bookings", icon: <FaMoneyBillWave className="w-5 h-5" /> },
       { name: "Manage Teams", path: "/dashboard/admin/teams", icon: <FaUserFriends className="w-5 h-5" /> },
     ],
@@ -175,8 +179,8 @@ export default function Sidebar() {
         <div className="p-4 border-t border-gray-700/50 bg-gray-800/50 backdrop-blur-sm">
           <div className="flex items-center space-x-3">
             <div className="relative">
-              <img
-                src="https://via.placeholder.com/40"
+              <Image
+                src={admin}
                 alt="User"
                 className="w-10 h-10 rounded-full border-2 border-blue-500"
               />
