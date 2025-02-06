@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import admin from "../../../../public/icons/admin.png";
 import {
@@ -40,16 +40,38 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Notify parent component of sidebar state changes
+  // Handle click outside
   useEffect(() => {
-    onSidebarStateChange?.(isOpen);
-  }, [isOpen, onSidebarStateChange]);
+    const handleClickOutside = (event: MouseEvent) => {
+      // Check if click is outside both sidebar and toggle button
+      const clickedOutsideSidebar = sidebarRef.current && !sidebarRef.current.contains(event.target as Node);
+      const clickedOutsideButton = toggleButtonRef.current && !toggleButtonRef.current.contains(event.target as Node);
+      
+      if (isOpen && clickedOutsideSidebar && clickedOutsideButton) {
+        setIsOpen(false);
+      }
+    };
 
-  // Remove unused function
+    // Add event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    // Cleanup
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]); // Only re-run if isOpen changes
+
+  // Handle screen resize
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
+      const isMobileView = window.innerWidth < 768;
+      setIsMobile(isMobileView);
+      if (isMobileView) {
+        setIsOpen(false);
+      }
     };
 
     checkScreenSize();
@@ -57,18 +79,10 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  // Add this function to handle clicks outside sidebar on mobile
+  // Notify parent of sidebar state changes
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const sidebar = document.getElementById("sidebar");
-      if (isMobile && sidebar && !sidebar.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMobile]);
+    onSidebarStateChange?.(isOpen);
+  }, [isOpen, onSidebarStateChange]);
 
   const roleSpecificLinks: RoleLinks = {
     user: [
@@ -280,12 +294,16 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
     <>
       {/* Hamburger Menu Button */}
       <button
+        ref={toggleButtonRef}
         className={`fixed ${
           !isMobile && "left-6"
-        } top-5 z-50 p-3 ml-1 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg ${
-          !isMobile && isOpen && "left-[220px]"
+        } top-5 z-[60] p-3 ml-1 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg ${
+          !isMobile && isOpen && "left-[260px]"
         }`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent event from bubbling
+          setIsOpen(!isOpen);
+        }}
         aria-label="Toggle Menu"
       >
         {isOpen ? (
@@ -295,23 +313,22 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
         )}
       </button>
 
-      {/* Overlay - Show on mobile only */}
-      {isMobile && (
-        <div
-          className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${
-            isOpen ? "opacity-100 z-30" : "opacity-0 pointer-events-none"
-          }`}
-          onClick={() => setIsOpen(false)}
-          aria-hidden="true"
-        />
-      )}
+      {/* Overlay - Show on mobile and desktop */}
+      <div
+        className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${
+          isOpen ? "opacity-100 z-[51]" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setIsOpen(false)}
+        aria-hidden="true"
+      />
 
       {/* Sidebar */}
       <aside
+        ref={sidebarRef}
         id="sidebar"
         className={`${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } transform fixed z-40 w-72 h-full bg-gradient-to-b from-gray-900 to-gray-800 text-white transition-all duration-300 ease-in-out flex flex-col shadow-2xl`}
+        } transform fixed left-0 top-0 z-[52] w-72 h-full bg-gradient-to-b from-gray-900 to-gray-800 text-white transition-transform duration-300 ease-in-out flex flex-col shadow-2xl`}
       >
         {/* Sidebar Header with Toggle Button */}
         <div className="h-20 flex items-center justify-between px-6 bg-gradient-to-r from-blue-600 to-blue-700">

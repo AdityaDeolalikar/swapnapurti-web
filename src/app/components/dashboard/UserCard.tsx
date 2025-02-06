@@ -16,6 +16,7 @@ interface UserCardProps {
   gender: string;
   dateOfBirth: string;
   visitedCamps: number;
+  points: number;
   avatarUrl?: string;
   onUpdate: (id: string, updatedData: Partial<UserCardProps>) => void;
   onDelete: (id: string) => void;
@@ -34,6 +35,7 @@ const UserCard: React.FC<UserCardProps> = ({
   gender,
   dateOfBirth,
   visitedCamps,
+  points,
   avatarUrl = "",
   onUpdate,
   onDelete,
@@ -221,6 +223,10 @@ const UserCard: React.FC<UserCardProps> = ({
                     <p className="text-sm text-gray-500">ID</p>
                     <p className="text-gray-800">{id}</p>
                   </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Points</p>
+                    <p className="text-gray-800">{points}</p>
+                  </div>
                   {isEditing ? (
                     <>
                       <div>
@@ -329,6 +335,7 @@ const UserCard: React.FC<UserCardProps> = ({
                           <option value="Other">Other</option>
                         </select>
                       </div>
+                      
                       <div>
                         <p className="text-sm text-gray-500">Date of Birth</p>
                         <input
@@ -377,6 +384,10 @@ const UserCard: React.FC<UserCardProps> = ({
                       <div>
                         <p className="text-sm text-gray-500">Gender</p>
                         <p className="text-gray-800">{gender}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Points</p>
+                        <p className="text-gray-800">{points}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Date of Birth</p>

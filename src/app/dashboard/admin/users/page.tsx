@@ -19,6 +19,7 @@ const UsersPage = () => {
       dateOfBirth: "1990-01-01",
       status: "active",
       visitedCamps: 5,
+      points: 1200,
     },
     {
       id: "2",
@@ -34,6 +35,7 @@ const UsersPage = () => {
       dateOfBirth: "1992-05-15",
       status: "active",
       visitedCamps: 3,
+      points: 800,
     },
     {
       id: "3",
@@ -49,6 +51,7 @@ const UsersPage = () => {
       dateOfBirth: "1988-08-20",
       status: "inactive",
       visitedCamps: 0,
+      points: 150,
     },
     {
       id: "4",
@@ -64,70 +67,92 @@ const UsersPage = () => {
       dateOfBirth: "1995-03-10",
       status: "active",
       visitedCamps: 8,
+      points: 2500,
     },
   ]);
 
   // Add filter states
-  const [districtFilter, setDistrictFilter] = useState('all');
-  const [organizationFilter, setOrganizationFilter] = useState('all');
-  const [bloodGroupFilter, setBloodGroupFilter] = useState('all');
-  const [genderFilter, setGenderFilter] = useState('all');
-  const [visitedCampsFilter, setVisitedCampsFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [districtFilter, setDistrictFilter] = useState("all");
+  const [organizationFilter, setOrganizationFilter] = useState("all");
+  const [bloodGroupFilter, setBloodGroupFilter] = useState("all");
+  const [genderFilter, setGenderFilter] = useState("all");
+  const [campVisitsFilter, setCampVisitsFilter] = useState({ min: "", max: "" });
+  const [pointsFilter, setPointsFilter] = useState({ min: "", max: "" });
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Get unique values for filters
-  const districts = [...new Set(users.map(user => user.district))];
-  const bloodGroups = [...new Set(users.map(user => user.bloodGroup))];
-  const genders = [...new Set(users.map(user => user.gender))];
-  // Create visited camps ranges
-  const visitedCampsRanges = [
-    { label: 'No camps', value: '0' },
-    { label: '1-3 camps', value: '1-3' },
-    { label: '4-7 camps', value: '4-7' },
-    { label: '8+ camps', value: '8+' }
-  ];
+  const districts = [...new Set(users.map((user) => user.district))];
+  const bloodGroups = [...new Set(users.map((user) => user.bloodGroup))];
+  const genders = [...new Set(users.map((user) => user.gender))];
   // Mock organizations - replace with actual data
-  const organizations = ['Organization 1', 'Organization 2', 'Organization 3'];
+  const organizations = ["Organization 1", "Organization 2", "Organization 3"];
 
   // Filter users based on selected filters
-  const filteredUsers = users.filter(user => {
-    const matchesDistrict = districtFilter === 'all' || user.district === districtFilter;
-    const matchesBloodGroup = bloodGroupFilter === 'all' || user.bloodGroup === bloodGroupFilter;
-    const matchesOrganization = organizationFilter === 'all'; // Update this when organization data is available
-    const matchesGender = genderFilter === 'all' || user.gender === genderFilter;
-    
-    // Handle visited camps filter
-    const matchesVisitedCamps = visitedCampsFilter === 'all' || (() => {
-      const camps = user.visitedCamps;
-      switch(visitedCampsFilter) {
-        case '0': return camps === 0;
-        case '1-3': return camps >= 1 && camps <= 3;
-        case '4-7': return camps >= 4 && camps <= 7;
-        case '8+': return camps >= 8;
-        default: return true;
-      }
+  const filteredUsers = users.filter((user) => {
+    const matchesDistrict =
+      districtFilter === "all" || user.district === districtFilter;
+    const matchesBloodGroup =
+      bloodGroupFilter === "all" || user.bloodGroup === bloodGroupFilter;
+    const matchesOrganization = organizationFilter === "all"; // Update this when organization data is available
+    const matchesGender =
+      genderFilter === "all" || user.gender === genderFilter;
+
+    // Handle visited camps filter with min-max range
+    const matchesVisitedCamps = (() => {
+      const { min, max } = campVisitsFilter;
+      if (!min && !max) return true;
+
+      const visits = user.visitedCamps;
+      const minVisits = min === "" ? -Infinity : parseInt(min);
+      const maxVisits = max === "" ? Infinity : parseInt(max);
+
+      return visits >= minVisits && visits <= maxVisits;
     })();
 
-    const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    // Handle points filter
+    const matchesPoints = (() => {
+      const { min, max } = pointsFilter;
+      if (!min && !max) return true;
 
-    return matchesDistrict && matchesBloodGroup && matchesOrganization && matchesGender && matchesVisitedCamps && matchesSearch;
+      const points = user.points;
+      const minPoints = min === "" ? -Infinity : parseInt(min);
+      const maxPoints = max === "" ? Infinity : parseInt(max);
+
+      return points >= minPoints && points <= maxPoints;
+    })();
+
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return (
+      matchesDistrict &&
+      matchesBloodGroup &&
+      matchesOrganization &&
+      matchesGender &&
+      matchesVisitedCamps &&
+      matchesPoints &&
+      matchesSearch
+    );
   });
 
-  const handleUpdateUser = (id: string, updatedData: Partial<typeof users[0]>) => {
-    setUsers(prevUsers =>
-      prevUsers.map(user =>
+  const handleUpdateUser = (
+    id: string,
+    updatedData: Partial<(typeof users)[0]>
+  ) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
         user.id === id ? { ...user, ...updatedData } : user
       )
     );
     // Here you would typically make an API call to update the user in the backend
-    console.log('Updating user:', id, updatedData);
+    console.log("Updating user:", id, updatedData);
   };
 
   const handleDeleteUser = (id: string) => {
-    setUsers(prevUsers => prevUsers.filter(user => user.id !== id));
+    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
     // Here you would typically make an API call to delete the user from the backend
-    console.log('Deleting user:', id);
+    console.log("Deleting user:", id);
   };
 
   return (
@@ -135,20 +160,30 @@ const UsersPage = () => {
       <h1 className="text-2xl font-bold mb-6">All Users</h1>
 
       {/* Search and Filter Section */}
-      <div className="mb-6 space-y-4">
+      <div className="mb-6 space-y-4 w-full">
+        {/* Search Bar */}
         <div className="flex flex-col md:flex-row gap-4">
           <input
             type="text"
             placeholder="Search users..."
-            className="p-2 border rounded-lg flex-grow"
+            className="p-2 border rounded-lg w-full"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value: string = e.target.value.toString();
+              // Remove any non-string characters and convert to string
+              const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '');
+              setSearchQuery(sanitizedValue);
+            }}
+            pattern="[a-zA-Z\s]*"
+            title="Only letters and spaces are allowed"
           />
         </div>
-        <div className="flex flex-col md:flex-row gap-4">
+
+        {/* Filter Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* District Filter */}
           <select
-            className="p-2 border rounded-lg flex-1"
+            className="p-2 border rounded-lg w-full"
             value={districtFilter}
             onChange={(e) => setDistrictFilter(e.target.value)}
           >
@@ -162,7 +197,7 @@ const UsersPage = () => {
 
           {/* Organization Filter */}
           <select
-            className="p-2 border rounded-lg flex-1"
+            className="p-2 border rounded-lg w-full"
             value={organizationFilter}
             onChange={(e) => setOrganizationFilter(e.target.value)}
           >
@@ -173,11 +208,10 @@ const UsersPage = () => {
               </option>
             ))}
           </select>
-        </div>
-        <div className="flex flex-col md:flex-row gap-4">
+
           {/* Blood Group Filter */}
           <select
-            className="p-2 border rounded-lg flex-1"
+            className="p-2 border rounded-lg w-full"
             value={bloodGroupFilter}
             onChange={(e) => setBloodGroupFilter(e.target.value)}
           >
@@ -191,7 +225,7 @@ const UsersPage = () => {
 
           {/* Gender Filter */}
           <select
-            className="p-2 border rounded-lg flex-1"
+            className="p-2 border rounded-lg w-full"
             value={genderFilter}
             onChange={(e) => setGenderFilter(e.target.value)}
           >
@@ -203,20 +237,64 @@ const UsersPage = () => {
             ))}
           </select>
         </div>
-        <div className="flex flex-col md:flex-row gap-4">
+
+        {/* Additional Filters */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Visited Camps Filter */}
-          <select
-            className="p-2 border rounded-lg flex-1"
-            value={visitedCampsFilter}
-            onChange={(e) => setVisitedCampsFilter(e.target.value)}
-          >
-            <option value="all">All Camp Visits</option>
-            {visitedCampsRanges.map((range) => (
-              <option key={range.value} value={range.value}>
-                {range.label}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
+            <label className="text-sm font-medium whitespace-nowrap min-w-fit">Camp Visits:</label>
+            <div className="flex items-center gap-2 w-full">
+              <input
+                type="number"
+                placeholder="Min"
+                className="p-2 border rounded-lg w-full sm:w-28"
+                value={campVisitsFilter.min}
+                onChange={(e) =>
+                  setCampVisitsFilter((prev) => ({ ...prev, min: e.target.value }))
+                }
+                min="0"
+              />
+              <span className="text-gray-500 text-sm px-1">to</span>
+              <input
+                type="number"
+                placeholder="Max"
+                className="p-2 border rounded-lg w-full sm:w-28"
+                value={campVisitsFilter.max}
+                onChange={(e) =>
+                  setCampVisitsFilter((prev) => ({ ...prev, max: e.target.value }))
+                }
+                min="0"
+              />
+            </div>
+          </div>
+
+          {/* Points Range Filter */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3  w-full">
+            <label className="text-sm font-medium whitespace-nowrap min-w-fit">Points Range:</label>
+            <div className="flex items-center gap-2 w-full">
+              <input
+                type="number"
+                placeholder="Min"
+                className="p-2 border rounded-lg w-full sm:w-28"
+                value={pointsFilter.min}
+                onChange={(e) =>
+                  setPointsFilter((prev) => ({ ...prev, min: e.target.value }))
+                }
+                min="0"
+              />
+              <span className="text-gray-500 text-sm px-1">to</span>
+              <input
+                type="number"
+                placeholder="Max"
+                className="p-2 border rounded-lg w-full sm:w-28"
+                value={pointsFilter.max}
+                onChange={(e) =>
+                  setPointsFilter((prev) => ({ ...prev, max: e.target.value }))
+                }
+                min="0"
+              />
+            </div>
+          </div>
         </div>
       </div>
 

@@ -7,9 +7,17 @@ import {
   FaCalendarAlt,
   FaUsers,
   FaRupeeSign,
-  FaTimes,
-  FaCheckCircle,
 } from "react-icons/fa";
+import EventDetailsCard from "../components/dashboard/EventDetailsCard";
+
+interface Creator {
+  name: string;
+  phone: string;
+  organization: string;
+  district: string;
+  occupation: string;
+  profileImage?: string;
+}
 
 interface Event {
   id: number;
@@ -18,9 +26,15 @@ interface Event {
   location: string;
   district: string;
   date: string;
-  eligibility: "male" | "female";
+  eligibility: "male" | "female" | "all";
   fee: number;
   spots: string;
+  image: string;
+  schedule?: string;
+  requirements?: string;
+  undertaking?: string;
+  creator?: Creator;
+  status: string;
   itinerary: { day: string; activities: string[] }[];
 }
 
@@ -36,6 +50,19 @@ const events: Event[] = [
     eligibility: "male",
     fee: 5000,
     spots: "50 spots available",
+    image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1470&fit=crop",
+    schedule: "Day 1\n08:00 AM - Arrival and Registration\n09:30 AM - Welcome Ceremony\n11:00 AM - Camp Setup Training\n02:00 PM - Evening Team Building Activities\n\nDay 2\n06:00 AM - Morning Yoga and Exercise\n09:00 AM - Rock Climbing Workshop\n02:00 PM - Nature Trail Exploration\n07:00 PM - Campfire and Cultural Night\n\nDay 3\n07:00 AM - Trekking Expedition\n10:00 AM - Survival Skills Workshop\n02:00 PM - Adventure Sports Activities\n08:00 PM - Star Gazing Session",
+    requirements: "1. Age between 18-35 years\n2. Basic fitness level\n3. Valid ID proof\n4. Medical fitness certificate\n5. Personal essentials as per provided list",
+    undertaking: "I hereby declare that I am participating in this adventure camp voluntarily and am aware of the inherent risks involved. I will follow all safety guidelines and instructions provided by the camp authorities.",
+    creator: {
+      name: "Rajesh Kumar",
+      phone: "+91 9876543210",
+      profileImage: "/images/team/rajesh.jpg",
+      organization: "Adventure Sports Academy",
+      district: "Pune",
+      occupation: "Adventure Sports Instructor"
+    },
+    status: "upcoming",
     itinerary: [
       {
         day: "Day 1",
@@ -77,6 +104,19 @@ const events: Event[] = [
     eligibility: "female",
     fee: 4500,
     spots: "40 spots available",
+    image: "/images/events/nature-explorer-camp.jpg",
+    schedule: "Day 1\n08:00 AM - Check-in and Orientation\n09:00 AM - Nature Photography Workshop\n10:00 AM - Bird Watching Session\n02:00 PM - Evening Nature Walk\n\nDay 2\n06:00 AM - Sunrise Yoga\n09:00 AM - Plant Identification Workshop\n10:00 AM - Wildlife Conservation Talk\n07:00 PM - Night Sky Photography\n\nDay 3\n07:00 AM - Nature Trail Hike\n10:00 AM - Wilderness First Aid Training\n02:00 PM - Environmental Conservation Activities\n07:00 PM - Bonfire and Stories",
+    requirements: "1. Age between 18-35 years\n2. Basic fitness level\n3. Valid ID proof\n4. Medical fitness certificate\n5. Personal essentials as per provided list",
+    undertaking: "I hereby declare that I am participating in this nature explorer camp voluntarily and am aware of the inherent risks involved. I will follow all safety guidelines and instructions provided by the camp authorities.",
+    creator: {
+      name: "Priya Sharma",
+      phone: "+91 9876543210",
+      profileImage: "/images/team/priya.jpg",
+      organization: "Wildlife Conservation Society",
+      district: "Satara",
+      occupation: "Wildlife Conservation Instructor"
+    },
+    status: "upcoming",
     itinerary: [
       {
         day: "Day 1",
@@ -118,6 +158,19 @@ const events: Event[] = [
     eligibility: "male",
     fee: 6000,
     spots: "30 spots available",
+    image: "/images/events/mountain-trek-camp.jpg",
+    schedule: "Day 1\n07:00 AM - Base Camp Setup\n09:00 AM - Equipment Familiarization\n10:00 AM - Basic Climbing Techniques\n11:00 AM - Safety Briefing\n\nDay 2\n06:00 AM - Early Morning Trek\n09:00 AM - Rock Climbing Practice\n10:00 AM - Navigation Skills Workshop\n02:00 PM - Evening Stretching Session\n\nDay 3\n07:00 AM - Summit Attempt\n10:00 AM - Mountain Photography\n02:00 PM - Rappelling Workshop\n07:00 PM - Achievement Celebration",
+    requirements: "1. Age between 18-35 years\n2. Basic fitness level\n3. Valid ID proof\n4. Medical fitness certificate\n5. Personal essentials as per provided list",
+    undertaking: "I hereby declare that I am participating in this mountain trek camp voluntarily and am aware of the inherent risks involved. I will follow all safety guidelines and instructions provided by the camp authorities.",
+    creator: {
+      name: "Amit Patel",
+      phone: "+91 9876543210",
+      profileImage: "/images/team/amit.jpg",
+      organization: "Mountain Climbing Club",
+      district: "Thane",
+      occupation: "Mountain Climbing Instructor"
+    },
+    status: "upcoming",
     itinerary: [
       {
         day: "Day 1",
@@ -159,6 +212,19 @@ const events: Event[] = [
     eligibility: "female",
     fee: 5500,
     spots: "35 spots available",
+    image: "/images/events/wilderness-survival-camp.jpg",
+    schedule: "Day 1\n08:00 AM - Camp Setup Training\n09:00 AM - Fire Starting Workshop\n10:00 AM - Basic Shelter Building\n11:00 AM - Night Navigation Exercise\n\nDay 2\n08:00 AM - Water Collection & Purification\n09:00 AM - Edible Plants Workshop\n10:00 AM - Rope Craft & Knots\n11:00 AM - Survival First Aid\n\nDay 3\n08:00 AM - Advanced Shelter Building\n09:00 AM - Tool Making Workshop\n10:00 AM - Signal & Communication Methods\n11:00 AM - Survival Scenario Practice",
+    requirements: "1. Age between 18-35 years\n2. Basic fitness level\n3. Valid ID proof\n4. Medical fitness certificate\n5. Personal essentials as per provided list",
+    undertaking: "I hereby declare that I am participating in this wilderness survival camp voluntarily and am aware of the inherent risks involved. I will follow all safety guidelines and instructions provided by the camp authorities.",
+    creator: {
+      name: "Sneha Singh",
+      phone: "+91 9876543210",
+      profileImage: "/images/team/sneha.jpg",
+      organization: "Survival Skills Academy",
+      district: "Ahmednagar",
+      occupation: "Survival Skills Instructor"
+    },
+    status: "upcoming",
     itinerary: [
       {
         day: "Day 1",
@@ -195,24 +261,17 @@ const EventsPage = () => {
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [showEventDetails, setShowEventDetails] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleEnroll = (event: Event) => {
     setSelectedEvent(event);
-    setIsPopupOpen(true);
-    setAcceptedTerms(false);
+    setShowEventDetails(true);
   };
 
-  const closePopup = () => {
-    setIsPopupOpen(false);
+  const closeEventDetails = () => {
+    setShowEventDetails(false);
     setSelectedEvent(null);
-  };
-
-  const handlePayment = () => {
-    // Handle payment logic here
-    console.log("Processing payment for event:", selectedEvent?.title);
   };
 
   const toggleMobileMenu = () => {
@@ -384,7 +443,7 @@ const EventsPage = () => {
       </nav>
 
       {/* Events Content */}
-      <main className="md:pt-28 pt-28 px-4 sm:px-6 lg:px-8 pb-16  bg-[#aafefe]">
+      <main className="md:pt-28 pt-28 px-4 sm:px-6 lg:px-8 pb-16  bg-[#d2f4e6]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold  mb-4">Upcoming Events</h1>
@@ -525,128 +584,8 @@ const EventsPage = () => {
       </main>
 
       {/* Enrollment Popup */}
-      {isPopupOpen && selectedEvent && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            {/* Popup Header */}
-            <div className="p-6 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white">
-              <h2 className="text-2xl font-bold text-gray-900">
-                Event Enrollment
-              </h2>
-              <button
-                onClick={closePopup}
-                className="text-gray-400 hover:text-gray-500 transition-colors"
-              >
-                <FaTimes size={24} />
-              </button>
-            </div>
-
-            {/* Popup Content */}
-            <div className="p-6 space-y-6">
-              {/* Event Details */}
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {selectedEvent.title}
-                  </h3>
-                  <p className="text-gray-600">{selectedEvent.description}</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Location</p>
-                    <p className="font-medium">{selectedEvent.location}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Address</p>
-                    <p className="font-medium">Manual address</p>
-                    <p className="font-medium">Address Link</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Date</p>
-                    <p className="font-medium">{selectedEvent.date}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Fee</p>
-                    <p className="font-medium">₹{selectedEvent.fee}</p>
-                  </div>
-                </div>
-
-                {/* Itinerary Section */}
-                <div className="mt-6">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                    Day-wise Schedule
-                  </h4>
-                  <div className="space-y-4">
-                    {selectedEvent.itinerary.map((day, index) => (
-                      <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                        <h5 className="font-semibold text-gray-800 mb-2">
-                          {day.day}
-                        </h5>
-                        <ul className="list-disc list-inside space-y-1">
-                          {day.activities.map((activity, actIndex) => (
-                            <li key={actIndex} className="text-gray-600 text-sm">
-                              {activity}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Declaration */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-900 mb-3">
-                  Declaration and Undertaking
-                </h4>
-                <p className="text-sm text-gray-600 mb-4">
-                  I hereby declare that all the information provided is true and
-                  correct. I understand and agree to abide by all the rules and
-                  regulations of the camp. I acknowledge that camping activities
-                  involve inherent risks, and I voluntarily assume those risks.
-                  I will follow all safety instructions and guidelines provided
-                  by the camp authorities.
-                </p>
-                <label className="flex items-center space-x-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={acceptedTerms}
-                    onChange={(e) => setAcceptedTerms(e.target.checked)}
-                    className="form-checkbox h-5 w-5 text-blue-500 rounded border-gray-300 focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">
-                    I have read and agree to the declaration and undertaking
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            {/* Popup Footer */}
-            <div className="p-6 border-t border-gray-200 sticky bottom-0 bg-white">
-              <div className="flex justify-between items-center">
-                <button
-                  onClick={handlePayment}
-                  disabled={!acceptedTerms}
-                  className={`px-6 py-2 rounded-lg font-medium text-white transition-all duration-300 flex items-center space-x-2 ${
-                    acceptedTerms
-                      ? selectedEvent.eligibility === "male"
-                        ? "bg-blue-500 hover:bg-blue-600"
-                        : "bg-pink-500 hover:bg-pink-600"
-                      : "bg-gray-300 cursor-not-allowed"
-                  }`}
-                >
-                  <FaCheckCircle />
-                  <span>Pay ₹{selectedEvent.fee} to Enroll</span>
-                </button>
-                <div className="text-gray-700 font-medium">
-                  Contact: +91 1234567890
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {showEventDetails && selectedEvent && (
+        <EventDetailsCard event={selectedEvent} onClose={closeEventDetails} />
       )}
     </div>
   );

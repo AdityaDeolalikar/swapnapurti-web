@@ -234,22 +234,28 @@ const AddEventPage = () => {
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = e.target.value;
-    // If selected date is before today, don't update
-    if (selectedDate < today) {
-      return;
-    }
     setStartDate(selectedDate);
-    // If end date is before new start date, clear end date
-    if (endDate && endDate < selectedDate) {
-      setEndDate('');
+    
+    // Only validate and potentially reset if we have a complete date value
+    if (selectedDate.length === 10) {  // YYYY-MM-DD format is 10 characters
+      // If selected date is before today, reset to today
+      if (selectedDate < today) {
+        setStartDate(today);
+      }
+      // If end date exists and is before new start date, clear end date
+      if (endDate && endDate < selectedDate) {
+        setEndDate('');
+      }
     }
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = e.target.value;
-    // Only allow end date if it's not before start date
-    if (selectedDate >= startDate) {
-      setEndDate(selectedDate);
+    setEndDate(selectedDate);
+    
+    // Only validate if we have a complete date value
+    if (selectedDate.length === 10 && startDate && selectedDate < startDate) {
+      setEndDate(startDate);
     }
   };
 
@@ -355,14 +361,14 @@ const AddEventPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Available Spots
+                   Available Spots
                   </label>
                   <input
-                    type="text"
-                    value={spots}
-                    onChange={(e) => setSpots(e.target.value)}
+                    type="number"
+                    value={fee}
+                    onChange={(e) => setFee(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                    placeholder="e.g., 20 spots available"
+                    placeholder="Enter slots"
                   />
                 </div>
               </div>

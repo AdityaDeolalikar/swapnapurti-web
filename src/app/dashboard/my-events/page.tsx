@@ -9,8 +9,10 @@ import {
   FaArrowRight,
   FaTimes,
   FaPhone,
+  FaStar,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
+import EventDetailsCard from "@/app/components/dashboard/EventDetailsCard";
 
 interface Creator {
   name: string;
@@ -54,6 +56,11 @@ interface Event {
     reward: string;
     description: string;
   };
+  progress?: {
+    completed: number;
+    total: number;
+    status: string;
+  };
 }
 
 interface PastEvent {
@@ -72,15 +79,47 @@ interface PastEvent {
   schedule?: string;
   requirements?: string;
   creator?: Creator;
+  feedback?: {
+    food: number;
+    stay: number;
+    cleanliness: number;
+    services: number;
+    eventManager: number;
+    sessionDelivered: number;
+    travelling: number;
+    comment?: string;
+  };
+  points?: {
+    days: number;
+    points: number;
+    total_points: number;
+  };
 }
 
 export default function MyEvents() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
-  const [selectedPastEvent, setSelectedPastEvent] = useState<PastEvent | null>(
-    null
-  );
+  const [selectedPastEvent, setSelectedPastEvent] = useState<PastEvent | null>(null);
   const [showPastEventDetails, setShowPastEventDetails] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    food: number;
+    stay: number;
+    cleanliness: number;
+    services: number;
+    eventManager: number;
+    sessionDelivered: number;
+    travelling: number;
+    comment: string;
+  }>({
+    food: 0,
+    stay: 0,
+    cleanliness: 0,
+    services: 0,
+    eventManager: 0,
+    sessionDelivered: 0,
+    travelling: 0,
+    comment: ''
+  });
 
   // Mock data for upcoming events with additional details
   const upcomingEvents: Event[] = [
@@ -199,19 +238,81 @@ Day 3:
     },
   ];
 
+  // Mock data for ongoing events
+  const ongoingEvents: Event[] = [
+    {
+      id: 101,
+      title: "Wildlife Conservation Camp",
+      description: "Join our ongoing efforts to protect and preserve local wildlife through education and hands-on conservation activities.",
+      date: "March 1 - April 30, 2024",
+      location: "Sahyadri Wildlife Sanctuary",
+      district: "Pune",
+      status: "In Progress",
+      eligibility: "all" as const,
+      fee: 3000,
+      spots: "15/30 spots filled",
+      image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1470&fit=crop",
+      schedule: `Week 1-2:
+08:00 AM - Morning Wildlife Survey
+10:00 AM - Data Collection
+01:00 PM - Lunch Break
+02:00 PM - Conservation Activities
+05:00 PM - Evening Review
+
+Week 3-4:
+07:00 AM - Habitat Monitoring
+09:00 AM - Species Documentation
+12:00 PM - Lunch Break
+01:00 PM - Conservation Planning
+04:00 PM - Progress Review`,
+      requirements: "Basic wildlife knowledge, Physical fitness, Camera, Field notebook",
+      creator: {
+        name: "Wildlife Conservation Team",
+        phone: "+91 98765 43210",
+        organization: "Sahyadri Wildlife Trust",
+        district: "Pune",
+        occupation: "Wildlife Conservationist",
+        profileImage: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=2940&fit=crop&auto=format"
+      },
+      progress: {
+        completed: 2,
+        total: 8,
+        status: "Week 2 of 8"
+      }
+    },
+    {
+      id: 102,
+      title: "Sustainable Farming Workshop",
+      description: "Learn and practice sustainable farming techniques in our month-long hands-on workshop.",
+      date: "March 15 - April 15, 2024",
+      location: "Green Earth Farm",
+      district: "Pune",
+      status: "Active",
+      eligibility: "all" as const,
+      fee: 2500,
+      spots: "20/25 spots filled",
+      image: "https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?q=80&w=1470&fit=crop",
+      progress: {
+        completed: 1,
+        total: 4,
+        status: "Week 1 of 4"
+      }
+    }
+  ];
+
   // Mock data for past contributions
   const pastContributions: PastEvent[] = [
     {
       id: 1,
       title: "Forest Cleanup Drive",
       description: "Led a team in a successful environmental cleanup campaign.",
-      date: "March 15, 2024",
+      date: "15-18 March, 2024",
       location: "Green Valley Forest",
       district: "Pune",
       eligibility: "all" as const,
       impact: "150 kg waste collected",
       participants: 75,
-      role: "Team Leader",
+      role: "Participant",
       achievement: "Gold Badge",
       image:
         "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?q=80&w=1470&fit=crop",
@@ -245,7 +346,7 @@ Day 3:
       eligibility: "all" as const,
       impact: "500 trees planted",
       participants: 120,
-      role: "Volunteer",
+      role: "Participant",
       achievement: "Silver Badge",
       image:
         "https://images.unsplash.com/photo-1513377888081-794d8e958972?q=80&w=1470&fit=crop",
@@ -260,7 +361,7 @@ Day 3:
       creator: {
         name: "Green Mumbai",
         phone: "+91 98765 43210",
-        organization: "City Environmental Department",
+        qualification: "City Environmental Department",
         district: "Mumbai",
         occupation: "Environmental Officer",
         profileImage:
@@ -287,6 +388,50 @@ Day 3:
   const closePastEventDetails = () => {
     setShowPastEventDetails(false);
     setSelectedPastEvent(null);
+  };
+
+  // Add renderStarRating function
+  const renderStarRating = (rating: number, onRatingChange?: (rating: number) => void) => {
+    return (
+      <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            onClick={() => onRatingChange?.(star)}
+            className={`focus:outline-none transition-colors duration-150 ${onRatingChange ? 'cursor-pointer' : 'cursor-default'}`}
+          >
+            <FaStar
+              className={`w-5 h-5 ${
+                star <= rating ? 'text-yellow-400' : 'text-gray-300'
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  const handleFeedbackChange = (aspect: keyof typeof feedback, value: number) => {
+    setFeedback(prev => ({
+      ...prev,
+      [aspect]: value
+    }));
+  };
+
+  const handleSubmitFeedback = () => {
+    // Here you would typically make an API call to save the feedback
+    console.log('Submitting feedback:', feedback);
+    
+    // Update the past event with the feedback
+    if (selectedPastEvent) {
+      const updatedEvent = {
+        ...selectedPastEvent,
+        feedback: {
+          ...feedback
+        }
+      };
+      setSelectedPastEvent(updatedEvent);
+    }
   };
 
   return (
@@ -449,6 +594,97 @@ Day 3:
         </div>
       </section>
 
+      {/* Ongoing Events Section */}
+      <section className="mt-16">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800">Ongoing Events</h2>
+            <p className="text-gray-600 mt-2">Your active participation in environmental initiatives</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {ongoingEvents.map((event) => (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -5 }}
+              transition={{ duration: 0.3 }}
+              key={event.id}
+              className="group relative overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl bg-gradient-to-br from-green-50 to-white border-l-4 border-green-500"
+            >
+              {/* Card Content */}
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
+                  {event.title}
+                </h3>
+
+                <p className="text-gray-600 mb-4 text-sm">{event.description}</p>
+
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="flex items-start space-x-2">
+                    <FaMapMarkerAlt className="mt-1 text-green-500" />
+                    <div>
+                      <p className="text-xs text-gray-500">Location</p>
+                      <p className="text-sm font-medium text-gray-900">{event.location}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-2">
+                    <FaCalendarAlt className="mt-1 text-green-500" />
+                    <div>
+                      <p className="text-xs text-gray-500">Date</p>
+                      <p className="text-sm font-medium text-gray-900">{event.date}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-2">
+                    <FaUsers className="mt-1 text-green-500" />
+                    <div>
+                      <p className="text-xs text-gray-500">Spots</p>
+                      <p className="text-sm font-medium text-gray-900">{event.spots}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-2">
+                    <FaMedal className="mt-1 text-green-500" />
+                    <div>
+                      <p className="text-xs text-gray-500">Progress</p>
+                      <p className="text-sm font-medium text-gray-900">{event.progress?.status}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Progress Bar */}
+                {event.progress && (
+                  <div className="mb-4">
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div
+                        className="bg-green-500 h-2.5 rounded-full transition-all duration-500"
+                        style={{
+                          width: `${(event.progress.completed / event.progress.total) * 100}%`
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                  <span className="text-sm text-gray-600">{event.status}</span>
+                  <button
+                    onClick={() => handleEventClick(event)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-green-500 hover:bg-green-600 transition-colors"
+                  >
+                    View Details
+                    <FaArrowRight />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       {/* Past Contributions Section */}
       <section className="mt-16">
         <div className="flex justify-between items-center mb-8">
@@ -547,379 +783,7 @@ Day 3:
 
       {/* Event Details Modal */}
       {showEventDetails && selectedEvent && (
-        <div className="fixed inset-0 z-[100] overflow-hidden">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={closeEventDetails}
-          />
-
-          {/* Modal Container */}
-          <div className="fixed inset-0 z-[101] overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4">
-              <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl transform transition-all">
-                {/* Close Button */}
-                <button
-                  onClick={closeEventDetails}
-                  className="absolute -top-2 -right-2 z-[150] bg-white rounded-full p-2.5 shadow-xl hover:bg-gray-100 transition-colors border border-gray-100"
-                >
-                  <FaTimes className="w-5 h-5 text-gray-600" />
-                </button>
-
-                {/* Modal Header */}
-                <div className="sticky top-0 z-[102] bg-white px-6 py-4 border-b border-gray-200 rounded-t-2xl">
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    Event Details
-                  </h2>
-                </div>
-
-                {/* Modal Content */}
-                <div className="p-6">
-                  {/* Event Image */}
-                  <div className="relative h-64 rounded-xl overflow-hidden mb-6">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                    <img
-                      src={selectedEvent.image}
-                      alt={selectedEvent.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute bottom-4 left-4 right-4 z-20">
-                      <h3 className="text-2xl font-bold text-white mb-2">
-                        {selectedEvent.title}
-                      </h3>
-                      <p className="text-white/90">
-                        {selectedEvent.description}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-6 w-full">
-                    {/* Event Information - Full Width */}
-                    <div className="bg-white rounded-xl shadow p-6 space-y-4">
-                      <h4 className="text-lg font-semibold text-gray-900">
-                        Event Information
-                      </h4>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="flex items-center space-x-3">
-                          <FaMapMarkerAlt className="text-blue-500" />
-                          <div>
-                            <p className="text-sm text-gray-500">Location</p>
-                            <p className="font-medium">
-                              {selectedEvent.location}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <FaCalendarAlt className="text-blue-500" />
-                          <div>
-                            <p className="text-sm text-gray-500">Date</p>
-                            <p className="font-medium">{selectedEvent.date}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <FaUsers className="text-blue-500" />
-                          <div>
-                            <p className="text-sm text-gray-500">Eligibility</p>
-                            <p className="font-medium capitalize">
-                              {selectedEvent.eligibility === "all"
-                                ? "All Welcome"
-                                : `${selectedEvent.eligibility} only`}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <FaRupeeSign className="text-blue-500" />
-                          <div>
-                            <p className="text-sm text-gray-500">Fee</p>
-                            <p className="font-medium">₹{selectedEvent.fee}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Two Column Layout for Schedule and Contact Details */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      {/* Left Column - Schedule and Requirements */}
-                      <div className="lg:col-span-2 space-y-6">
-                        {/* Schedule */}
-                        {selectedEvent.schedule && (
-                          <div className="bg-white rounded-xl shadow p-6 space-y-4">
-                            <h4 className="text-lg font-semibold text-gray-900">
-                              Itineraries
-                            </h4>
-                            <div className="space-y-6">
-                              {selectedEvent.schedule
-                                .split("\n\n")
-                                .map((day, dayIndex) => {
-                                  const [dayTitle, ...timeSlots] =
-                                    day.split("\n");
-                                  return (
-                                    <div
-                                      key={dayIndex}
-                                      className="bg-gray-50 rounded-lg p-4"
-                                    >
-                                      <h5 className="font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                        {dayTitle}
-                                      </h5>
-                                      <div className="space-y-3">
-                                        {timeSlots.map((slot, slotIndex) => {
-                                          const [time, activity] =
-                                            slot.split(" - ");
-                                          return (
-                                            <div
-                                              key={slotIndex}
-                                              className="flex items-start gap-4"
-                                            >
-                                              <div className="w-24 flex-shrink-0">
-                                                <span className="text-sm font-medium text-blue-600">
-                                                  {time}
-                                                </span>
-                                              </div>
-                                              <div className="flex-1">
-                                                <span className="text-sm text-gray-600">
-                                                  {activity}
-                                                </span>
-                                              </div>
-                                            </div>
-                                          );
-                                        })}
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Requirements */}
-                        {selectedEvent.requirements && (
-                          <div className="bg-white rounded-xl shadow p-6 space-y-4">
-                            <h4 className="text-lg font-semibold text-gray-900">
-                              Requirements
-                            </h4>
-                            <div className="bg-gray-50 rounded-lg p-4">
-                              <p className="text-sm text-gray-600">
-                                {selectedEvent.requirements}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Undertaking Section */}
-                        {selectedEvent.undertaking && (
-                          <div className="bg-white rounded-xl shadow p-6 space-y-4">
-                            <h4 className="text-lg font-semibold text-gray-900">
-                              Undertaking
-                            </h4>
-                            <div className="bg-gray-50 rounded-lg p-4">
-                              <div className="space-y-4">
-                                <p className="text-sm text-gray-600">
-                                  {selectedEvent.undertaking}
-                                </p>
-                                <div className="flex items-center gap-2">
-                                  <input
-                                    type="checkbox"
-                                    id="agree"
-                                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                                  />
-                                  <label
-                                    htmlFor="agree"
-                                    className="text-sm text-gray-700"
-                                  >
-                                    I agree to the terms and conditions
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Right Column - Contact Details and Registration */}
-
-                      <div className="space-y-6">
-                        {/* Contact Information */}
-
-                        {selectedEvent.creator && (
-                          <div className="bg-white rounded-xl shadow p-6 space-y-4">
-                            <h4 className="text-lg font-semibold text-gray-900">
-                              Contact Details
-                            </h4>
-                            <div className="space-y-4">
-                              {/* Profile Photo */}
-                              <div className="flex justify-center mb-4">
-                                <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-blue-100">
-                                  <img
-                                    src={selectedEvent.creator.profileImage}
-                                    alt="Profile"
-                                    className="w-full h-full object-cover"
-                                  />
-                                  <div className="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
-                                </div>
-                              </div>
-                              <div className="flex items-center space-x-3">
-                                <FaUsers className="text-blue-500" />
-                                <div>
-                                  <p className="text-sm text-gray-500">
-                                    Event manager
-                                  </p>
-                                  <p className="font-medium">
-                                    {selectedEvent.creator.name}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex items-center space-x-3">
-                                <FaPhone className="text-blue-500" />
-                                <div>
-                                  <p className="text-sm text-gray-500">
-                                    Contact Number
-                                  </p>
-                                  <p className="font-medium">
-                                    {selectedEvent.creator.phone}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex items-center space-x-3">
-                                <FaUsers className="text-blue-500" />
-                                <div>
-                                  <p className="text-sm text-gray-500">
-                                    Qualification/Experience
-                                  </p>
-                                  <p className="font-medium">
-                                    Fetch from temporary address
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        {selectedEvent.creator && (
-                          <div className="bg-white rounded-xl shadow p-6 space-y-4">
-                            <h4 className="text-lg font-semibold text-gray-900">
-                              Address
-                            </h4>
-                            <div className="space-y-4">
-                              <div className="flex items-center space-x-3">
-                                <FaUsers className="text-blue-500" />
-                                <div>
-                                  <p className="text-sm text-gray-500">
-                                    Detailed Address
-                                  </p>
-                                  <p className="font-medium">
-                                    {selectedEvent.creator.name}
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div className="flex items-center space-x-3">
-                                <FaUsers className="text-blue-500" />
-                                <div>
-                                  <p className="text-sm ">Map Link</p>
-                                  <p className="font-medium  text-blue-500">
-                                    {selectedEvent.creator.organization}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-
-                        <div></div>
-
-
-                        <div className="bg-white rounded-xl shadow p-6 space-y-4">
-                          <h4 className="text-lg font-semibold text-gray-900">
-                            Available Seats
-                          </h4>
-                          <div className="bg-gray-50 rounded-lg p-6">
-                            <div className="space-y-4">
-                              <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                  <p className="text-2xl font-bold text-gray-900">
-                                    {selectedEvent.spots.split(" ")[0]}
-                                  </p>
-                                  <p className="text-sm text-gray-500">Seats left</p>
-                                </div>
-                                <div className="text-sm font-medium">
-                                  {Math.round((parseInt(selectedEvent.spots) / 50) * 100)}% Available
-                                </div>
-                              </div>
-                              
-                              <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-                                <div 
-                                  className={`absolute left-0 top-0 h-full transition-all duration-300 ${
-                                    selectedEvent.eligibility === "male"
-                                      ? "bg-blue-500"
-                                      : selectedEvent.eligibility === "female"
-                                      ? "bg-pink-500"
-                                      : "bg-purple-500"
-                                  }`}
-                                  style={{ 
-                                    width: `${Math.round((parseInt(selectedEvent.spots) / 50) * 100)}%`,
-                                  }}
-                                />
-                              </div>
-
-                              <div className="flex items-center justify-between text-sm text-gray-500">
-                                <div className="flex items-center gap-2">
-                                  <div className={`w-3 h-3 rounded-full ${
-                                    selectedEvent.eligibility === "male"
-                                      ? "bg-blue-500"
-                                      : selectedEvent.eligibility === "female"
-                                      ? "bg-pink-500"
-                                      : "bg-purple-500"
-                                  }`}></div>
-                                  <span>Available: {selectedEvent.spots.split(" ")[0]}</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <div className="w-3 h-3 rounded-full bg-gray-200"></div>
-                                  <span>Total: 50 seats</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Registration Fee Section */}
-                        <div className="bg-white rounded-xl shadow p-6 space-y-4">
-                          <h4 className="text-lg font-semibold text-gray-900">
-                            Registration Fee
-                          </h4>
-                          <div className="bg-gray-50 rounded-lg p-4">
-                            <div className="flex justify-between items-center mb-4">
-                              <span className="text-gray-600">Amount</span>
-                              <span className="text-xl font-bold text-gray-900">
-                                ₹{selectedEvent.fee}
-                              </span>
-                            </div>
-                            <p className="text-sm text-gray-600 mb-4">
-                              {selectedEvent.spots}
-                            </p>
-                            <button
-                              className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-white transition-colors ${
-                                selectedEvent.eligibility === "male"
-                                  ? "bg-blue-500 hover:bg-blue-600"
-                                  : selectedEvent.eligibility === "female"
-                                  ? "bg-pink-500 hover:bg-pink-600"
-                                  : "bg-purple-500 hover:bg-purple-600"
-                              }`}
-                            >
-                              Enroll Now
-                              <FaArrowRight />
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Referral Code Section */}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <EventDetailsCard event={selectedEvent} onClose={closeEventDetails} />
       )}
 
       {/* Past Event Details Modal */}
@@ -966,6 +830,47 @@ Day 3:
                       <p className="text-white/90">
                         {selectedPastEvent.description}
                       </p>
+                    </div>
+                  </div>
+
+                  {/* Points Information */}
+                  <div className="mb-4">
+                    <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg shadow p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-base font-semibold text-white">Points Collected</h4>
+                        
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        {/* Attendance Points */}
+                        <div className="bg-white/10 rounded-lg p-3">
+                          <div className="flex flex-col items-center">
+                            <span className="text-lg font-bold text-white">
+                              {selectedPastEvent.points?.attendance || 'Gold Badge'}
+                            </span>
+                            <span className="text-xs text-white/80">Acheivement</span>
+                          </div>
+                        </div>
+
+                        {/* Participation Points */}
+                        <div className="bg-white/10 rounded-lg p-3">
+                          <div className="flex flex-col items-center">
+                            <span className="text-lg font-bold text-white">
+                              {selectedPastEvent.points?.participation || 0}
+                            </span>
+                            <span className="text-xs text-white/80">Your Points</span>
+                          </div>
+                        </div>
+
+                        {/* Bonus Points */}
+                        <div className="bg-white/10 rounded-lg p-3">
+                          <div className="flex flex-col items-center">
+                            <span className="text-lg font-bold text-white">
+                              {selectedPastEvent.points?.bonus || 0}
+                            </span>
+                            <span className="text-xs text-white/80">Total Points</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -1047,10 +952,10 @@ Day 3:
                             <FaUsers className="text-red-500" />
                             <div>
                               <p className="text-sm text-gray-500">
-                                Organization
+                                Qualification/Experience
                               </p>
                               <p className="font-medium">
-                                {selectedPastEvent.creator.organization}
+                                {selectedPastEvent.creator.qualification}
                               </p>
                             </div>
                           </div>
@@ -1125,7 +1030,7 @@ Day 3:
                         )}
                       </div>
 
-                      {/* Right Column - Impact Details */}
+                      {/* Right Column - Impact Details and Feedback */}
                       <div className="space-y-6">
                         <div className="bg-white rounded-xl shadow p-6 space-y-4">
                           <h4 className="text-lg font-semibold text-gray-900">
@@ -1158,6 +1063,114 @@ Day 3:
                                 </span>
                               </div>
                             </div>
+                          </div>
+                        </div>
+
+                        {/* Feedback Section */}
+                        <div className="bg-white rounded-xl shadow p-6 space-y-4">
+                          <h4 className="text-lg font-semibold text-gray-900">Event Feedback</h4>
+                          <div className="space-y-4">
+                            {/* Food Rating */}
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-gray-600">Food Quality</span>
+                              {renderStarRating(
+                                selectedPastEvent.feedback?.food || feedback.food,
+                                selectedPastEvent.feedback ? undefined : (rating) => handleFeedbackChange('food', rating)
+                              )}
+                            </div>
+
+                            {/* Stay Rating */}
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-gray-600">Accommodation</span>
+                              {renderStarRating(
+                                selectedPastEvent.feedback?.stay || feedback.stay,
+                                selectedPastEvent.feedback ? undefined : (rating) => handleFeedbackChange('stay', rating)
+                              )}
+                            </div>
+
+                            {/* Cleanliness Rating */}
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-gray-600">Cleanliness</span>
+                              {renderStarRating(
+                                selectedPastEvent.feedback?.cleanliness || feedback.cleanliness,
+                                selectedPastEvent.feedback ? undefined : (rating) => handleFeedbackChange('cleanliness', rating)
+                              )}
+                            </div>
+
+                            {/* Services Rating */}
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-gray-600">Services</span>
+                              {renderStarRating(
+                                selectedPastEvent.feedback?.services || feedback.services,
+                                selectedPastEvent.feedback ? undefined : (rating) => handleFeedbackChange('services', rating)
+                              )}
+                            </div>
+
+                            {/* Event Manager Rating */}
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-gray-600">Event Manager</span>
+                              {renderStarRating(
+                                selectedPastEvent.feedback?.eventManager || feedback.eventManager,
+                                selectedPastEvent.feedback ? undefined : (rating) => handleFeedbackChange('eventManager', rating)
+                              )}
+                            </div>
+
+                            {/* Session Delivered Rating */}
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-gray-600">Session Quality</span>
+                              {renderStarRating(
+                                selectedPastEvent.feedback?.sessionDelivered || feedback.sessionDelivered,
+                                selectedPastEvent.feedback ? undefined : (rating) => handleFeedbackChange('sessionDelivered', rating)
+                              )}
+                            </div>
+
+                            {/* Travelling Rating */}
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-gray-600">Travel Arrangements</span>
+                              {renderStarRating(
+                                selectedPastEvent.feedback?.travelling || feedback.travelling,
+                                selectedPastEvent.feedback ? undefined : (rating) => handleFeedbackChange('travelling', rating)
+                              )}
+                            </div>
+
+                            {/* Comment Section */}
+                            {!selectedPastEvent.feedback && (
+                              <div className="mt-4">
+                                <label htmlFor="comment" className="block text-sm font-medium text-gray-600 mb-2">
+                                  Additional Comments
+                                </label>
+                                <textarea
+                                  id="comment"
+                                  rows={3}
+                                  className="w-full px-3 py-2 border rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="Share your thoughts about the event..."
+                                  value={feedback.comment}
+                                  onChange={(e) => setFeedback(prev => ({ ...prev, comment: e.target.value }))}
+                                />
+                              </div>
+                            )}
+
+                            {/* Submit Button */}
+                            {!selectedPastEvent.feedback && (
+                              <div className="flex justify-end mt-6">
+                                <button
+                                  onClick={handleSubmitFeedback}
+                                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+                                >
+                                  <span>Submit Feedback</span>
+                                  <FaArrowRight />
+                                </button>
+                              </div>
+                            )}
+
+                            {/* Feedback Submitted Message */}
+                            {selectedPastEvent.feedback && (
+                              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <p className="text-sm text-green-800">
+                                  Thank you for your feedback! Your ratings help us improve our events.
+                                </p>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

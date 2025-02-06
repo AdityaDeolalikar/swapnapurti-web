@@ -33,14 +33,7 @@ export default function Navbar() {
         {/* Right side - Actions */}
         <div className="flex items-center space-x-6">
           {/* Search */}
-          <div className="relative">
-            <button
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              <FaSearch className="w-5 h-5" />
-            </button>
-          </div>
+         
 
           {/* User Profile */}
           <div className="relative">
@@ -59,6 +52,21 @@ export default function Navbar() {
               </div>
               <FaChevronDown className="w-4 h-4 text-gray-500" />
             </button>
+
+            {/* Dropdown Menu */}
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <button
+                  onClick={() => {
+                    // Add logout logic here
+                    window.location.href = "/";
+                  }}
+                  className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                >
+                  <span>Logout</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
