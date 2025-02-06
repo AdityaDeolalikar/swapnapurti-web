@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,7 +15,6 @@ const RegisterStep2 = () => {
     permanentAddress: '',
     temporaryAddress: '',
     district: '',
-    country: '',
     occupation: '',
     organization: '',
     photo: null as File | null,
@@ -26,23 +25,172 @@ const RegisterStep2 = () => {
   const [errors, setErrors] = useState({
     photo: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    emergencyMobile: ''
   })
+  const [showOrgDropdown, setShowOrgDropdown] = useState(false);
+  const [orgSearchQuery, setOrgSearchQuery] = useState('');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [showOccupationDropdown, setShowOccupationDropdown] = useState(false);
+  const [occupationSearchQuery, setOccupationSearchQuery] = useState('');
+  const occupationDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Add state for step 1 phone number (you should get this from your actual registration flow)
+  const [step1Phone, setStep1Phone] = useState(() => {
+    // Get the phone from localStorage or your state management system
+    return localStorage.getItem('step1Phone') || '';
+  });
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
+  const organizations = [
+    "Tata Consultancy Services",
+    "Persistent Systems",
+    "Bajaj Auto",
+    "Infosys",
+    "Wipro",
+    "Tech Mahindra",
+    "Cognizant",
+    "HCL Technologies",
+    "IBM India",
+    "Accenture India",
+    "Capgemini India",
+    "Oracle India",
+    "Microsoft India",
+    "Google India",
+    "Amazon India",
+    "Other"
+  ];
 
-    if (name === 'password' || name === 'confirmPassword') {
-      validatePasswords(name === 'password' ? value : formData.password, 
-                       name === 'confirmPassword' ? value : formData.confirmPassword)
+  const filteredOrganizations = organizations.filter(org =>
+    org.toLowerCase().includes(orgSearchQuery.toLowerCase())
+  );
+
+  const handleOrgSelect = (org: string) => {
+    setFormData(prev => ({ ...prev, organization: org }));
+    setOrgSearchQuery(org);
+    setShowOrgDropdown(false);
+  };
+
+  const handleOrgSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setOrgSearchQuery(value);
+    setFormData(prev => ({ ...prev, organization: value }));
+    setShowOrgDropdown(true);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowOrgDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const occupations = [
+    "Software Engineer",
+    "Data Scientist",
+    "Product Manager",
+    "Business Analyst",
+    "Project Manager",
+    "System Administrator",
+    "UI/UX Designer",
+    "Full Stack Developer",
+    "DevOps Engineer",
+    "Quality Assurance Engineer",
+    "Cloud Architect",
+    "Network Engineer",
+    "Database Administrator",
+    "IT Consultant",
+    "Technical Lead",
+    "Scrum Master",
+    "Student",
+    "Other"
+  ];
+
+  const filteredOccupations = occupations.filter(occ =>
+    occ.toLowerCase().includes(occupationSearchQuery.toLowerCase())
+  );
+
+  const handleOccupationSelect = (occ: string) => {
+    setFormData(prev => ({ ...prev, occupation: occ }));
+    setOccupationSearchQuery(occ);
+    setShowOccupationDropdown(false);
+  };
+
+  const handleOccupationSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setOccupationSearchQuery(value);
+    setFormData(prev => ({ ...prev, occupation: value }));
+    setShowOccupationDropdown(true);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (occupationDropdownRef.current && !occupationDropdownRef.current.contains(event.target as Node)) {
+        setShowOccupationDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Validate emergency number
+  const validateEmergencyNumber = (number: string) => {
+    const newErrors = { ...errors };
+    
+    // Check if it's exactly 10 digits
+    if (!/^\d{10}$/.test(number)) {
+      newErrors.emergencyMobile = 'Phone number must be exactly 10 digits';
     }
-  }
+    // Check if it's different from step 1 phone
+    else if (number === step1Phone) {
+      newErrors.emergencyMobile = 'Emergency contact should be different from your primary number';
+    }
+    else {
+      newErrors.emergencyMobile = '';
+    }
+
+    setErrors(newErrors);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
+    if (name === 'emergencyMobile') {
+      // Only allow digits
+      const numbersOnly = value.replace(/\D/g, '');
+      // Limit to 10 digits
+      const truncated = numbersOnly.slice(0, 10);
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: truncated
+      }));
+      
+      validateEmergencyNumber(truncated);
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+
+      if (name === 'password' || name === 'confirmPassword') {
+        validatePasswords(
+          name === 'password' ? value : formData.password,
+          name === 'confirmPassword' ? value : formData.confirmPassword
+        );
+      }
+    }
+  };
 
   const validatePasswords = (password: string, confirmPassword: string) => {
     const newErrors = { ...errors }
@@ -235,27 +383,8 @@ const RegisterStep2 = () => {
                 </div>
               </div>
 
-              {/* Country */}
-              <div>
-                <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
-                  Country
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaMapMarkerAlt className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    name="country"
-                    id="country"
-                    required
-                    value={formData.country}
-                    onChange={handleChange}
-                    placeholder="Enter your country"
-                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                  />
-                </div>
-              </div>
+            
+             
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -264,7 +393,7 @@ const RegisterStep2 = () => {
                 <label htmlFor="occupation" className="block text-sm font-medium text-gray-700 mb-2">
                   Occupation
                 </label>
-                <div className="relative">
+                <div className="relative" ref={occupationDropdownRef}>
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <FaBriefcase className="h-5 w-5 text-gray-400" />
                   </div>
@@ -273,11 +402,25 @@ const RegisterStep2 = () => {
                     name="occupation"
                     id="occupation"
                     required
-                    value={formData.occupation}
-                    onChange={handleChange}
-                    placeholder="Enter your occupation"
+                    value={occupationSearchQuery}
+                    onChange={handleOccupationSearch}
+                    onFocus={() => setShowOccupationDropdown(true)}
+                    placeholder="Search for your occupation"
                     className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   />
+                  {showOccupationDropdown && filteredOccupations.length > 0 && (
+                    <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-lg py-1 text-base overflow-auto focus:outline-none sm:text-sm">
+                      {filteredOccupations.map((occ) => (
+                        <div
+                          key={occ}
+                          onClick={() => handleOccupationSelect(occ)}
+                          className="cursor-pointer select-none relative py-2 pl-10 pr-4 hover:bg-blue-50 transition-colors duration-200"
+                        >
+                          {occ}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -286,7 +429,7 @@ const RegisterStep2 = () => {
                 <label htmlFor="organization" className="block text-sm font-medium text-gray-700 mb-2">
                   Organization
                 </label>
-                <div className="relative">
+                <div className="relative" ref={dropdownRef}>
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <FaBuilding className="h-5 w-5 text-gray-400" />
                   </div>
@@ -295,11 +438,25 @@ const RegisterStep2 = () => {
                     name="organization"
                     id="organization"
                     required
-                    value={formData.organization}
-                    onChange={handleChange}
-                    placeholder="Enter your organization"
+                    value={orgSearchQuery}
+                    onChange={handleOrgSearch}
+                    onFocus={() => setShowOrgDropdown(true)}
+                    placeholder="Search for your organization"
                     className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   />
+                  {showOrgDropdown && filteredOrganizations.length > 0 && (
+                    <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-lg py-1 text-base overflow-auto focus:outline-none sm:text-sm">
+                      {filteredOrganizations.map((org) => (
+                        <div
+                          key={org}
+                          onClick={() => handleOrgSelect(org)}
+                          className="cursor-pointer select-none relative py-2 pl-10 pr-4 hover:bg-blue-50 transition-colors duration-200"
+                        >
+                          {org}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -358,10 +515,25 @@ const RegisterStep2 = () => {
                   required
                   value={formData.emergencyMobile}
                   onChange={handleChange}
-                  placeholder="Enter emergency contact number"
-                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  placeholder="Enter 10 digit emergency contact number"
+                  maxLength={10}
+                  pattern="\d{10}"
+                  onKeyPress={(e) => {
+                    // Allow only numbers
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className={`appearance-none block w-full pl-10 pr-3 py-3 border ${
+                    errors.emergencyMobile ? 'border-red-500' : 'border-gray-300'
+                  } rounded-lg focus:outline-none focus:ring-2 ${
+                    errors.emergencyMobile ? 'focus:ring-red-500' : 'focus:ring-blue-500'
+                  } focus:border-transparent transition-all duration-300`}
                 />
               </div>
+              {errors.emergencyMobile && (
+                <p className="mt-1 text-xs text-red-500">{errors.emergencyMobile}</p>
+              )}
             </div>
 
             {/* Password */}

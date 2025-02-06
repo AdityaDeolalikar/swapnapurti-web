@@ -48,7 +48,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link
               href="/"
-              className={`text-2xl font-bold transition-colors duration-300 ${
+              className={`text-1xl font-bold transition-colors duration-300 ${
                 isScrolled ? "text-gray-800" : "text-white"
               } hover:text-blue-500`}
             >
@@ -60,32 +60,10 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex items-center mx-4 flex-1 max-w-lg">
-            <form onSubmit={handleSearch} className="w-full">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => setIsSearchFocused(false)}
-                  placeholder="Search events, activities..."
-                  className={`w-full bg-white/10 text-white placeholder-white/60 rounded-full py-2 pl-5 pr-12 backdrop-blur-sm border-2 transition-all duration-300 outline-none ${
-                    isSearchFocused ? 'border-white/40 bg-white/20' : 'border-transparent'
-                  }`}
-                />
-                <button
-                  type="submit"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors duration-300"
-                >
-                  <FaSearch className="w-4 h-4" />
-                </button>
-              </div>
-            </form>
-          </div>
+          
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-4">
             {[
               { href: "/", label: "Home" },
               { href: "/#about", label: "About Us" },
@@ -97,7 +75,7 @@ const Navbar = () => {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative px-1 py-2 text-sm font-medium transition-all duration-300 group ${
+                className={`relative px-1 py-2 text-sm font-medium transition-all duration-300 group whitespace-nowrap ${
                   isActive(item.href)
                     ? isScrolled
                       ? "text-blue-600"
@@ -117,10 +95,44 @@ const Navbar = () => {
                 />
               </Link>
             ))}
-            <div className="flex items-center space-x-3 ml-6 pl-6 border-l border-gray-200/20">
+            <div className="flex items-center space-x-4 ml-8 pl-8 border-l border-gray-200/20">
+              <a
+                href="/brochure.pdf"
+                download
+                className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap ${
+                  isScrolled
+                    ? "bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/20"
+                    : "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
+                }`}
+              >
+                <svg 
+                  className="w-4 h-4" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                Brochure
+              </a>
               <Link
                 href="/login"
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap ${
+                  isScrolled
+                    ? "bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/20"
+                    : "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
+                }`}
+              >
+                Donate
+              </Link>
+              <Link
+                href="/login"
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap ${
                   isScrolled
                     ? "bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/20"
                     : "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
@@ -130,7 +142,7 @@ const Navbar = () => {
               </Link>
               <Link
                 href="/register/step1"
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap ${
                   isScrolled
                     ? "bg-green-500 text-white hover:bg-green-600 shadow-lg shadow-green-500/20"
                     : "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
@@ -239,6 +251,40 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="space-y-2 pt-2 pb-3 border-t border-gray-200/10">
+                <a
+                  href="/brochure.pdf"
+                  download
+                  className={`flex items-center justify-center gap-2 text-center px-4 py-2 rounded-full text-sm font-medium ${
+                    isScrolled
+                      ? "bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/20"
+                      : "bg-white/10 text-white hover:bg-white/20"
+                  }`}
+                >
+                  <svg 
+                    className="w-4 h-4" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    />
+                  </svg>
+                  Download Brochure
+                </a>
+                <Link
+                  href="/login"
+                  className={`block text-center px-4 py-2 rounded-full text-sm font-medium ${
+                    isScrolled
+                      ? "bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/20"
+                      : "bg-white/10 text-white hover:bg-white/20"
+                  }`}
+                >
+                  Donate
+                </Link>
                 <Link
                   href="/login"
                   className={`block text-center px-4 py-2 rounded-full text-sm font-medium ${

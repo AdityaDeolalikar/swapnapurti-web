@@ -21,6 +21,7 @@ interface Event {
   eligibility: "male" | "female";
   fee: number;
   spots: string;
+  itinerary: { day: string; activities: string[] }[];
 }
 
 const events: Event[] = [
@@ -35,6 +36,35 @@ const events: Event[] = [
     eligibility: "male",
     fee: 5000,
     spots: "50 spots available",
+    itinerary: [
+      {
+        day: "Day 1",
+        activities: [
+          "Arrival and Registration",
+          "Welcome Ceremony",
+          "Camp Setup Training",
+          "Evening Team Building Activities"
+        ]
+      },
+      {
+        day: "Day 2",
+        activities: [
+          "Morning Yoga and Exercise",
+          "Rock Climbing Workshop",
+          "Nature Trail Exploration",
+          "Campfire and Cultural Night"
+        ]
+      },
+      {
+        day: "Day 3",
+        activities: [
+          "Trekking Expedition",
+          "Survival Skills Workshop",
+          "Adventure Sports Activities",
+          "Star Gazing Session"
+        ]
+      }
+    ]
   },
   {
     id: 2,
@@ -47,6 +77,35 @@ const events: Event[] = [
     eligibility: "female",
     fee: 4500,
     spots: "40 spots available",
+    itinerary: [
+      {
+        day: "Day 1",
+        activities: [
+          "Check-in and Orientation",
+          "Nature Photography Workshop",
+          "Bird Watching Session",
+          "Evening Nature Walk"
+        ]
+      },
+      {
+        day: "Day 2",
+        activities: [
+          "Sunrise Yoga",
+          "Plant Identification Workshop",
+          "Wildlife Conservation Talk",
+          "Night Sky Photography"
+        ]
+      },
+      {
+        day: "Day 3",
+        activities: [
+          "Nature Trail Hike",
+          "Wilderness First Aid Training",
+          "Environmental Conservation Activities",
+          "Bonfire and Stories"
+        ]
+      }
+    ]
   },
   {
     id: 3,
@@ -59,6 +118,35 @@ const events: Event[] = [
     eligibility: "male",
     fee: 6000,
     spots: "30 spots available",
+    itinerary: [
+      {
+        day: "Day 1",
+        activities: [
+          "Base Camp Setup",
+          "Equipment Familiarization",
+          "Basic Climbing Techniques",
+          "Safety Briefing"
+        ]
+      },
+      {
+        day: "Day 2",
+        activities: [
+          "Early Morning Trek",
+          "Rock Climbing Practice",
+          "Navigation Skills Workshop",
+          "Evening Stretching Session"
+        ]
+      },
+      {
+        day: "Day 3",
+        activities: [
+          "Summit Attempt",
+          "Mountain Photography",
+          "Rappelling Workshop",
+          "Achievement Celebration"
+        ]
+      }
+    ]
   },
   {
     id: 4,
@@ -71,6 +159,35 @@ const events: Event[] = [
     eligibility: "female",
     fee: 5500,
     spots: "35 spots available",
+    itinerary: [
+      {
+        day: "Day 1",
+        activities: [
+          "Camp Setup Training",
+          "Fire Starting Workshop",
+          "Basic Shelter Building",
+          "Night Navigation Exercise"
+        ]
+      },
+      {
+        day: "Day 2",
+        activities: [
+          "Water Collection & Purification",
+          "Edible Plants Workshop",
+          "Rope Craft & Knots",
+          "Survival First Aid"
+        ]
+      },
+      {
+        day: "Day 3",
+        activities: [
+          "Advanced Shelter Building",
+          "Tool Making Workshop",
+          "Signal & Communication Methods",
+          "Survival Scenario Practice"
+        ]
+      }
+    ]
   },
 ];
 
@@ -104,6 +221,31 @@ const EventsPage = () => {
 
   return (
     <div>
+      <div className="fixed bottom-8 right-8 z-50 animate-bounce-slow">
+        <Link
+          href="/register/step1"
+          className="group relative inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-blue-500 hover:to-blue-600"
+        >
+          <span className="absolute inset-0 bg-white/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+          <span className="relative flex items-center gap-2">
+            Enroll Now
+            <svg
+              className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </span>
+        </Link>
+      </div>
       <nav className="w-full z-50  shadow-md fixed bg-[#03626b]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
@@ -119,7 +261,6 @@ const EventsPage = () => {
                 </span>
               </Link>
             </div>
-            
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6 ">
@@ -129,7 +270,6 @@ const EventsPage = () => {
                 { href: "/events", label: "Upcoming Events" },
                 { href: "/gallery", label: "Gallery" },
                 { href: "/#contact", label: "Contact Us" },
-                
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -168,7 +308,7 @@ const EventsPage = () => {
 
             {/* Mobile menu button */}
             <div className="md:hidden flex items-center">
-              <button 
+              <button
                 onClick={toggleMobileMenu}
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 focus:outline-none"
               >
@@ -200,7 +340,7 @@ const EventsPage = () => {
           </div>
 
           {/* Mobile Navigation */}
-          <div className={`md:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+          <div className={`md:hidden ${isMobileMenuOpen ? "block" : "hidden"}`}>
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-[#03626b]">
               {[
                 { href: "/", label: "Home" },
@@ -208,7 +348,6 @@ const EventsPage = () => {
                 { href: "/events", label: "Upcoming Events" },
                 { href: "/gallery", label: "Gallery" },
                 { href: "/#contact", label: "Contact Us" },
-                
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -248,9 +387,7 @@ const EventsPage = () => {
       <main className="md:pt-28 pt-28 px-4 sm:px-6 lg:px-8 pb-16  bg-[#aafefe]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold  mb-4">
-              Upcoming Events
-            </h1>
+            <h1 className="text-4xl font-bold  mb-4">Upcoming Events</h1>
             <p className="text-lg  max-w-2xl mx-auto">
               Join our exciting camping adventures and create unforgettable
               memories
@@ -421,8 +558,9 @@ const EventsPage = () => {
                     <p className="font-medium">{selectedEvent.location}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">District</p>
-                    <p className="font-medium">{selectedEvent.district}</p>
+                    <p className="text-sm text-gray-500">Address</p>
+                    <p className="font-medium">Manual address</p>
+                    <p className="font-medium">Address Link</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Date</p>
@@ -431,6 +569,29 @@ const EventsPage = () => {
                   <div>
                     <p className="text-sm text-gray-500">Fee</p>
                     <p className="font-medium">₹{selectedEvent.fee}</p>
+                  </div>
+                </div>
+
+                {/* Itinerary Section */}
+                <div className="mt-6">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                    Day-wise Schedule
+                  </h4>
+                  <div className="space-y-4">
+                    {selectedEvent.itinerary.map((day, index) => (
+                      <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                        <h5 className="font-semibold text-gray-800 mb-2">
+                          {day.day}
+                        </h5>
+                        <ul className="list-disc list-inside space-y-1">
+                          {day.activities.map((activity, actIndex) => (
+                            <li key={actIndex} className="text-gray-600 text-sm">
+                              {activity}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -444,9 +605,9 @@ const EventsPage = () => {
                   I hereby declare that all the information provided is true and
                   correct. I understand and agree to abide by all the rules and
                   regulations of the camp. I acknowledge that camping activities
-                  involve inherent risks, and I voluntarily assume those risks. I
-                  will follow all safety instructions and guidelines provided by
-                  the camp authorities.
+                  involve inherent risks, and I voluntarily assume those risks.
+                  I will follow all safety instructions and guidelines provided
+                  by the camp authorities.
                 </p>
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
@@ -464,20 +625,25 @@ const EventsPage = () => {
 
             {/* Popup Footer */}
             <div className="p-6 border-t border-gray-200 sticky bottom-0 bg-white">
-              <button
-                onClick={handlePayment}
-                disabled={!acceptedTerms}
-                className={`w-full py-3 rounded-lg font-medium text-white transition-all duration-300 flex items-center justify-center space-x-2 ${
-                  acceptedTerms
-                    ? selectedEvent.eligibility === "male"
-                      ? "bg-blue-500 hover:bg-blue-600"
-                      : "bg-pink-500 hover:bg-pink-600"
-                    : "bg-gray-300 cursor-not-allowed"
-                }`}
-              >
-                <FaCheckCircle />
-                <span>Pay ₹{selectedEvent.fee} to Enroll</span>
-              </button>
+              <div className="flex justify-between items-center">
+                <button
+                  onClick={handlePayment}
+                  disabled={!acceptedTerms}
+                  className={`px-6 py-2 rounded-lg font-medium text-white transition-all duration-300 flex items-center space-x-2 ${
+                    acceptedTerms
+                      ? selectedEvent.eligibility === "male"
+                        ? "bg-blue-500 hover:bg-blue-600"
+                        : "bg-pink-500 hover:bg-pink-600"
+                      : "bg-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  <FaCheckCircle />
+                  <span>Pay ₹{selectedEvent.fee} to Enroll</span>
+                </button>
+                <div className="text-gray-700 font-medium">
+                  Contact: +91 1234567890
+                </div>
+              </div>
             </div>
           </div>
         </div>

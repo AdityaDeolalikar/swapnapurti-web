@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from 'next/image'
 import admin from '../../../../public/icons/admin.png'
 
@@ -15,7 +15,7 @@ interface UserCardProps {
   bloodGroup: string;
   gender: string;
   dateOfBirth: string;
-  visitedCamps?: string[];
+  visitedCamps: number;
   avatarUrl?: string;
   onUpdate: (id: string, updatedData: Partial<UserCardProps>) => void;
   onDelete: (id: string) => void;
@@ -33,13 +33,15 @@ const UserCard: React.FC<UserCardProps> = ({
   bloodGroup,
   gender,
   dateOfBirth,
-  visitedCamps = [],
-  avatarUrl = "https://via.placeholder.com/40",
+  visitedCamps,
+  avatarUrl = "",
   onUpdate,
   onDelete,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [editedData, setEditedData] = useState({
     name,
     email,
@@ -51,7 +53,22 @@ const UserCard: React.FC<UserCardProps> = ({
     bloodGroup,
     gender,
     dateOfBirth,
+    avatarUrl,
   });
+
+  // Add effect to handle body scroll
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    // Cleanup function to reset overflow when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isModalOpen]);
 
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -80,6 +97,28 @@ const UserCard: React.FC<UserCardProps> = ({
     }));
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const imageUrl = reader.result as string;
+        setSelectedImage(imageUrl);
+        setEditedData(prev => ({
+          ...prev,
+          avatarUrl: imageUrl
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageClick = () => {
+    if (isEditing) {
+      fileInputRef.current?.click();
+    }
+  };
+
   return (
     <>
       <div
@@ -89,7 +128,7 @@ const UserCard: React.FC<UserCardProps> = ({
         <div className="p-6">
           <div className="flex items-center space-x-4">
             <div className="relative w-10 h-10 rounded-full overflow-hidden">
-              <Image src={admin} alt="" className="object-cover" />
+              <Image src={editedData.avatarUrl || admin} alt="" className="object-cover" width={40} height={40} />
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
@@ -103,7 +142,7 @@ const UserCard: React.FC<UserCardProps> = ({
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div
-            className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
+            className="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -132,9 +171,33 @@ const UserCard: React.FC<UserCardProps> = ({
             {/* User Details */}
             <div className="space-y-4">
               <div className="flex items-center space-x-4 mb-6">
-                <div className="relative w-16 h-16 rounded-full overflow-hidden">
-                  <img src={avatarUrl} alt={name} className="object-cover" />
+                <div 
+                  className={`relative w-16 h-16 rounded-full overflow-hidden ${isEditing ? 'cursor-pointer hover:opacity-80' : ''}`}
+                  onClick={handleImageClick}
+                >
+                  <Image 
+                    src={selectedImage || editedData.avatarUrl || admin} 
+                    alt={name} 
+                    className="object-cover" 
+                    width={64}
+                    height={64}
+                  />
+                  {isEditing && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
                 <div>
                   <h3 className="text-xl font-semibold text-gray-800">
                     {isEditing ? (
@@ -326,17 +389,7 @@ const UserCard: React.FC<UserCardProps> = ({
                 {/* Visited Camps Section */}
                 <div className="mt-4">
                   <p className="text-sm text-gray-500 mb-2">Visited Camps</p>
-                  {visitedCamps.length > 0 ? (
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <ul className="list-disc list-inside">
-                        {visitedCamps.map((camp, index) => (
-                          <li key={index} className="text-gray-800">{camp}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : (
-                    <p className="text-gray-800">No camps visited yet</p>
-                  )}
+                  <p className="text-gray-800">{visitedCamps} camps visited</p>
                 </div>
               </div>
 

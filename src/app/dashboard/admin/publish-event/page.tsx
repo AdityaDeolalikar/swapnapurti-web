@@ -1,12 +1,14 @@
 "use client";
 import React, { useState } from 'react';
-import { FaSearch, FaFilter, FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaRupeeSign, FaCheckCircle, FaTimes, FaUserCircle, FaClock, FaPhone, FaEnvelope } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import { FaSearch, FaFilter, FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaRupeeSign, FaCheckCircle, FaTimes, FaUserCircle, FaClock, FaPhone, FaEnvelope, FaEdit } from 'react-icons/fa';
 
 interface Creator {
   name: string;
   email: string;
   phone: string;
   organization: string;
+  district: string;
 }
 
 interface Event {
@@ -41,7 +43,8 @@ const unpublishedEvents: Event[] = [
       name: "John Doe",
       email: "john.doe@example.com",
       phone: "+91 98765 43210",
-      organization: "Adventure Sports Club"
+      organization: "Adventure Sports Club",
+      district: "Pune"
     },
     schedule: "Day 1: Arrival and briefing\nDay 2: Trek to base camp\nDay 3: Summit climb\nDay 4: Return journey",
     requirements: "Basic fitness level, Comfortable walking shoes, Water bottle",
@@ -51,6 +54,7 @@ const unpublishedEvents: Event[] = [
 ];
 
 const PublishEventPage = () => {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -64,6 +68,12 @@ const PublishEventPage = () => {
   const closeEventDetails = () => {
     setShowEventDetails(false);
     setSelectedEvent(null);
+  };
+
+  const handleEditEvent = (event: Event, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event card click handler
+    // Navigate to add event page with event data in query params
+    router.push(`/dashboard/admin/add-event?edit=true&eventId=${event.id}`);
   };
 
   return (
@@ -106,7 +116,7 @@ const PublishEventPage = () => {
       </div>
 
       {/* Events Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {unpublishedEvents.map((event) => (
           <div
             key={event.id}
@@ -180,6 +190,13 @@ const PublishEventPage = () => {
 
               {/* Action Buttons */}
               <div className="flex gap-3">
+                <button
+                  onClick={(e) => handleEditEvent(event, e)}
+                  className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center gap-2"
+                >
+                  <FaEdit />
+                  <span>Edit</span>
+                </button>
                 <button
                   onClick={() => {/* Handle publish */}}
                   className="flex-1 bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition-colors duration-200 flex items-center justify-center gap-2"
@@ -304,7 +321,7 @@ const PublishEventPage = () => {
                 {/* Schedule and Requirements */}
                 <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-3">
-                    <h4 className="font-semibold text-gray-900">Schedule</h4>
+                    <h4 className="font-semibold text-gray-900">Itinaries</h4>
                     <div className="bg-gray-50 rounded-xl p-4">
                       <pre className="text-sm text-gray-600 whitespace-pre-wrap font-sans">
                         {selectedEvent.schedule}
@@ -328,6 +345,16 @@ const PublishEventPage = () => {
 
               {/* Action Buttons */}
               <div className="flex gap-4 pt-6 border-t border-gray-200">
+                <button
+                  onClick={(e) => {
+                    handleEditEvent(selectedEvent, e);
+                    closeEventDetails();
+                  }}
+                  className="flex-1 bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center gap-2"
+                >
+                  <FaEdit />
+                  <span>Edit Event</span>
+                </button>
                 <button
                   onClick={() => {
                     /* Handle publish */

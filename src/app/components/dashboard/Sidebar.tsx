@@ -2,8 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import Image from 'next/image'
-import admin from '../../../../public/icons/admin.png'
+import Image from "next/image";
+import admin from "../../../../public/icons/admin.png";
 import {
   FaHome,
   FaUsers,
@@ -14,6 +14,12 @@ import {
   FaSignOutAlt,
   FaBars,
   FaTimes,
+  FaRegCalendarCheck,
+  FaRegCalendarAlt,
+  FaBuilding,
+  FaMapMarkerAlt,
+  FaShoppingBag,
+  FaUser,
 } from "react-icons/fa";
 
 interface NavLink {
@@ -26,16 +32,24 @@ type RoleLinks = {
   [key: string]: NavLink[];
 };
 
-export default function Sidebar() {
+interface SidebarProps {
+  onSidebarStateChange?: (isOpen: boolean) => void;
+}
+
+export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Notify parent component of sidebar state changes
+  useEffect(() => {
+    onSidebarStateChange?.(isOpen);
+  }, [isOpen, onSidebarStateChange]);
+
+  // Remove unused function
   useEffect(() => {
     const checkScreenSize = () => {
-      const isMobileView = window.innerWidth < 768;
-      setIsMobile(isMobileView);
-      setIsOpen(!isMobileView);
+      setIsMobile(window.innerWidth < 768);
     };
 
     checkScreenSize();
@@ -43,80 +57,263 @@ export default function Sidebar() {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
+  // Add this function to handle clicks outside sidebar on mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.getElementById("sidebar");
+      if (isMobile && sidebar && !sidebar.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMobile]);
+
   const roleSpecificLinks: RoleLinks = {
+    user: [
+      {
+        name: "Dashboard",
+        path: "/dashboard",
+        icon: <FaHome className="w-5 h-5" />,
+      },
+      {
+        name: "My Profile",
+        path: "/dashboard/profile",
+        icon: <FaUser className="w-5 h-5" />,
+      },
+      {
+        name: "My Events",
+        path: "/dashboard/my-events",
+        icon: <FaRegCalendarAlt className="w-5 h-5" />,
+      },
+
+      {
+        name: "Shop",
+        path: "/dashboard/shop",
+        icon: <FaShoppingBag className="w-5 h-5" />,
+      },
+      {
+        name: "Apply for Internship",
+        path: "/dashboard/internship",
+        icon: <FaUser className="w-5 h-5" />,
+      },
+
+      {
+        name: "Donate For Swapnapurti",
+        path: "/dashboard/donate",
+        icon: <FaUser className="w-5 h-5" />,
+      },
+      {
+        name: "Apply for Certification",
+        path: "/dashboard/certification",
+        icon: <FaUser className="w-5 h-5" />,
+      },
+    ],
     admin: [
-      { name: "Dashboard", path: "/dashboard/admin", icon: <FaHome className="w-5 h-5" /> },
-      { name: "All Users", path: "/dashboard/admin/users", icon: <FaUsers className="w-5 h-5" /> },
-      { name: "Add Event", path: "/dashboard/admin/add-event", icon: <FaCalendarPlus className="w-5 h-5" /> },
-      { name: "publish Event", path: "/dashboard/admin/publish-event", icon: <FaCalendarPlus className="w-5 h-5" /> },
-      { name: "Add Organization", path: "/dashboard/admin/add-organization", icon: <FaCalendarPlus className="w-5 h-5" /> },
-      { name: "Bookings & Payments", path: "/dashboard/admin/bookings", icon: <FaMoneyBillWave className="w-5 h-5" /> },
-      { name: "Manage Teams", path: "/dashboard/admin/teams", icon: <FaUserFriends className="w-5 h-5" /> },
+      {
+        name: "Dashboard",
+        path: "/dashboard/admin",
+        icon: <FaHome className="w-5 h-5" />,
+      },
+      {
+        name: "All Users",
+        path: "/dashboard/admin/users",
+        icon: <FaUsers className="w-5 h-5" />,
+      },
+      {
+        name: "Add Event",
+        path: "/dashboard/admin/add-event",
+        icon: <FaCalendarPlus className="w-5 h-5" />,
+      },
+      {
+        name: "publish Event",
+        path: "/dashboard/admin/publish-event",
+        icon: <FaRegCalendarCheck className="w-5 h-5" />,
+      },
+      {
+        name: "Upcoming Events",
+        path: "/dashboard/admin/upcoming-event",
+        icon: <FaRegCalendarAlt className="w-5 h-5" />,
+      },
+      {
+        name: "Add Organization",
+        path: "/dashboard/admin/add-organization",
+        icon: <FaBuilding className="w-5 h-5" />,
+      },
+      {
+        name: "Add Camp Site",
+        path: "/dashboard/admin/add-new-site",
+        icon: <FaMapMarkerAlt className="w-5 h-5" />,
+      },
+      {
+        name: "Bookings & Payments",
+        path: "/dashboard/admin/bookings",
+        icon: <FaMoneyBillWave className="w-5 h-5" />,
+      },
+      {
+        name: "Manage Teams",
+        path: "/dashboard/admin/teams",
+        icon: <FaUserFriends className="w-5 h-5" />,
+      },
+      {
+        name: "Online Shopping",
+        path: "/dashboard/admin/online-shop",
+        icon: <FaUserFriends className="w-5 h-5" />,
+      },
     ],
     "managing-director": [
-      { name: "Dashboard", path: "/dashboard/managing-director", icon: <FaHome className="w-5 h-5" /> },
-      { name: "All Users", path: "/dashboard/managing-director/users", icon: <FaUsers className="w-5 h-5" /> },
-      { name: "Add Event", path: "/dashboard/managing-director/add-event", icon: <FaCalendarPlus className="w-5 h-5" /> },
-      { name: "Bookings & Payments", path: "/dashboard/managing-director/bookings", icon: <FaMoneyBillWave className="w-5 h-5" /> },
-      { name: "Manage Teams", path: "/dashboard/managing-director/teams", icon: <FaUserFriends className="w-5 h-5" /> },
+      {
+        name: "Dashboard",
+        path: "/dashboard/managing-director",
+        icon: <FaHome className="w-5 h-5" />,
+      },
+      {
+        name: "All Users",
+        path: "/dashboard/managing-director/users",
+        icon: <FaUsers className="w-5 h-5" />,
+      },
+      {
+        name: "Add Event",
+        path: "/dashboard/managing-director/add-event",
+        icon: <FaCalendarPlus className="w-5 h-5" />,
+      },
+      {
+        name: "Bookings & Payments",
+        path: "/dashboard/managing-director/bookings",
+        icon: <FaMoneyBillWave className="w-5 h-5" />,
+      },
+      {
+        name: "Manage Teams",
+        path: "/dashboard/managing-director/teams",
+        icon: <FaUserFriends className="w-5 h-5" />,
+      },
     ],
     accountant: [
-      { name: "Dashboard", path: "/dashboard/accountant", icon: <FaHome className="w-5 h-5" /> },
-      { name: "All Users", path: "/dashboard/accountant/users", icon: <FaUsers className="w-5 h-5" /> },
-      { name: "Add Event", path: "/dashboard/accountant/add-event", icon: <FaCalendarPlus className="w-5 h-5" /> },
-      { name: "Bookings & Payments", path: "/dashboard/accountant/bookings", icon: <FaMoneyBillWave className="w-5 h-5" /> },
-      { name: "Manage Teams", path: "/dashboard/accountant/teams", icon: <FaUserFriends className="w-5 h-5" /> },
+      {
+        name: "Dashboard",
+        path: "/dashboard/accountant",
+        icon: <FaHome className="w-5 h-5" />,
+      },
+      {
+        name: "All Users",
+        path: "/dashboard/accountant/users",
+        icon: <FaUsers className="w-5 h-5" />,
+      },
+      {
+        name: "Add Event",
+        path: "/dashboard/accountant/add-event",
+        icon: <FaCalendarPlus className="w-5 h-5" />,
+      },
+      {
+        name: "Bookings & Payments",
+        path: "/dashboard/accountant/bookings",
+        icon: <FaMoneyBillWave className="w-5 h-5" />,
+      },
+      {
+        name: "Manage Teams",
+        path: "/dashboard/accountant/teams",
+        icon: <FaUserFriends className="w-5 h-5" />,
+      },
     ],
     "event-manager": [
-      { name: "Dashboard", path: "/dashboard/event-manager", icon: <FaHome className="w-5 h-5" /> },
-      { name: "All Users", path: "/dashboard/event-manager/users", icon: <FaUsers className="w-5 h-5" /> },
-      { name: "Add Event", path: "/dashboard/event-manager/add-event", icon: <FaCalendarPlus className="w-5 h-5" /> },
-      { name: "Bookings & Payments", path: "/dashboard/event-manager/bookings", icon: <FaMoneyBillWave className="w-5 h-5" /> },
+      {
+        name: "Dashboard",
+        path: "/dashboard/event-manager",
+        icon: <FaHome className="w-5 h-5" />,
+      },
+      {
+        name: "All Users",
+        path: "/dashboard/event-manager/users",
+        icon: <FaUsers className="w-5 h-5" />,
+      },
+      {
+        name: "Add Event",
+        path: "/dashboard/event-manager/add-event",
+        icon: <FaCalendarPlus className="w-5 h-5" />,
+      },
+      {
+        name: "Bookings & Payments",
+        path: "/dashboard/event-manager/bookings",
+        icon: <FaMoneyBillWave className="w-5 h-5" />,
+      },
     ],
     "promoting-manager": [
-      { name: "Dashboard", path: "/dashboard/promoting-manager", icon: <FaHome className="w-5 h-5" /> },
-      { name: "All Users", path: "/dashboard/promoting-manager/users", icon: <FaUsers className="w-5 h-5" /> },
-      { name: "Add Event", path: "/dashboard/promoting-manager/add-event", icon: <FaCalendarPlus className="w-5 h-5" /> },
-      { name: "Bookings & Payments", path: "/dashboard/promoting-manager/bookings", icon: <FaMoneyBillWave className="w-5 h-5" /> },
-      { name: "Manage Teams", path: "/dashboard/promoting-manager/teams", icon: <FaUserFriends className="w-5 h-5" /> },
+      {
+        name: "Dashboard",
+        path: "/dashboard/promoting-manager",
+        icon: <FaHome className="w-5 h-5" />,
+      },
+      {
+        name: "All Users",
+        path: "/dashboard/promoting-manager/users",
+        icon: <FaUsers className="w-5 h-5" />,
+      },
+      {
+        name: "Add Event",
+        path: "/dashboard/promoting-manager/add-event",
+        icon: <FaCalendarPlus className="w-5 h-5" />,
+      },
+      {
+        name: "Bookings & Payments",
+        path: "/dashboard/promoting-manager/bookings",
+        icon: <FaMoneyBillWave className="w-5 h-5" />,
+      },
+      {
+        name: "Manage Teams",
+        path: "/dashboard/promoting-manager/teams",
+        icon: <FaUserFriends className="w-5 h-5" />,
+      },
     ],
   };
 
   const getCurrentRole = () => {
     const pathParts = pathname.split("/");
-    return pathParts[2] || "admin";
+    return pathParts[2] || "user";
   };
 
   const currentRole = getCurrentRole();
-  const currentRoleLinks = roleSpecificLinks[currentRole] || roleSpecificLinks.admin;
+  const currentRoleLinks =
+    roleSpecificLinks[currentRole] || roleSpecificLinks.user;
 
   return (
     <>
       {/* Hamburger Menu Button */}
       <button
-        className="md:hidden fixed top-4 right-2 z-50 p-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg"
+        className={`fixed ${
+          !isMobile && "left-6"
+        } top-5 z-50 p-3 ml-1 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg ${
+          !isMobile && isOpen && "left-[220px]"
+        }`}
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle Menu"
       >
-        {isOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
+        {isOpen ? (
+          <FaTimes className="w-5 h-5" />
+        ) : (
+          <FaBars className="w-5 h-5" />
+        )}
       </button>
 
-      {/* Overlay */}
-      <div
-        className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-in-out md:hidden ${
-          isOpen ? "opacity-100 z-30" : "opacity-0 pointer-events-none"
-        }`}
-        onClick={() => setIsOpen(false)}
-        aria-hidden="true"
-      />
+      {/* Overlay - Show on mobile only */}
+      {isMobile && (
+        <div
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${
+            isOpen ? "opacity-100 z-30" : "opacity-0 pointer-events-none"
+          }`}
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
       {/* Sidebar */}
       <aside
+        id="sidebar"
         className={`${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } transform fixed md:translate-x-0 z-40 w-72 h-full bg-gradient-to-b from-gray-900 to-gray-800 text-white transition-all duration-300 ease-in-out flex flex-col shadow-2xl`}
+        } transform fixed z-40 w-72 h-full bg-gradient-to-b from-gray-900 to-gray-800 text-white transition-all duration-300 ease-in-out flex flex-col shadow-2xl`}
       >
-        {/* Sidebar Header */}
+        {/* Sidebar Header with Toggle Button */}
         <div className="h-20 flex items-center justify-between px-6 bg-gradient-to-r from-blue-600 to-blue-700">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
@@ -124,9 +321,12 @@ export default function Sidebar() {
             </div>
             <div>
               <h2 className="text-xl font-bold">Dashboard</h2>
-              <p className="text-xs text-blue-200">{currentRole.replace("-", " ").toUpperCase()}</p>
+              <p className="text-xs text-blue-200">
+                {currentRole.replace("-", " ").toUpperCase()}
+              </p>
             </div>
           </div>
+          {/* Desktop Toggle Button */}
         </div>
 
         {/* Navigation */}
@@ -145,7 +345,13 @@ export default function Sidebar() {
                     }`}
                     onClick={() => isMobile && setIsOpen(false)}
                   >
-                    <span className={`${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`}>
+                    <span
+                      className={`${
+                        isActive
+                          ? "text-white"
+                          : "text-gray-400 group-hover:text-white"
+                      }`}
+                    >
                       {item.icon}
                     </span>
                     <span className="ml-3 font-medium">{item.name}</span>
@@ -161,10 +367,9 @@ export default function Sidebar() {
           {/* Settings & Logout Section */}
           <div className="mt-6 pt-6 border-t border-gray-700/50">
             <ul className="space-y-2">
-              
               <li>
                 <button
-                  onClick={() => console.log('Logout clicked')}
+                  onClick={() => console.log("Logout clicked")}
                   className="w-full flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-xl transition-all duration-200 group hover:bg-red-500/10"
                 >
                   <FaSignOutAlt className="w-5 h-5 text-gray-400 group-hover:text-red-400" />
@@ -187,12 +392,12 @@ export default function Sidebar() {
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-gray-900 rounded-full"></span>
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-white">Admin User</p>
-              <p className="text-xs text-gray-400">admin@example.com</p>
+              <p className="text-sm font-medium text-white">Role</p>
+              <p className="text-xs text-gray-400">Role@example.com</p>
             </div>
             <button
               className="p-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors"
-              onClick={() => console.log('Profile settings clicked')}
+              onClick={() => console.log("Profile settings clicked")}
             >
               <FaCog className="w-4 h-4 text-gray-400" />
             </button>
