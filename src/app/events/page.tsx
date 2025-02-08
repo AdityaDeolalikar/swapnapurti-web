@@ -471,6 +471,11 @@ const EventsPage = () => {
                     {event.title}
                   </h3>
 
+                  {/* Event ID */}
+                  <p className="text-sm text-gray-500 mb-2">
+                    Event ID: {event.id.toString().padStart(6, '0')}
+                  </p>
+
                   {/* Description */}
                   <p className="text-gray-600 mb-4 text-sm">
                     {event.description}

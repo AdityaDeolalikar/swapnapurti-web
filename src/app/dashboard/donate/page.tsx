@@ -143,30 +143,50 @@ export default function DonatePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Or enter custom amount (Min. ₹10)
+                  Enter custom amount
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
                   <input
                     type="number"
-                    min="10"
                     value={customAmount}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (parseInt(value) >= 10 || value === '') {
-                        setCustomAmount(value);
-                        setAmount('');
+                    onKeyDown={(e) => {
+                      // Prevent non-numeric characters except for backspace, delete, and arrow keys
+                      if (!/[0-9]/.test(e.key) && 
+                          !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+                        e.preventDefault();
                       }
                     }}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Remove any non-numeric characters
+                      const numericValue = value.replace(/[^0-9]/g, '');
+                      setCustomAmount(numericValue);
+                      setAmount('');
+                    }}
                     className="w-full pl-8 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none"
-                    placeholder="Enter amount (Min. ₹10)"
+                    placeholder="Enter amount"
                   />
                 </div>
-                {customAmount !== '' && parseInt(customAmount) < 10 && (
-                  <p className="mt-1 text-sm text-red-600">
-                    Minimum donation amount is ₹10
-                  </p>
-                )}
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Enter PAN Card Number
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    maxLength={10}
+                    className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none uppercase"
+                    placeholder="Enter PAN card number"
+                    pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                    title="Please enter a valid PAN card number"
+                  />
+                </div>
+                <p className="text-sm text-gray-500 mt-1">
+                  To avail tax exemption benefits under 80G
+                </p>
               </div>
 
               <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-xl font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">

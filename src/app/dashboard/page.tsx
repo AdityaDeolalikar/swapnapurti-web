@@ -30,7 +30,7 @@ export default function Dashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Upcoming Events Card */}
-        <Link href="/dashboard/my-events" className="transform transition-all duration-300 hover:scale-105">
+        <Link href="/dashboard/my-events?filter=past" className="transform transition-all duration-300 hover:scale-105">
           <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl p-6 shadow-lg border border-gray-100 cursor-pointer hover:shadow-xl">
             <div className="flex items-center justify-between">
               <div>

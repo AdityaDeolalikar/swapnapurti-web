@@ -97,8 +97,8 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
         icon: <FaUser className="w-5 h-5" />,
       },
       {
-        name: "My Events",
-        path: "/dashboard/my-events",
+        name: "All Events",
+        path: "/dashboard/all-events",
         icon: <FaRegCalendarAlt className="w-5 h-5" />,
       },
 
@@ -110,6 +110,11 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
       {
         name: "Apply for Internship",
         path: "/dashboard/internship",
+        icon: <FaUser className="w-5 h-5" />,
+      },
+      {
+        name: "Apply for Job",
+        path: "/dashboard/job",
         icon: <FaUser className="w-5 h-5" />,
       },
 
@@ -151,8 +156,8 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
         icon: <FaRegCalendarAlt className="w-5 h-5" />,
       },
       {
-        name: "Add Organization",
-        path: "/dashboard/admin/add-organization",
+        name: "Organization Details",
+        path: "/dashboard/admin/organization-detail",
         icon: <FaBuilding className="w-5 h-5" />,
       },
       {
@@ -173,6 +178,26 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
       {
         name: "Online Shopping",
         path: "/dashboard/admin/online-shop",
+        icon: <FaUserFriends className="w-5 h-5" />,
+      },
+      {
+        name: "Internship Requests",
+        path: "/dashboard/admin/Internship-requests",
+        icon: <FaUserFriends className="w-5 h-5" />,
+      },
+      {
+        name: "Job Requests",
+        path: "/dashboard/admin/job-requests",
+        icon: <FaUserFriends className="w-5 h-5" />,
+      },
+      {
+        name: "Donation Requests",
+        path: "/dashboard/admin/donation-requests",
+        icon: <FaUserFriends className="w-5 h-5" />,
+      },
+      {
+        name: "Event Certification Requests",
+        path: "/dashboard/admin/event-certification-requests",
         icon: <FaUserFriends className="w-5 h-5" />,
       },
     ],
@@ -347,7 +372,21 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-6 px-4">
+        <nav 
+          className="flex-1 overflow-y-auto py-6 px-4 
+          [&::-webkit-scrollbar]:w-1.5
+          [&::-webkit-scrollbar]:hidden
+          hover:[&::-webkit-scrollbar]:block
+          [&::-webkit-scrollbar-track]:bg-transparent 
+          [&::-webkit-scrollbar-thumb]:bg-gray-500/20
+          [&::-webkit-scrollbar-thumb]:backdrop-blur-lg
+          [&::-webkit-scrollbar-thumb]:rounded-full
+          [&::-webkit-scrollbar-thumb]:border-2
+          [&::-webkit-scrollbar-thumb]:border-transparent
+          hover:[&::-webkit-scrollbar-thumb]:bg-blue-500/50
+          [&::-webkit-scrollbar-thumb]:transition-all
+          [&::-webkit-scrollbar-thumb]:duration-300"
+        >
           <ul className="space-y-2">
             {currentRoleLinks.map((item) => {
               const isActive = pathname === item.path;

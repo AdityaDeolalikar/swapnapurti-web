@@ -131,7 +131,7 @@ const TeamsPage = () => {
     }
   ];
 
-  const roles = ['all', 'Managing Director', 'Accountant', 'Event Manager', 'Promoting Manager'];
+  const roles = ['all', 'Managing Director', 'Accountant', 'Event Manager', 'Promoting Manager', 'Sells Manager'];
 
   // Get unique districts and organizations from team members
   const districts = ['all', ...new Set(teamMembers.map(member => member.district))];

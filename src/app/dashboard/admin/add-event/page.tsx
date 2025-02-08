@@ -300,6 +300,114 @@ const AddEventPage = () => {
     fetchEventData();
   }, [isEditMode, eventId]);
 
+  // Add new state variables for form handling
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  // Function to generate unique event ID
+  const generateEventId = () => {
+    // Get current highest ID and increment
+    const currentHighestId = Math.max(
+      ...unpublishedEvents.map(e => {
+        const match = e.id.toString().match(/\d+/);
+        return match ? parseInt(match[0]) : 0;
+      }),
+      0
+    );
+    
+    const newId = currentHighestId + 1;
+    return `SW-${newId.toString().padStart(5, '0')}`;
+  };
+
+  // Function to determine event status based on dates
+  const determineEventStatus = (startDate: string, endDate: string): 'upcoming' | 'ongoing' | 'past' => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (now < start) return 'upcoming';
+    if (now > end) return 'past';
+    return 'ongoing';
+  };
+
+  // Function to handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      // Validate required fields
+      if (!eventName || !description || !startDate || !endDate || !selectedSite || selectedGender.length === 0 || !fee || !spots) {
+        throw new Error('Please fill in all required fields');
+      }
+
+      // Create event object
+      const newEvent = {
+        id: generateEventId(),
+        title: eventName,
+        description,
+        location: selectedSite.name,
+        date: `${startDate} to ${endDate}`,
+        district: selectedDistrict,
+        status: determineEventStatus(startDate, endDate),
+        eligibility: selectedGender.length === 1 ? selectedGender[0] : 'all',
+        fee: parseInt(fee),
+        spots,
+        schedule: Object.entries(daySchedules).reduce((acc, [day, activities]) => {
+          return acc + `${day.charAt(0).toUpperCase() + day.slice(1)}:\n` +
+            activities.map(a => `${a.time} - ${a.activity}`).join('\n') + '\n\n';
+        }, '').trim(),
+        creator: {
+          name: "Admin", // Replace with actual admin info
+          phone: "", // Replace with actual admin info
+          organization: selectedOrganization,
+          district: selectedDistrict,
+          occupation: "Admin" // Replace with actual admin info
+        }
+      };
+
+      // Here you would typically make an API call to save the event
+      // For now, we'll just simulate success
+      console.log('New Event:', newEvent);
+      
+      setSuccess('Event created successfully!');
+      
+      // Reset form if not in edit mode
+      if (!isEditMode) {
+        setEventName('');
+        setDescription('');
+        setStartDate('');
+        setEndDate('');
+        setSelectedGender([]);
+        setFee('');
+        setSpots('');
+        setSelectedSite(null);
+        setSelectedDistrict('');
+        setSelectedOrganization('');
+        setDaySchedules({});
+        setCustomTime('');
+        setSelectedActivity('');
+        setManualActivity('');
+        setIsCustomActivity(false);
+        setSelectedDay('');
+        
+        // Reset any error states
+        setError(null);
+        
+        // Reset the form element
+        const form = document.getElementById('event-form') as HTMLFormElement;
+        if (form) form.reset();
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred while creating the event');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="p-1 max-w-7xl mx-auto md:ml-10">
       <div className="flex items-center justify-between mb-8">
@@ -309,7 +417,7 @@ const AddEventPage = () => {
         </div>
       </div>
 
-      <form id="event-form" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <form id="event-form" onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Basic Information */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-2xl shadow-lg p-6 space-y-6">
@@ -361,14 +469,15 @@ const AddEventPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                   Available Spots
+                    Available Spots
                   </label>
                   <input
                     type="number"
-                    value={fee}
-                    onChange={(e) => setFee(e.target.value)}
+                    value={spots}
+                    onChange={(e) => setSpots(e.target.value)}
+                    min="1"
                     className="w-full px-4 py-2.5 rounded-xl border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                    placeholder="Enter slots"
+                    placeholder="Enter number of spots"
                   />
                 </div>
               </div>
@@ -413,24 +522,6 @@ const AddEventPage = () => {
                     <p className="text-red-500 text-sm mt-1">End date cannot be before start date</p>
                   )}
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Total number of seats 
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  pattern="\d*"
-                  onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  className="w-1/2 px-4 py-2.5 rounded-xl border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                  placeholder="Enter number of seats"
-                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -735,15 +826,63 @@ const AddEventPage = () => {
             </div>
           </div>
         </div>
-      </form>
 
-      <button
-        type="submit"
-        form="event-form"
-        className="mt-7 bg-blue-600 text-white px-4 py-2.5 rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-blue-200 flex items-center space-x-2 font-medium"
-      >
-        <span>{isEditMode ? 'Update Event' : 'Create Event'}</span>
-      </button>
+        {/* Add success/error messages */}
+        {(error || success) && (
+          <div className="lg:col-span-3">
+            {error && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-red-700">{error}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            {success && (
+              <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-green-700">{success}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={`mt-7 px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-blue-200 flex items-center justify-center space-x-2 font-medium ${
+            isSubmitting
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
+          }`}
+        >
+          {isSubmitting ? (
+            <>
+              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>Creating Event...</span>
+            </>
+          ) : (
+            <span>{isEditMode ? 'Update Event' : 'Create Event'}</span>
+          )}
+        </button>
+      </form>
     </div>
   );
 };

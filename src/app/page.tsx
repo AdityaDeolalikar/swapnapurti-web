@@ -6,21 +6,54 @@ import homepage5 from "../../public/images/homepage5.jpg";
 import homepage2 from "../../public/images/homepage2.jpg";
 import Link from "next/link";
 import CountUp from "react-countup";
+import { useState } from "react";
 
 export default function Home() {
+  const [showToast, setShowToast] = useState(false);
+  const emergencyNumber = "8888330578"; // Demo emergency number
+
+  const handleSOSClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(emergencyNumber).then(() => {
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000); // Hide toast after 2 seconds
+    });
+  };
+
   return (
     <>
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] bg-green-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg transition-all duration-300 flex items-center gap-2 text-sm sm:text-base mx-4">
+          <svg
+            className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <span>Emergency number copied!</span>
+        </div>
+      )}
+
       {/* Fixed Enroll Button */}
-      <div className="fixed bottom-8 right-8 z-50 animate-bounce-slow">
+      <div className="fixed bottom-8 right-4 sm:right-8 z-50 animate-bounce-slow">
         <Link
           href="/register/step1"
-          className="group relative inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-blue-500 hover:to-blue-600"
+          className="group relative inline-flex items-center justify-center px-4 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full text-white font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-blue-500 hover:to-blue-600"
         >
           <span className="absolute inset-0 bg-white/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
           <span className="relative flex items-center gap-2">
             Enroll Now
             <svg
-              className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200"
+              className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform duration-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -35,6 +68,34 @@ export default function Home() {
             </svg>
           </span>
         </Link>
+      </div>
+
+      {/* Fixed SOS Button */}
+      <div className="fixed bottom-8 left-4 sm:left-8 z-50">
+        <button
+          onClick={handleSOSClick}
+          className="group relative inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-red-600 to-red-500 rounded-full text-white font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-red-500 hover:to-red-600 animate-pulse"
+          aria-label="Copy emergency number"
+        >
+          <span className="absolute inset-0 bg-white/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+          <span className="relative flex items-center gap-2">
+            <svg
+              className="w-5 h-5 sm:w-6 sm:h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+              />
+            </svg>
+            <span>SOS</span>
+          </span>
+        </button>
       </div>
 
       <div className="relative min-h-screen">
@@ -59,7 +120,7 @@ export default function Home() {
         <main className="relative pt-32 sm:pt-48 md:pt-56 lg:pt-72 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center mt-40 md:mt-auto">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-4 sm:mb-6">
-              Welcome to Swapnapurti Academy Camping Site
+              Welcome to Swapnapurti Camping Site
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 sm:mb-8 tracking-wide font-light max-w-3xl mx-auto">
               Experience the adventure of a lifetime

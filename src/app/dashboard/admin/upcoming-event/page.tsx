@@ -614,6 +614,13 @@ const UpcomingEventsPage = () => {
                     </p>
                   )}
                 </div>
+
+                {/* Event ID */}
+                <div className="text-right">
+                  <p className="text-lg text-gray-500">
+                    Event Id: {`${event.id.toString().padStart(6, '0')}`}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
