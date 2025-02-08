@@ -14,7 +14,7 @@ interface RequestUser {
   startDate: string;
   endDate: string;
   resumeUrl: string;
-  status?: 'pending' | 'accepted' | 'rejected';
+  status: 'pending' | 'approved' | 'rejected';
   joiningLetterStatus?: 'pending' | 'uploaded';
   thankingLetterStatus?: 'pending' | 'uploaded';
   recommendationLetterStatus?: 'pending' | 'uploaded';
@@ -35,6 +35,7 @@ const mockRequests: RequestUser[] = [
     startDate: '2024-06-01',
     endDate: '2024-08-31',
     resumeUrl: '#',
+    status: 'pending',
     hasAppliedJoining: true,
     hasAppliedThanking: false,
     hasAppliedRecommendation: false
@@ -49,6 +50,7 @@ const mockRequests: RequestUser[] = [
     startDate: '2024-07-01',
     endDate: '2024-12-31',
     resumeUrl: '#',
+    status: 'approved'
   },
   {
     id: 3,
@@ -59,7 +61,8 @@ const mockRequests: RequestUser[] = [
     location: "Bangalore",
     startDate: "2024-08-01",
     endDate: "2024-11-30",
-    resumeUrl: "#"
+    resumeUrl: "#",
+    status: 'rejected'
   },
   {
     id: 4,
@@ -70,7 +73,8 @@ const mockRequests: RequestUser[] = [
     location: "Hyderabad",
     startDate: "2024-09-01",
     endDate: "2025-02-28",
-    resumeUrl: "#"
+    resumeUrl: "#",
+    status: 'pending'
   },
   {
     id: 5,
@@ -81,7 +85,8 @@ const mockRequests: RequestUser[] = [
     location: "Delhi",
     startDate: "2024-10-01",
     endDate: "2024-12-31",
-    resumeUrl: "#"
+    resumeUrl: "#",
+    status: 'approved'
   },
   {
     id: 6,
@@ -92,7 +97,8 @@ const mockRequests: RequestUser[] = [
     location: "Chennai",
     startDate: "2024-07-15",
     endDate: "2024-12-15",
-    resumeUrl: "#"
+    resumeUrl: "#",
+    status: 'rejected'
   },
   {
     id: 7,
@@ -103,7 +109,8 @@ const mockRequests: RequestUser[] = [
     location: "Kolkata",
     startDate: "2024-11-01",
     endDate: "2025-01-31",
-    resumeUrl: "#"
+    resumeUrl: "#",
+    status: 'pending'
   },
   {
     id: 8,
@@ -114,7 +121,8 @@ const mockRequests: RequestUser[] = [
     location: "Ahmedabad",
     startDate: "2024-06-15",
     endDate: "2024-12-15",
-    resumeUrl: "#"
+    resumeUrl: "#",
+    status: 'approved'
   },
   {
     id: 9,
@@ -125,7 +133,8 @@ const mockRequests: RequestUser[] = [
     location: "Jaipur",
     startDate: "2024-09-01",
     endDate: "2024-12-31",
-    resumeUrl: "#"
+    resumeUrl: "#",
+    status: 'pending'
   },
   {
     id: 10,
@@ -136,7 +145,8 @@ const mockRequests: RequestUser[] = [
     location: "Lucknow",
     startDate: "2024-08-01",
     endDate: "2025-01-31",
-    resumeUrl: "#"
+    resumeUrl: "#",
+    status: 'approved'
   }
   // Add more mock data as needed
 ];
@@ -597,6 +607,7 @@ const InternshipRequestsPage = () => {
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [applicationStatusFilter, setApplicationStatusFilter] = useState('all'); // 'all', 'applied', 'not_applied'
   const [certificateTypeFilter, setCertificateTypeFilter] = useState('all'); // 'all', 'joining', 'thanking', 'recommendation'
+  const [requestStatusFilter, setRequestStatusFilter] = useState('all'); // 'all', 'pending', 'approved', 'rejected'
 
   // Add state for selected user and modal
   const [selectedUser, setSelectedUser] = useState<RequestUser | null>(null);
@@ -651,6 +662,7 @@ const InternshipRequestsPage = () => {
     const matchesDateRange = 
       (!dateRange.start || request.startDate >= dateRange.start) &&
       (!dateRange.end || request.endDate <= dateRange.end);
+    const matchesRequestStatus = requestStatusFilter === 'all' || request.status === requestStatusFilter;
 
     // New filters for application status and certificate type
     const matchesApplicationStatus = applicationStatusFilter === 'all' || 
@@ -664,7 +676,7 @@ const InternshipRequestsPage = () => {
 
     return matchesType && matchesSearch && matchesLocation && 
            matchesDuration && matchesRole && matchesDateRange && 
-           matchesApplicationStatus && matchesCertificateType;
+           matchesApplicationStatus && matchesCertificateType && matchesRequestStatus;
   });
 
   // Handle row click
@@ -728,8 +740,8 @@ const InternshipRequestsPage = () => {
             </button>
           </div>
 
-          {/* Application Status and Certificate Type Filters */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          {/* Application Status, Certificate Type, and Request Status Filters */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <select
               value={applicationStatusFilter}
               onChange={(e) => setApplicationStatusFilter(e.target.value)}
@@ -748,31 +760,27 @@ const InternshipRequestsPage = () => {
               }`}
               disabled={applicationStatusFilter === 'not_applied'}
             >
-              <option value="all">All Certificate Types</option>
+              <option value="all">All Letter Types</option>
               <option value="joining">Joining Letter</option>
               <option value="thanking">Thanking Letter</option>
               <option value="recommendation">Letter of Recommendation</option>
+            </select>
+
+            <select
+              value={requestStatusFilter}
+              onChange={(e) => setRequestStatusFilter(e.target.value)}
+              className="w-full p-2 text-sm sm:text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Request Status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
             </select>
           </div>
 
           {/* Advanced Filters */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <select
-              value={durationFilter}
-              onChange={(e) => setDurationFilter(e.target.value)}
-              className={`w-full p-2 text-sm sm:text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                requestType === 'apprenticeship' ? 'bg-gray-50' : ''
-              }`}
-              disabled={requestType === 'apprenticeship'}
-            >
-              <option value="">All Durations</option>
-              {getDurationOptions().map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <select
+          <select
               value={locationFilter}
               onChange={(e) => setLocationFilter(e.target.value)}
               className="w-full p-2 text-sm sm:text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -793,6 +801,22 @@ const InternshipRequestsPage = () => {
               <option value="UI/UX Designer">UI/UX Designer</option>
               <option value="Backend Developer">Backend Developer</option>
             </select>
+            <select
+              value={durationFilter}
+              onChange={(e) => setDurationFilter(e.target.value)}
+              className={`w-full p-2 text-sm sm:text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                requestType === 'apprenticeship' ? 'bg-gray-50' : ''
+              }`}
+              disabled={requestType === 'apprenticeship'}
+            >
+              <option value="">All Durations</option>
+              {getDurationOptions().map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            
 
             <div className="flex gap-2 sm:gap-4">
               <input
@@ -825,6 +849,7 @@ const InternshipRequestsPage = () => {
                 <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
                 <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
                 <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Date</th>
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Resume</th>
               </tr>
             </thead>
@@ -852,6 +877,17 @@ const InternshipRequestsPage = () => {
                   <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">{request.location}</td>
                   <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">{request.startDate}</td>
                   <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">{request.endDate}</td>
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      request.status === 'approved' 
+                        ? 'bg-green-100 text-green-800'
+                        : request.status === 'rejected'
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                    </span>
+                  </td>
                   <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <a
                       href={request.resumeUrl}
@@ -889,13 +925,24 @@ const InternshipRequestsPage = () => {
                 <h3 className="font-medium text-gray-900">{request.name}</h3>
                 <p className="text-sm text-gray-500">{request.role}</p>
               </div>
-              <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                request.type === 'internship' 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-blue-100 text-blue-800'
-              }`}>
-                {request.type.charAt(0).toUpperCase() + request.type.slice(1)}
-              </span>
+              <div className="flex flex-col items-end gap-2">
+                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                  request.type === 'internship' 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-blue-100 text-blue-800'
+                }`}>
+                  {request.type.charAt(0).toUpperCase() + request.type.slice(1)}
+                </span>
+                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                  request.status === 'approved' 
+                    ? 'bg-green-100 text-green-800'
+                    : request.status === 'rejected'
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                </span>
+              </div>
             </div>
             <div className="space-y-2 text-sm text-gray-500">
               <div className="flex items-center gap-2">

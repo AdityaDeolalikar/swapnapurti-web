@@ -18,6 +18,7 @@ interface UserCardProps {
   visitedCamps: number;
   points: number;
   avatarUrl?: string;
+  organization: string;
   onUpdate: (id: string, updatedData: Partial<UserCardProps>) => void;
   onDelete: (id: string) => void;
 }
@@ -37,6 +38,7 @@ const UserCard: React.FC<UserCardProps> = ({
   visitedCamps,
   points,
   avatarUrl = "",
+  organization,
   onUpdate,
   onDelete,
 }) => {
@@ -56,6 +58,7 @@ const UserCard: React.FC<UserCardProps> = ({
     gender,
     dateOfBirth,
     avatarUrl,
+    organization,
   });
 
   // Add effect to handle body scroll
@@ -346,6 +349,16 @@ const UserCard: React.FC<UserCardProps> = ({
                           className="w-full border rounded px-2 py-1 text-gray-800"
                         />
                       </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Organization</p>
+                        <input
+                          type="text"
+                          name="organization"
+                          value={editedData.organization}
+                          onChange={handleInputChange}
+                          className="w-full border rounded px-2 py-1 text-gray-800"
+                        />
+                      </div>
                     </>
                   ) : (
                     <>
@@ -392,6 +405,10 @@ const UserCard: React.FC<UserCardProps> = ({
                       <div>
                         <p className="text-sm text-gray-500">Date of Birth</p>
                         <p className="text-gray-800">{dateOfBirth}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Organization</p>
+                        <p className="text-gray-800">{organization}</p>
                       </div>
                     </>
                   )}

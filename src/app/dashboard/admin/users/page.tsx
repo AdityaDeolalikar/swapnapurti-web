@@ -20,6 +20,7 @@ const UsersPage = () => {
       status: "active",
       visitedCamps: 5,
       points: 1200,
+      organization: "Swapnapurti Foundation"
     },
     {
       id: "2",
@@ -36,6 +37,7 @@ const UsersPage = () => {
       status: "active",
       visitedCamps: 3,
       points: 800,
+      organization: "Swapnapurti NGO"
     },
     {
       id: "3",
@@ -52,6 +54,7 @@ const UsersPage = () => {
       status: "inactive",
       visitedCamps: 0,
       points: 150,
+      organization: "Swapnapurti Trust"
     },
     {
       id: "4",
@@ -68,6 +71,7 @@ const UsersPage = () => {
       status: "active",
       visitedCamps: 8,
       points: 2500,
+      organization: "Swapnapurti Foundation"
     },
   ]);
 

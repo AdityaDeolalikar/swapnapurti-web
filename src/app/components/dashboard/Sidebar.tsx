@@ -9,7 +9,6 @@ import {
   FaUsers,
   FaCalendarPlus,
   FaMoneyBillWave,
-  FaUserFriends,
   FaCog,
   FaSignOutAlt,
   FaBars,
@@ -101,7 +100,6 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
         path: "/dashboard/all-events",
         icon: <FaRegCalendarAlt className="w-5 h-5" />,
       },
-
       {
         name: "Shop",
         path: "/dashboard/shop",
@@ -110,23 +108,22 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
       {
         name: "Apply for Internship",
         path: "/dashboard/internship",
-        icon: <FaUser className="w-5 h-5" />,
+        icon: <FaBuilding className="w-5 h-5" />,
       },
       {
         name: "Apply for Job",
         path: "/dashboard/job",
-        icon: <FaUser className="w-5 h-5" />,
+        icon: <FaBuilding className="w-5 h-5" />,
       },
-
       {
         name: "Donate For Swapnapurti",
         path: "/dashboard/donate",
-        icon: <FaUser className="w-5 h-5" />,
+        icon: <FaMoneyBillWave className="w-5 h-5" />,
       },
       {
         name: "Apply for Certification",
         path: "/dashboard/certification",
-        icon: <FaUser className="w-5 h-5" />,
+        icon: <FaRegCalendarCheck className="w-5 h-5" />,
       },
     ],
     admin: [
@@ -146,18 +143,23 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
         icon: <FaCalendarPlus className="w-5 h-5" />,
       },
       {
-        name: "publish Event",
+        name: "Publish Event",
         path: "/dashboard/admin/publish-event",
         icon: <FaRegCalendarCheck className="w-5 h-5" />,
       },
       {
-        name: "Upcoming Events",
-        path: "/dashboard/admin/upcoming-event",
+        name: "All Events",
+        path: "/dashboard/admin/all-events",
         icon: <FaRegCalendarAlt className="w-5 h-5" />,
       },
       {
-        name: "Organization Details",
-        path: "/dashboard/admin/organization-detail",
+        name: "Organization Details Admin",
+        path: "/dashboard/admin/organization-detail-admin",
+        icon: <FaBuilding className="w-5 h-5" />,
+      },
+      {
+        name: "Organization Details PromotingManager",
+        path: "/dashboard/admin/organization-detail-promoting-manager",
         icon: <FaBuilding className="w-5 h-5" />,
       },
       {
@@ -167,39 +169,40 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
       },
       {
         name: "Bookings & Payments",
-        path: "/dashboard/admin/bookings",
+        path: "/dashboard/admin/bookings-and-payments",
         icon: <FaMoneyBillWave className="w-5 h-5" />,
       },
       {
         name: "Manage Teams",
         path: "/dashboard/admin/teams",
-        icon: <FaUserFriends className="w-5 h-5" />,
+        icon: <FaUsers className="w-5 h-5" />,
       },
       {
         name: "Online Shopping",
         path: "/dashboard/admin/online-shop",
-        icon: <FaUserFriends className="w-5 h-5" />,
-      },
-      {
-        name: "Internship Requests",
-        path: "/dashboard/admin/Internship-requests",
-        icon: <FaUserFriends className="w-5 h-5" />,
-      },
-      {
-        name: "Job Requests",
-        path: "/dashboard/admin/job-requests",
-        icon: <FaUserFriends className="w-5 h-5" />,
-      },
-      {
-        name: "Donation Requests",
-        path: "/dashboard/admin/donation-requests",
-        icon: <FaUserFriends className="w-5 h-5" />,
+        icon: <FaShoppingBag className="w-5 h-5" />,
       },
       {
         name: "Event Certification Requests",
         path: "/dashboard/admin/event-certification-requests",
-        icon: <FaUserFriends className="w-5 h-5" />,
+        icon: <FaRegCalendarCheck className="w-5 h-5" />,
       },
+      {
+        name: "Internship Requests",
+        path: "/dashboard/admin/Internship-requests",
+        icon: <FaBuilding className="w-5 h-5" />,
+      },
+      {
+        name: "Job Requests",
+        path: "/dashboard/admin/job-requests",
+        icon: <FaBuilding className="w-5 h-5" />,
+      },
+      {
+        name: "Donation Requests",
+        path: "/dashboard/admin/donation-requests",
+        icon: <FaMoneyBillWave className="w-5 h-5" />,
+      },
+      
     ],
     "managing-director": [
       {
@@ -219,13 +222,13 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
       },
       {
         name: "Bookings & Payments",
-        path: "/dashboard/managing-director/bookings",
+        path: "/dashboard/managing-director/bookings-and-payments",
         icon: <FaMoneyBillWave className="w-5 h-5" />,
       },
       {
         name: "Manage Teams",
         path: "/dashboard/managing-director/teams",
-        icon: <FaUserFriends className="w-5 h-5" />,
+        icon: <FaUsers className="w-5 h-5" />,
       },
     ],
     accountant: [
@@ -252,7 +255,7 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
       {
         name: "Manage Teams",
         path: "/dashboard/accountant/teams",
-        icon: <FaUserFriends className="w-5 h-5" />,
+        icon: <FaUsers className="w-5 h-5" />,
       },
     ],
     "event-manager": [
@@ -301,7 +304,7 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
       {
         name: "Manage Teams",
         path: "/dashboard/promoting-manager/teams",
-        icon: <FaUserFriends className="w-5 h-5" />,
+        icon: <FaUsers className="w-5 h-5" />,
       },
     ],
   };

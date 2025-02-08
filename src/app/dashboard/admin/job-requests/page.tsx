@@ -20,6 +20,10 @@ interface JobRequest {
   endDate: string;
   joiningLetterStatus?: 'pending' | 'uploaded';
   thankingLetterStatus?: 'pending' | 'uploaded';
+  recommendationLetterStatus?: 'pending' | 'uploaded';
+  hasAppliedForJoining?: boolean;
+  hasAppliedForThanking?: boolean;
+  hasAppliedForRecommendation?: boolean;
 }
 
 interface UserDetailsModalProps {
@@ -31,13 +35,17 @@ interface UserDetailsModalProps {
 const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModalProps) => {
   const [showJoiningUpload, setShowJoiningUpload] = useState(false);
   const [showThankingUpload, setShowThankingUpload] = useState(false);
+  const [showRecommendationUpload, setShowRecommendationUpload] = useState(false);
   const [selectedJoiningFile, setSelectedJoiningFile] = useState<File | null>(null);
   const [selectedThankingFile, setSelectedThankingFile] = useState<File | null>(null);
+  const [selectedRecommendationFile, setSelectedRecommendationFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [joiningLetterStatus, setJoiningLetterStatus] = useState(request.joiningLetterStatus || 'pending');
   const [thankingLetterStatus, setThankingLetterStatus] = useState(request.thankingLetterStatus || 'pending');
+  const [recommendationLetterStatus, setRecommendationLetterStatus] = useState(request.recommendationLetterStatus || 'pending');
   const joiningFileInputRef = useRef<HTMLInputElement>(null);
   const thankingFileInputRef = useRef<HTMLInputElement>(null);
+  const recommendationFileInputRef = useRef<HTMLInputElement>(null);
   const [activeWarning, setActiveWarning] = useState<number | null>(null);
   const [warningFiles, setWarningFiles] = useState<{ [key: number]: File | null }>({});
   const [warningMessages, setWarningMessages] = useState<{ [key: number]: string }>({});
@@ -47,11 +55,19 @@ const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModal
   const handleJoiningAccept = () => {
     setShowJoiningUpload(true);
     setShowThankingUpload(false);
+    setShowRecommendationUpload(false);
   };
 
   const handleThankingAccept = () => {
     setShowThankingUpload(true);
     setShowJoiningUpload(false);
+    setShowRecommendationUpload(false);
+  };
+
+  const handleRecommendationAccept = () => {
+    setShowRecommendationUpload(true);
+    setShowJoiningUpload(false);
+    setShowThankingUpload(false);
   };
 
   const handleJoiningFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,8 +84,17 @@ const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModal
     }
   };
 
-  const handleUploadAndSend = async (type: 'joining' | 'thanking') => {
-    const selectedFile = type === 'joining' ? selectedJoiningFile : selectedThankingFile;
+  const handleRecommendationFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedRecommendationFile(file);
+    }
+  };
+
+  const handleUploadAndSend = async (type: 'joining' | 'thanking' | 'recommendation') => {
+    const selectedFile = type === 'joining' ? selectedJoiningFile : 
+                        type === 'thanking' ? selectedThankingFile :
+                        selectedRecommendationFile;
     if (!selectedFile) {
       alert(`Please select a ${type} letter first`);
       return;
@@ -82,13 +107,16 @@ const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModal
       
       if (type === 'joining') {
         setJoiningLetterStatus('uploaded');
-      } else {
+      } else if (type === 'thanking') {
         setThankingLetterStatus('uploaded');
+      } else {
+        setRecommendationLetterStatus('uploaded');
       }
 
       alert(`${type.charAt(0).toUpperCase() + type.slice(1)} letter sent successfully!`);
       setShowJoiningUpload(false);
       setShowThankingUpload(false);
+      setShowRecommendationUpload(false);
     } catch (err: unknown) {
       console.error(`Error uploading ${type} letter:`, err);
       alert(`Error sending ${type} letter`);
@@ -187,11 +215,17 @@ const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModal
           </div>
 
           {/* Action Buttons Section */}
-          {!showJoiningUpload && !showThankingUpload ? (
+          {!showJoiningUpload && !showThankingUpload && !showRecommendationUpload ? (
             <div className="flex flex-col gap-2 sm:gap-3 mt-6">
               {/* Start Date and Joining Letter Section */}
-              <div className="text-sm text-gray-600 mb-1">
+              <div className="text-sm text-gray-600 mt-4 mb-1">
                 Start Date: {new Date(request.startDate).toLocaleDateString()}
+              </div>
+              <div className="bg-gray-100 p-3 rounded-lg mb-2">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  {request.hasAppliedForJoining ? "Applied for Joining Letter" : "Not Applied for Joining Letter"}
+                </h3>
+                <p className="text-sm text-gray-600 mb-2">Status: {joiningLetterStatus === 'uploaded' ? 'Uploaded' : 'Pending'}</p>
               </div>
               {joiningLetterStatus === 'uploaded' ? (
                 <div className="w-full px-4 py-2 bg-gray-100 text-gray-600 rounded-lg flex items-center justify-center gap-2">
@@ -202,21 +236,21 @@ const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModal
                 <>
                   <button
                     onClick={handleJoiningAccept}
-                    disabled={new Date() < new Date(request.startDate)}
+                    disabled={!request.hasAppliedForJoining || new Date() < new Date(request.startDate)}
                     className={`w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 ${
-                      new Date() < new Date(request.startDate) ? 'opacity-50 cursor-not-allowed' : ''
+                      (!request.hasAppliedForJoining || new Date() < new Date(request.startDate)) ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
-                    Approve joining letter
+                    {request.hasAppliedForJoining ? "Approve Joining Letter" : "Not Applied for Joining Letter"}
                   </button>
                   <button
                     onClick={() => onStatusChange(request.id, "rejected")}
-                    disabled={new Date() < new Date(request.startDate)}
+                    disabled={!request.hasAppliedForJoining || new Date() < new Date(request.startDate)}
                     className={`w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2 ${
-                      new Date() < new Date(request.startDate) ? 'opacity-50 cursor-not-allowed' : ''
+                      (!request.hasAppliedForJoining || new Date() < new Date(request.startDate)) ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
-                    Reject joining letter
+                    {request.hasAppliedForJoining ? "Reject Joining Letter" : "Not Applied for Joining Letter"}
                   </button>
                 </>
               )}
@@ -306,6 +340,12 @@ const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModal
               <div className="text-sm text-gray-600 mt-4 mb-1">
                 End Date: {new Date(request.endDate).toLocaleDateString()}
               </div>
+              <div className="bg-gray-100 p-3 rounded-lg mb-2">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  {request.hasAppliedForThanking ? "Applied for Thanking Letter" : "Not Applied for Thanking Letter"}
+                </h3>
+                <p className="text-sm text-gray-600 mb-2">Status: {thankingLetterStatus === 'uploaded' ? 'Uploaded' : 'Pending'}</p>
+              </div>
               {thankingLetterStatus === 'uploaded' ? (
                 <div className="w-full px-4 py-2 bg-gray-100 text-gray-600 rounded-lg flex items-center justify-center gap-2">
                   <FiFile className="text-gray-500" />
@@ -315,21 +355,59 @@ const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModal
                 <>
                   <button
                     onClick={handleThankingAccept}
-                    disabled={new Date() < new Date(request.endDate)}
+                    disabled={!request.hasAppliedForThanking || new Date() < new Date(request.endDate)}
                     className={`w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 ${
-                      new Date() < new Date(request.endDate) ? 'opacity-50 cursor-not-allowed' : ''
+                      (!request.hasAppliedForThanking || new Date() < new Date(request.endDate)) ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
-                    Approve Thanking letter
+                    {request.hasAppliedForThanking ? "Approve Thanking Letter" : "Not Applied for Thanking Letter"}
                   </button>
                   <button
                     onClick={() => onStatusChange(request.id, "rejected")}
-                    disabled={new Date() < new Date(request.endDate)}
+                    disabled={!request.hasAppliedForThanking || new Date() < new Date(request.endDate)}
                     className={`w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2 ${
-                      new Date() < new Date(request.endDate) ? 'opacity-50 cursor-not-allowed' : ''
+                      (!request.hasAppliedForThanking || new Date() < new Date(request.endDate)) ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
-                    Reject Thanking letter
+                    {request.hasAppliedForThanking ? "Reject Thanking Letter" : "Not Applied for Thanking Letter"}
+                  </button>
+                </>
+              )}
+
+              {/* Recommendation Letter Section */}
+              <div className="text-sm text-gray-600 mt-4 mb-1">
+                Recommendation Letter
+              </div>
+              <div className="bg-gray-100 p-3 rounded-lg mb-2">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  {request.hasAppliedForRecommendation ? "Applied for Letter of Recommendation" : "Not Applied for Letter of Recommendation"}
+                </h3>
+                <p className="text-sm text-gray-600 mb-2">Status: {recommendationLetterStatus === 'uploaded' ? 'Uploaded' : 'Pending'}</p>
+              </div>
+              {recommendationLetterStatus === 'uploaded' ? (
+                <div className="w-full px-4 py-2 bg-gray-100 text-gray-600 rounded-lg flex items-center justify-center gap-2">
+                  <FiFile className="text-gray-500" />
+                  Recommendation letter already uploaded
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={handleRecommendationAccept}
+                    disabled={!request.hasAppliedForRecommendation || new Date() < new Date(request.endDate)}
+                    className={`w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 ${
+                      (!request.hasAppliedForRecommendation || new Date() < new Date(request.endDate)) ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    {request.hasAppliedForRecommendation ? "Approve Recommendation Letter" : "Not Applied for Recommendation Letter"}
+                  </button>
+                  <button
+                    onClick={() => onStatusChange(request.id, "rejected")}
+                    disabled={!request.hasAppliedForRecommendation || new Date() < new Date(request.endDate)}
+                    className={`w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2 ${
+                      (!request.hasAppliedForRecommendation || new Date() < new Date(request.endDate)) ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    {request.hasAppliedForRecommendation ? "Reject Recommendation Letter" : "Not Applied for Recommendation Letter"}
                   </button>
                 </>
               )}
@@ -368,7 +446,7 @@ const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModal
                 </button>
               </div>
             </div>
-          ) : (
+          ) : showThankingUpload ? (
             <div className="mt-6 space-y-4">
               <h4 className="font-semibold text-gray-800">Upload Thanking Letter</h4>
               <div className="flex flex-col gap-3">
@@ -402,6 +480,40 @@ const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModal
                 </button>
               </div>
             </div>
+          ) : (
+            <div className="mt-6 space-y-4">
+              <h4 className="font-semibold text-gray-800">Upload Recommendation Letter</h4>
+              <div className="flex flex-col gap-3">
+                <div className="relative">
+                  <input
+                    type="file"
+                    ref={recommendationFileInputRef}
+                    onChange={handleRecommendationFileSelect}
+                    className="hidden"
+                    accept=".pdf,.doc,.docx"
+                  />
+                  <button
+                    onClick={() => recommendationFileInputRef.current?.click()}
+                    className="w-full px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <FiUpload className="text-gray-400" />
+                    <span className="text-gray-600">
+                      {selectedRecommendationFile ? selectedRecommendationFile.name : 'Select Recommendation Letter'}
+                    </span>
+                  </button>
+                </div>
+                <button
+                  onClick={() => handleUploadAndSend('recommendation')}
+                  disabled={!selectedRecommendationFile || isUploading}
+                  className={`w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 ${
+                    (!selectedRecommendationFile || isUploading) ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  <FiSend />
+                  {isUploading ? 'Sending...' : 'Send Recommendation Letter'}
+                </button>
+              </div>
+            </div>
           )}
 
           
@@ -431,7 +543,10 @@ const JobRequestsPage = () => {
     "skills": ["Java", "Spring Boot", "Microservices", "Cloud Computing"],
     "whyHireYou": "With expertise in backend development and cloud-based architectures, I have successfully delivered scalable solutions for fintech and e-commerce industries. My technical leadership has helped teams improve efficiency by 30%.",
     "expectedSalary": "₹30-35 LPA",
-    "endDate": "2024-05-25"
+    "endDate": "2024-05-25",
+    "hasAppliedForJoining": true,
+    "hasAppliedForThanking": false,
+    "hasAppliedForRecommendation": false
   },
   {
     "id": 3,
@@ -448,7 +563,10 @@ const JobRequestsPage = () => {
     "skills": ["Product Strategy", "Agile Methodologies", "Market Research", "Roadmap Planning"],
     "whyHireYou": "As a product manager with 7 years of experience, I have led cross-functional teams to develop innovative SaaS products. My data-driven approach has increased customer engagement by 50% in my previous role.",
     "expectedSalary": "₹35-40 LPA",
-    "endDate": "2024-06-15"
+    "endDate": "2024-06-15",
+    "hasAppliedForJoining": false,
+    "hasAppliedForThanking": false,
+    "hasAppliedForRecommendation": false
   },
   {
     "id": 4,
@@ -458,14 +576,17 @@ const JobRequestsPage = () => {
     "experience": 4,
     "startDate": "2024-07-10",
     "resumeUrl": "#",
-    "status": "pending",
+    "status": "approved",
     "email": "neha.verma@example.com",
     "phone": "+91 9765432109",
     "education": "M.Des in Interaction Design from NID Ahmedabad",
     "skills": ["User Research", "Wireframing", "Prototyping", "Design Systems"],
     "whyHireYou": "With a passion for user-centric design, I have worked on multiple digital products that enhanced user engagement by 60%. My expertise in usability testing ensures high-quality experiences for end-users.",
     "expectedSalary": "₹18-22 LPA",
-    "endDate": "2024-07-25"
+    "endDate": "2024-07-25",
+    "hasAppliedForJoining": true,
+    "hasAppliedForThanking": true,
+    "hasAppliedForRecommendation": false
   },
   {
     "id": 5,
@@ -475,14 +596,17 @@ const JobRequestsPage = () => {
     "experience": 6,
     "startDate": "2024-08-05",
     "resumeUrl": "#",
-    "status": "pending",
+    "status": "approved",
     "email": "vikram.mehta@example.com",
     "phone": "+91 9988776655",
     "education": "M.Tech in Artificial Intelligence from IIIT Hyderabad",
     "skills": ["Machine Learning", "Data Analysis", "Python", "Deep Learning"],
     "whyHireYou": "I have developed and deployed AI-driven models that optimized decision-making processes, resulting in a 25% cost reduction. My proficiency in NLP and predictive analytics can contribute significantly to your data-driven strategies.",
     "expectedSalary": "₹28-32 LPA",
-    "endDate": "2024-08-20"
+    "endDate": "2024-08-20",
+    "hasAppliedForJoining": true,
+    "hasAppliedForThanking": true,
+    "hasAppliedForRecommendation": true
   },
   {
     "id": 6,
@@ -492,14 +616,17 @@ const JobRequestsPage = () => {
     "experience": 8,
     "startDate": "2024-09-01",
     "resumeUrl": "#",
-    "status": "pending",
+    "status": "approved",
     "email": "priya.das@example.com",
     "phone": "+91 9876098765",
     "education": "MBA in Marketing from IIM Bangalore",
     "skills": ["Brand Management", "Digital Marketing", "SEO", "Growth Hacking"],
     "whyHireYou": "With 8 years of experience in digital marketing and brand strategy, I have successfully launched campaigns that increased brand awareness by 70%. My expertise in performance marketing ensures high ROI.",
     "expectedSalary": "₹22-27 LPA",
-    "endDate": "2024-09-15"
+    "endDate": "2024-09-15",
+    "hasAppliedForJoining": false,
+    "hasAppliedForThanking": false,
+    "hasAppliedForRecommendation": false
   }
   ]);
 
@@ -510,6 +637,8 @@ const JobRequestsPage = () => {
     startDate: "",
     experience: "",
     salaryRange: "",
+    applicationStatus: "all",
+    letterType: "all",
   });
 
   const roles = ["Managing Director", "Event Manager", "Sales Manager", "Promoting Manager", "Photographer", "Cook", "Housekeeping", "Security Guards", "Driver", "Social media handler", "Electrician", "Plumber", "Technician", "Cleaning Staff", "Gardener", "Other"];
@@ -517,6 +646,8 @@ const JobRequestsPage = () => {
   const locations = ["Mumbai", "Pune", "Bangalore", "Delhi", "Remote"];
   const experienceLevels = ["0-1", "1-2", "2-3", "3-5", "5+"];
   const requestTypes = ["all", "pending", "approved", "rejected"];
+  const applicationStatuses = ["all", "applied", "not applied"];
+  const letterTypes = ["all", "joining", "thanking", "recommendation"];
 
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
@@ -539,13 +670,33 @@ const JobRequestsPage = () => {
       return exp >= min && exp <= max;
     };
 
+    // Helper function to check application status
+    const matchesApplicationStatus = () => {
+      if (filters.applicationStatus === "all") return true;
+      if (filters.applicationStatus === "applied") {
+        return request.hasAppliedForJoining || request.hasAppliedForThanking || request.hasAppliedForRecommendation;
+      }
+      return !request.hasAppliedForJoining && !request.hasAppliedForThanking && !request.hasAppliedForRecommendation;
+    };
+
+    // Helper function to check letter type
+    const matchesLetterType = () => {
+      if (filters.letterType === "all") return true;
+      if (filters.letterType === "joining") return request.hasAppliedForJoining;
+      if (filters.letterType === "thanking") return request.hasAppliedForThanking;
+      if (filters.letterType === "recommendation") return request.hasAppliedForRecommendation;
+      return true;
+    };
+
     return (
       (filters.requestType === "all" || request.status === filters.requestType) &&
       (!filters.role || request.role === filters.role) &&
       (!filters.location || request.location === filters.location) &&
       (!filters.startDate || request.startDate >= filters.startDate) &&
       (!filters.experience || isExperienceInRange(request.experience, filters.experience)) &&
-      (!filters.salaryRange || request.expectedSalary.includes(filters.salaryRange))
+      (!filters.salaryRange || request.expectedSalary.includes(filters.salaryRange)) &&
+      matchesApplicationStatus() &&
+      matchesLetterType()
     );
   });
 
@@ -562,81 +713,120 @@ const JobRequestsPage = () => {
       <h1 className="text-2xl font-bold mb-6">Job Requests</h1>
 
       {/* Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <select
-          name="requestType"
-          value={filters.requestType}
-          onChange={handleFilterChange}
-          className="w-full p-2 border rounded-lg bg-white"
-        >
-          {requestTypes.map((type) => (
-            <option key={type} value={type}>
-              {type === "all" ? "All Requests" : type.charAt(0).toUpperCase() + type.slice(1)}
-            </option>
-          ))}
-        </select>
-
-        <select
-          name="role"
-          value={filters.role}
-          onChange={handleFilterChange}
-          className="w-full p-2 border rounded-lg bg-white"
-        >
-          <option value="">Select Role</option>
-          {roles.map((role) => (
-            <option key={role} value={role}>
-              {role}
-            </option>
-          ))}
-        </select>
-
-        <select
-          name="location"
-          value={filters.location}
-          onChange={handleFilterChange}
-          className="w-full p-2 border rounded-lg bg-white"
-        >
-          <option value="">Select Location</option>
-          {locations.map((location) => (
-            <option key={location} value={location}>
-              {location}
-            </option>
-          ))}
-        </select>
-
-        <div className="relative">
-          <input
-            type="date"
-            name="startDate"
-            value={filters.startDate}
+      <div className="flex flex-col gap-4 mb-6">
+        {/* First row - 3 filters */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <select
+            name="applicationStatus"
+            value={filters.applicationStatus}
             onChange={handleFilterChange}
             className="w-full p-2 border rounded-lg bg-white"
-            placeholder="Available From"
-          />
+          >
+            {applicationStatuses.map((status) => (
+              <option key={status} value={status}>
+                {status === "all" 
+                  ? "All Applications Status" 
+                  : status === "applied" 
+                    ? "Applied" 
+                    : "Not Applied"}
+              </option>
+            ))}
+          </select>
+
+          <select
+            name="letterType"
+            value={filters.letterType}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-lg bg-white"
+          >
+            {letterTypes.map((type) => (
+              <option key={type} value={type}>
+                {type === "all" 
+                  ? "All Letter Types" 
+                  : type.charAt(0).toUpperCase() + type.slice(1) + " Letter"}
+              </option>
+            ))}
+          </select>
+
+          <select
+            name="requestType"
+            value={filters.requestType}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-lg bg-white"
+          >
+            {requestTypes.map((type) => (
+              <option key={type} value={type}>
+                {type === "all" ? "All Requests Status" : type.charAt(0).toUpperCase() + type.slice(1)}
+              </option>
+            ))}
+          </select>
         </div>
 
+        {/* Second row - remaining filters */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         <select
-          name="experience"
-          value={filters.experience}
-          onChange={handleFilterChange}
-          className="w-full p-2 border rounded-lg bg-white"
-        >
-          <option value="">Experience (Years)</option>
-          {experienceLevels.map((exp) => (
-            <option key={exp} value={exp}>
-              {exp} years
-            </option>
-          ))}
-        </select>
+            name="location"
+            value={filters.location}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-lg bg-white"
+          >
+            <option value="">All Locations</option>
+            {locations.map((location) => (
+              <option key={location} value={location}>
+                {location}
+              </option>
+            ))}
+          </select>
+          <select
+            name="role"
+            value={filters.role}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-lg bg-white"
+          >
+            <option value="">All Roles</option>
+            {roles.map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+          <select
+            name="experience"
+            value={filters.experience}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-lg bg-white"
+          >
+            <option value="">Experience (Years)</option>
+            {experienceLevels.map((exp) => (
+              <option key={exp} value={exp}>
+                {exp} years
+              </option>
+            ))}
+          </select>
+          
 
-        <input
-          type="text"
-          name="salaryRange"
-          value={filters.salaryRange}
-          onChange={handleFilterChange}
-          placeholder="Expected Salary (e.g. 10-15 LPA)"
-          className="w-full p-2 border rounded-lg bg-white"
-        />
+          <div className="relative">
+            <input
+              type="date"
+              name="startDate"
+              value={filters.startDate}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded-lg bg-white"
+              placeholder="Available From"
+            />
+          </div>
+
+          
+
+          <input
+            type="text"
+            name="salaryRange"
+            value={filters.salaryRange}
+            onChange={handleFilterChange}
+            placeholder="Expected Salary (e.g. 10-15 LPA)"
+            className="w-full p-2 border rounded-lg bg-white"
+          />
+        </div>
       </div>
 
       {/* Table */}

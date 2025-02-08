@@ -300,6 +300,10 @@ export default function EventDetailsCard({ event, onClose, onAttendanceChange }:
                       <div>
                         <p className="text-sm text-gray-500">Fee</p>
                         <p className="font-medium">₹{event.fee}</p>
+                        <p className="text-sm text-gray-500 mt-1">Total Revenue</p>
+                        <p className="font-medium text-green-600">
+                          ₹{event.fee * parseInt(event.spots.split('/')[0])}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -698,7 +702,7 @@ export default function EventDetailsCard({ event, onClose, onAttendanceChange }:
                       </div>
                     )}
 
-                    {event.creator && (
+                    event.creator && (
                       <div className="bg-white rounded-xl shadow p-6 space-y-4">
                         <h4 className="text-lg font-semibold text-gray-900">
                           Event Address

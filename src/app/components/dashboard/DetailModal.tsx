@@ -5,8 +5,8 @@ interface DetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  data: any[];
-  type: 'state' | 'bloodGroup' | 'donation' | 'enrollment';
+  data: Record<string, string | number>[];
+  type: 'state' | 'bloodGroup' | 'donation' | 'enrollment' | 'requests';
 }
 
 const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, title, data, type }) => {
@@ -49,6 +49,15 @@ const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, title, data,
             <th className="px-4 py-2">Enrollment Date</th>
           </tr>
         );
+      case 'requests':
+        return (
+          <tr>
+            <th className="px-4 py-2">Name</th>
+            <th className="px-4 py-2">Details</th>
+            <th className="px-4 py-2">Contact</th>
+            <th className="px-4 py-2">Date</th>
+          </tr>
+        );
       default:
         return null;
     }
@@ -56,47 +65,67 @@ const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, title, data,
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+      <div 
+        className="fixed inset-0 z-50 flex items-center justify-center"
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+        onClick={onClose}
+      >
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden"
+          initial={{ opacity: 0, scale: 0.95, y: -20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ type: "spring", duration: 0.3, bounce: 0.2 }}
+          className="relative w-full max-w-2xl mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
         >
-          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-xl font-semibold">{title}</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 focus:outline-none"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+          {/* Header */}
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold text-gray-900">{title}</h2>
+              <button
+                onClick={onClose}
+                className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                aria-label="Close modal"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <div className="p-4 overflow-y-auto max-h-[calc(80vh-8rem)]">
-            <table className="min-w-full bg-white">
-              <thead className="bg-gray-50">
-                {renderTableHeaders()}
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {data.map((item, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    {Object.values(item).map((value, i) => (
-                      <td key={i} className="px-4 py-2">{value}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+          {/* Content */}
+          <div className="px-6 py-4 max-h-[calc(80vh-12rem)] overflow-y-auto">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  {renderTableHeaders()}
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {data.map((item, index) => (
+                    <tr key={index} className="hover:bg-gray-50 transition-colors">
+                      {Object.values(item).map((value, i) => (
+                        <td key={i} className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                          {String(value)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div className="p-4 border-t border-gray-200 flex justify-end">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none"
-            >
-              Close
-            </button>
+
+          {/* Footer */}
+          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <div className="flex justify-end">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </motion.div>
       </div>

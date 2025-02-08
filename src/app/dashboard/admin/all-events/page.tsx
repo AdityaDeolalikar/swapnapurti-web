@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaRupeeSign } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaRupeeSign, FaTimes } from 'react-icons/fa';
 import EventDetailsCard from "@/app/components/dashboard/EventDetailsCard";
 
 interface Student {
@@ -29,6 +29,8 @@ interface Event {
   requirements?: string;
   undertaking?: string;
   students?: Student[];
+  isCancelled?: boolean;
+  cancellationReason?: string;
   creator?: {
     name: string;
     phone: string;
@@ -38,6 +40,51 @@ interface Event {
     profileImage?: string;
   };
 }
+
+// Mock user data for the add user functionality
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  mobileNumber: string;
+  bloodGroup: string;
+  gender: string;
+  district: string;
+  state: string;
+}
+
+const mockUsers: User[] = [
+  {
+    id: "1",
+    name: "John Doe",
+    email: "john@example.com",
+    mobileNumber: "+1 234 567 8900",
+    bloodGroup: "O+",
+    gender: "Male",
+    district: "Mumbai",
+    state: "Maharashtra"
+  },
+  {
+    id: "2",
+    name: "Jane Smith",
+    email: "jane@example.com",
+    mobileNumber: "+1 234 567 8901",
+    bloodGroup: "A+",
+    gender: "Female",
+    district: "Bangalore",
+    state: "Karnataka"
+  },
+  {
+    id: "3",
+    name: "Mike Johnson",
+    email: "mike@example.com",
+    mobileNumber: "+1 234 567 8902",
+    bloodGroup: "B+",
+    gender: "Male",
+    district: "New Delhi",
+    state: "Delhi"
+  }
+];
 
 // Mock data - replace with actual API call later
 const upcomingEvents: Event[] = [
@@ -211,8 +258,14 @@ const UpcomingEventsPage = () => {
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'male' | 'female'>('all');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
+  const [showCancellationModal, setShowCancellationModal] = useState(false);
+  const [cancellationReason, setCancellationReason] = useState('');
+  const [eventToCancel, setEventToCancel] = useState<number | null>(null);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [events, setEvents] = useState({
-    upcoming: upcomingEvents,
+    upcoming: upcomingEvents.map(event => ({ ...event, isCancelled: false })),
     ongoing: ongoingEvents.map(event => ({
       ...event,
       students: [
@@ -358,6 +411,98 @@ const UpcomingEventsPage = () => {
       percentageAvailable: ((total || 0) - (booked || 0)) / (total || 1) * 100
     };
   };
+
+  const handleCancelEvent = (eventId: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event card click
+    setEventToCancel(eventId);
+    setShowCancellationModal(true);
+  };
+
+  const handleConfirmCancellation = () => {
+    if (eventToCancel && cancellationReason.trim()) {
+      setEvents(prevEvents => ({
+        ...prevEvents,
+        upcoming: prevEvents.upcoming.map(event =>
+          event.id === eventToCancel ? { ...event, isCancelled: true, cancellationReason } : event
+        )
+      }));
+      setShowCancellationModal(false);
+      setCancellationReason('');
+      setEventToCancel(null);
+    }
+  };
+
+  const handleCloseCancellationModal = () => {
+    setShowCancellationModal(false);
+    setCancellationReason('');
+    setEventToCancel(null);
+  };
+
+  const handleAddUserClick = (eventId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const event = events.upcoming.find(event => event.id === eventId);
+    if (event) {
+      setSelectedEvent(event);
+      setShowAddUserModal(true);
+    }
+  };
+
+  const handleUserSelect = (userId: string) => {
+    setSelectedUsers(prev => {
+      if (prev.includes(userId)) {
+        return prev.filter(id => id !== userId);
+      }
+      return [...prev, userId];
+    });
+  };
+
+  const handleAddUsers = () => {
+    if (!selectedEvent) return;
+
+    const [booked, total] = selectedEvent.spots.split('/').map(Number);
+    const availableSpots = total - booked;
+
+    if (selectedUsers.length > availableSpots) {
+      alert(`Cannot add ${selectedUsers.length} users. Only ${availableSpots} spots available.`);
+      return;
+    }
+
+    setEvents(prev => ({
+      ...prev,
+      upcoming: prev.upcoming.map(event => {
+        if (event.id === selectedEvent.id) {
+          const [currentBooked, total] = event.spots.split('/').map(Number);
+          const newBooked = currentBooked + selectedUsers.length;
+          return {
+            ...event,
+            spots: `${newBooked}/${total}`,
+            students: [
+              ...(event.students || []),
+              ...selectedUsers.map(userId => {
+                const user = mockUsers.find(u => u.id === userId);
+                return {
+                  id: parseInt(userId),
+                  name: user?.name || '',
+                  attendance: []
+                };
+              })
+            ]
+          };
+        }
+        return event;
+      })
+    }));
+
+    setSelectedUsers([]);
+    setShowAddUserModal(false);
+    setSearchQuery('');
+  };
+
+  // Filter users based on search query
+  const filteredUsers = mockUsers.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -522,12 +667,22 @@ const UpcomingEventsPage = () => {
               key={event.id}
               onClick={() => handleEventClick(event)}
               className={`group bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl border-t-4 cursor-pointer ${
-                event.eligibility === 'male' ? 'border-blue-500' : 'border-pink-500'
+                event.isCancelled 
+                  ? 'border-red-500 opacity-75' 
+                  : event.eligibility === 'male' 
+                    ? 'border-blue-500' 
+                    : 'border-pink-500'
               }`}
             >
-              
               <div className="relative h-48 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+                {event.isCancelled && (
+                  <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center z-20">
+                    <span className="text-white text-2xl font-bold rotate-[-30deg] bg-red-500 px-6 py-2">
+                      CANCELLED
+                    </span>
+                  </div>
+                )}
                 <img
                   src={event.image}
                   alt={event.title}
@@ -539,9 +694,7 @@ const UpcomingEventsPage = () => {
                 </div>
               </div>
 
-             
               <div className="p-4 space-y-4">
-            
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center space-x-2">
                     <FaMapMarkerAlt className={`${
@@ -584,7 +737,6 @@ const UpcomingEventsPage = () => {
                   </div>
                 </div>
 
-               
                 <div>
                   <div className="flex justify-between items-center mb-1">
                     <p className="text-sm font-medium text-gray-700">
@@ -615,12 +767,47 @@ const UpcomingEventsPage = () => {
                   )}
                 </div>
 
+                {/* Cancel Event Button */}
+                {!event.isCancelled && (
+                  <button
+                    onClick={(e) => handleCancelEvent(event.id, e)}
+                    className="w-full mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+                  >
+                    Cancel Event
+                  </button>
+                )}
+                
+                {event.isCancelled && (
+                  <div className="mt-4">
+                    <div className="text-center text-red-500 font-medium mb-2">
+                      This event has been cancelled
+                    </div>
+                    {event.cancellationReason && (
+                      <div className="bg-red-50 p-3 rounded-lg">
+                        <p className="text-sm text-gray-700">
+                          <span className="font-medium">Reason:</span> {event.cancellationReason}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
                 {/* Event ID */}
                 <div className="text-right">
                   <p className="text-lg text-gray-500">
                     Event Id: {`${event.id.toString().padStart(6, '0')}`}
                   </p>
                 </div>
+
+                {/* Add User Button */}
+                {!event.isCancelled && (
+                  <button
+                    onClick={(e) => handleAddUserClick(event.id, e)}
+                    className="w-full mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
+                  >
+                    Add User Manually
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -736,6 +923,41 @@ const UpcomingEventsPage = () => {
         </div>
       </div>
 
+      {/* Cancellation Modal */}
+      {showCancellationModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-xl font-bold mb-4">Cancel Event</h3>
+            <p className="text-gray-600 mb-4">Please provide a reason for cancelling this event:</p>
+            <textarea
+              className="w-full border rounded-lg p-3 mb-4 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter cancellation reason..."
+              value={cancellationReason}
+              onChange={(e) => setCancellationReason(e.target.value)}
+            />
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={handleCloseCancellationModal}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmCancellation}
+                disabled={!cancellationReason.trim()}
+                className={`px-4 py-2 rounded-lg ${
+                  cancellationReason.trim()
+                    ? 'bg-red-500 text-white hover:bg-red-600'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                } transition-colors duration-200`}
+              >
+                Confirm Cancellation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Event Details Modal */}
       {showEventDetails && selectedEvent && (
         <EventDetailsCard 
@@ -743,6 +965,89 @@ const UpcomingEventsPage = () => {
           onClose={closeEventDetails}
           onAttendanceChange={(attendanceKey, rating) => handleAttendanceChange(attendanceKey, rating)}
         />
+      )}
+
+      {/* Add User Modal */}
+      {showAddUserModal && selectedEvent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold">Add Users to {selectedEvent.title}</h3>
+              <button
+                onClick={() => {
+                  setShowAddUserModal(false);
+                  setSelectedUsers([]);
+                  setSearchQuery('');
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FaTimes size={24} />
+              </button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Search users..."
+                className="w-full p-2 border rounded-lg"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            {/* Users List */}
+            <div className="space-y-2 mb-4">
+              {filteredUsers.map(user => (
+                <div
+                  key={user.id}
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors duration-200 ${
+                    selectedUsers.includes(user.id)
+                      ? 'bg-blue-50 border-blue-500'
+                      : 'hover:bg-gray-50'
+                  }`}
+                  onClick={() => handleUserSelect(user.id)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{user.name}</p>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600">{user.district}</p>
+                      <p className="text-sm text-gray-600">{user.gender}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => {
+                  setShowAddUserModal(false);
+                  setSelectedUsers([]);
+                  setSearchQuery('');
+                }}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddUsers}
+                disabled={selectedUsers.length === 0}
+                className={`px-4 py-2 rounded-lg ${
+                  selectedUsers.length > 0
+                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                } transition-colors duration-200`}
+              >
+                Add Selected Users ({selectedUsers.length})
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

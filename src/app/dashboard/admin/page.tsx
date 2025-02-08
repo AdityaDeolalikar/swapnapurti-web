@@ -18,6 +18,7 @@ import { Pie, Bar } from 'react-chartjs-2';
 import { motion } from 'framer-motion';
 import * as XLSX from 'xlsx';
 import DetailModal from '@/app/components/dashboard/DetailModal';
+import { useRouter } from 'next/navigation';
 
 ChartJS.register(
   ArcElement, 
@@ -59,20 +60,30 @@ interface EnrollmentUser {
   program: string;
 }
 
-type UserData = StateUser | BloodGroupUser | DonationUser | EnrollmentUser;
+interface RequestUser {
+  name: string;
+  contact: string;
+  date: string;
+  program?: string;
+  position?: string;
+  event?: string;
+}
+
+type UserData = StateUser | BloodGroupUser | DonationUser | EnrollmentUser | RequestUser;
 
 interface UserDetails {
   state: Record<string, StateUser[]>;
   bloodGroup: Record<string, BloodGroupUser[]>;
   donation: Record<string, DonationUser[]>;
   enrollment: Record<string, EnrollmentUser[]>;
+  requests: Record<string, RequestUser[]>;
 }
 
 interface ModalState {
   isOpen: boolean;
   title: string;
   data: UserData[];
-  type: 'state' | 'bloodGroup' | 'donation' | 'enrollment';
+  type: 'state' | 'bloodGroup' | 'donation' | 'enrollment' | 'requests';
 }
 
 const AdminDashboard = () => {
@@ -147,6 +158,8 @@ const AdminDashboard = () => {
     totalOrganizations: 25,
   });
 
+  const router = useRouter();
+
   // Chart options
   const chartOptions = {
     responsive: true,
@@ -167,7 +180,7 @@ const AdminDashboard = () => {
         mode: 'index' as const,
         intersect: false,
         padding: 10,
-      }
+      },
     }
   };
 
@@ -198,6 +211,7 @@ const AdminDashboard = () => {
   const bloodGroupData = {
     labels: ['A+', 'B+', 'O+', 'AB+', 'A-', 'B-', 'O-', 'AB-'],
     datasets: [{
+      label: 'Blood Group Distribution',
       data: [30, 25, 20, 10, 5, 4, 4, 2],
       backgroundColor: [
         'rgba(255, 99, 132, 0.8)',
@@ -208,6 +222,16 @@ const AdminDashboard = () => {
         'rgba(255, 159, 64, 0.8)',
         'rgba(201, 203, 207, 0.8)',
         'rgba(255, 99, 132, 0.6)',
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(201, 203, 207, 1)',
+        'rgba(255, 99, 132, 0.8)',
       ],
       borderWidth: 1,
     }]
@@ -265,6 +289,27 @@ const AdminDashboard = () => {
         'rgba(0, 191, 255, 1)',
         'rgba(218, 112, 214, 1)',
         'rgba(106, 90, 205, 1)'
+      ],
+      borderWidth: 1,
+    }]
+  };
+
+  // Update the requestsData object
+  const requestsData = {
+    labels: ['Internship', 'Apprenticeship', 'Job', 'Event Participant'],
+    datasets: [{
+      data: [35, 25, 20, 20],
+      backgroundColor: [
+        'rgba(54, 162, 235, 0.8)',  // Blue
+        'rgba(255, 206, 86, 0.8)',  // Yellow
+        'rgba(75, 192, 192, 0.8)',  // Teal
+        'rgba(255, 99, 132, 0.8)',  // Pink
+      ],
+      borderColor: [
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(255, 99, 132, 1)',
       ],
       borderWidth: 1,
     }]
@@ -405,10 +450,28 @@ const AdminDashboard = () => {
         { name: 'Jack Phillips', enrollmentDate: '2024-06-25', contact: '+91 9876543266', program: 'Meditation' },
       ],
     },
+    requests: {
+      'Internship': [
+        { name: 'Alice Johnson', program: 'Software Development', contact: '+91 9876543270', date: '2024-03-15' },
+        { name: 'Bob Wilson', program: 'Data Science', contact: '+91 9876543271', date: '2024-03-14' },
+      ],
+      'Apprenticeship': [
+        { name: 'Charlie Davis', program: 'Web Development', contact: '+91 9876543272', date: '2024-03-13' },
+        { name: 'Diana Miller', program: 'UI/UX Design', contact: '+91 9876543273', date: '2024-03-12' },
+      ],
+      'Job': [
+        { name: 'Edward Brown', position: 'Frontend Developer', contact: '+91 9876543274', date: '2024-03-11' },
+        { name: 'Frank Thomas', position: 'Backend Developer', contact: '+91 9876543275', date: '2024-03-10' },
+      ],
+      'Event Participant': [
+        { name: 'George Clark', event: 'Tech Conference', contact: '+91 9876543276', date: '2024-03-09' },
+        { name: 'Helen White', event: 'Workshop', contact: '+91 9876543277', date: '2024-03-08' },
+      ],
+    },
   };
 
   const handleChartClick = (
-    type: 'state' | 'bloodGroup' | 'donation' | 'enrollment',
+    type: 'state' | 'bloodGroup' | 'donation' | 'enrollment' | 'requests',
     _event: ChartEvent,
     elements: ActiveElement[]
   ) => {
@@ -417,30 +480,36 @@ const AdminDashboard = () => {
       let label;
       let data;
 
-      if (type === 'enrollment') {
-        label = enrollmentData.labels[dataIndex];
-        data = mockUserDetails.enrollment[label];
-      } else {
-        label = type === 'state' 
-          ? stateData.labels[dataIndex]
-          : type === 'bloodGroup'
-            ? bloodGroupData.labels[dataIndex]
-            : donationData.labels[dataIndex];
-        data = mockUserDetails[type][label];
+      switch (type) {
+        case 'enrollment':
+          label = enrollmentData.labels[dataIndex];
+          data = mockUserDetails.enrollment[label];
+          break;
+        case 'requests':
+          label = requestsData.labels[dataIndex];
+          data = mockUserDetails.requests[label];
+          break;
+        default:
+          label = type === 'state' 
+            ? stateData.labels[dataIndex]
+            : type === 'bloodGroup'
+              ? bloodGroupData.labels[dataIndex]
+              : donationData.labels[dataIndex];
+          data = mockUserDetails[type][label];
       }
       
-      if (label && (data || mockUserDetails.enrollment[label])) {
+      if (label && data) {
         setModalState({
           isOpen: true,
           title: `${label} Details`,
-          data: data || mockUserDetails.enrollment[label],
+          data: data,
           type
         });
       }
     }
   };
 
-  const handleExportChart = (type: 'state' | 'bloodGroup' | 'donation' | 'enrollment') => {
+  const handleExportChart = (type: 'state' | 'bloodGroup' | 'donation' | 'enrollment' | 'requests') => {
     const dataToExport: Record<string, string | number>[] = [];
     let filename = '';
 
@@ -506,6 +575,22 @@ const AdminDashboard = () => {
         });
         filename = 'monthly_enrollments.xlsx';
         break;
+
+      case 'requests':
+        // Prepare requests data for export
+        Object.entries(mockUserDetails.requests).forEach(([type, users]) => {
+          users.forEach(user => {
+            dataToExport.push({
+              'Request Type': type,
+              Name: user.name,
+              Contact: user.contact,
+              Date: user.date,
+              Details: user.program || user.position || user.event || ''
+            });
+          });
+        });
+        filename = 'requests_distribution.xlsx';
+        break;
     }
 
     // Create worksheet
@@ -518,10 +603,13 @@ const AdminDashboard = () => {
   };
 
   // Chart options with click events
-  const getChartOptions = (type: 'state' | 'bloodGroup' | 'donation' | 'enrollment') => ({
+  const getChartOptions = (type: 'state' | 'bloodGroup' | 'donation' | 'enrollment' | 'requests') => ({
     ...(type === 'enrollment' ? barChartOptions : chartOptions),
     onClick: (event: ChartEvent, elements: ActiveElement[]) => 
       handleChartClick(type, event, elements),
+    ...(type === 'donation' || type === 'requests' ? {
+      cutout: '60%',  // This creates a donut chart
+    } : {}),
   });
 
   return (
@@ -543,7 +631,8 @@ const AdminDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-lg shadow p-4 md:p-6 hover:shadow-lg transition-shadow"
+          className="bg-white rounded-lg shadow p-4 md:p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          onClick={() => router.push('/dashboard/admin/users')}
         >
           <h3 className="text-sm md:text-lg font-semibold mb-2">Total Users</h3>
           <p className="text-xl md:text-3xl font-bold text-blue-600">{stats.totalUsers}</p>
@@ -552,7 +641,8 @@ const AdminDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-lg shadow p-4 md:p-6 hover:shadow-lg transition-shadow"
+          className="bg-white rounded-lg shadow p-4 md:p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          onClick={() => router.push('/dashboard/admin/upcoming-event')}
         >
           <h3 className="text-sm md:text-lg font-semibold mb-2">Active Events</h3>
           <p className="text-xl md:text-3xl font-bold text-green-600">{stats.activeEvents}</p>
@@ -561,7 +651,8 @@ const AdminDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-lg shadow p-4 md:p-6 hover:shadow-lg transition-shadow"
+          className="bg-white rounded-lg shadow p-4 md:p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          onClick={() => router.push('/dashboard/admin/bookings-and-payments')}
         >
           <h3 className="text-sm md:text-lg font-semibold mb-2">Total Bookings</h3>
           <p className="text-xl md:text-3xl font-bold text-purple-600">{stats.totalBookings}</p>
@@ -570,7 +661,8 @@ const AdminDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-lg shadow p-4 md:p-6 hover:shadow-lg transition-shadow"
+          className="bg-white rounded-lg shadow p-4 md:p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          onClick={() => router.push('/dashboard/admin/organization-detail')}
         >
           <h3 className="text-sm md:text-lg font-semibold mb-2">Organizations</h3>
           <p className="text-xl md:text-3xl font-bold text-orange-600">{stats.totalOrganizations}</p>
@@ -604,48 +696,6 @@ const AdminDashboard = () => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6 }}
-          className="bg-white p-4 md:p-6 rounded-lg shadow"
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg md:text-xl font-semibold">Blood Group Classification</h2>
-            <button
-              onClick={() => handleExportChart('bloodGroup')}
-              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-            >
-              Export to Excel
-            </button>
-          </div>
-          <div className="h-[250px] md:h-[300px] flex items-center justify-center">
-            <Pie data={bloodGroupData} options={getChartOptions('bloodGroup')} />
-          </div>
-        </motion.div>
-
-        {/* Donation Classification Chart */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.7 }}
-          className="bg-white p-4 md:p-6 rounded-lg shadow"
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg md:text-xl font-semibold">Donation Classification</h2>
-            <button
-              onClick={() => handleExportChart('donation')}
-              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-            >
-              Export to Excel
-            </button>
-          </div>
-          <div className="h-[250px] md:h-[300px] flex items-center justify-center">
-            <Pie data={donationData} options={getChartOptions('donation')} />
-          </div>
-        </motion.div>
-
-        {/* Monthly Enrollments Chart */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.8 }}
           className="bg-white p-4 md:p-6 rounded-lg shadow"
         >
@@ -665,7 +715,68 @@ const AdminDashboard = () => {
             />
           </div>
         </motion.div>
+<motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.6 }}
+          className="bg-white p-4 md:p-6 rounded-lg shadow"
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg md:text-xl font-semibold">Blood Group Classification</h2>
+            <button
+              onClick={() => handleExportChart('bloodGroup')}
+              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              Export to Excel
+            </button>
+          </div>
+          <div className="h-[250px] md:h-[300px]">
+            <Bar data={bloodGroupData} options={getChartOptions('bloodGroup')} />
+          </div>
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.7 }}
+          className="bg-white p-4 md:p-6 rounded-lg shadow"
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg md:text-xl font-semibold">Donation Classification</h2>
+            <button
+              onClick={() => handleExportChart('donation')}
+              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              Export to Excel
+            </button>
+          </div>
+          <div className="h-[250px] md:h-[300px] flex items-center justify-center">
+            <Pie data={donationData} options={getChartOptions('donation')} />
+          </div>
+        </motion.div>
+        
 
+        {/* Requests Classification Chart */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.9 }}
+          className="bg-white p-4 md:p-6 rounded-lg shadow"
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg md:text-xl font-semibold">Requests Classification</h2>
+            <button
+              onClick={() => handleExportChart('requests')}
+              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              Export to Excel
+            </button>
+          </div>
+          <div className="h-[250px] md:h-[300px] flex items-center justify-center">
+            <Pie data={requestsData} options={getChartOptions('requests')} />
+          </div>
+        </motion.div>
+
+        {/* Monthly Enrollments Chart */}
         
       </div>
 
