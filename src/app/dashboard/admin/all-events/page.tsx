@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from 'react';
-import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaRupeeSign, FaTimes } from 'react-icons/fa';
+import { FaTimes } from 'react-icons/fa';
 import EventDetailsCard from "@/app/components/dashboard/EventDetailsCard";
+import EventsCard from "@/app/components/dashboard/EventsCard";
 
 interface Student {
   id: number;
@@ -402,16 +403,6 @@ const UpcomingEventsPage = () => {
     setSelectedEvent(null);
   };
 
-  const getAvailableSpots = (spots: string): { booked: number; total: number; available: number; percentageAvailable: number } => {
-    const [booked, total] = spots.split('/').map(num => parseInt(num, 10));
-    return {
-      booked: booked || 0,
-      total: total || 0,
-      available: (total || 0) - (booked || 0),
-      percentageAvailable: ((total || 0) - (booked || 0)) / (total || 1) * 100
-    };
-  };
-
   const handleCancelEvent = (eventId: number, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent event card click
     setEventToCancel(eventId);
@@ -546,7 +537,7 @@ const UpcomingEventsPage = () => {
         </button>
       </div>
 
-     
+      {/* Ongoing Events */}
       <div className="mb-12">
         <div className="flex items-center mb-6">
           <div className="flex-1">
@@ -561,260 +552,63 @@ const UpcomingEventsPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredOngoingEvents.map((event) => (
-            <div
+            <EventsCard
               key={event.id}
+              {...event}
+              cardType="ongoing"
               onClick={() => handleEventClick(event)}
-              className={`group bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl border-t-4 cursor-pointer ${
-                event.eligibility === 'male' ? 'border-blue-500' : 'border-pink-500'
-              }`}
-            >
-              
-              <div className="relative h-48 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute top-4 right-4 z-20">
-                  <span className="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
-                    Live
-                  </span>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4 z-20">
-                  <h3 className="text-xl font-bold text-white mb-1">{event.title}</h3>
-                  <p className="text-white/90 text-sm line-clamp-2">{event.description}</p>
-                </div>
-              </div>
-
-              <div className="p-4 space-y-4">
-               
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <FaMapMarkerAlt className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Location</p>
-                      <p className="text-sm font-medium text-gray-900">{event.location}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <FaCalendarAlt className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Date</p>
-                      <p className="text-sm font-medium text-gray-900">{event.date}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <FaUsers className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Eligibility</p>
-                      <p className="text-sm font-medium capitalize">{event.eligibility} only</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <FaRupeeSign className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Fee</p>
-                      <p className="text-sm font-medium">₹{event.fee}</p>
-                    </div>
-                  </div>
-                </div>
-
-          
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="text-sm font-medium text-gray-700">
-                      Participants
-                    </p>
-                    <p className="text-sm font-medium text-gray-700">
-                      {event.spots}
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className={`h-2.5 rounded-full transition-all duration-300 ${
-                        event.eligibility === 'male' ? 'bg-blue-500' : 'bg-pink-500'
-                      }`}
-                      style={{
-                        width: `${(parseInt(event.spots.split('/')[0]) / parseInt(event.spots.split('/')[1])) * 100}%`
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+              progress={{
+                completed: parseInt(event.spots.split('/')[0]),
+                total: parseInt(event.spots.split('/')[1]),
+                status: 'In Progress'
+              }}
+            />
           ))}
         </div>
       </div>
 
-      
+      {/* Upcoming Events */}
       <div>
         <h2 className="text-2xl font-bold text-gray-900 mb-6">Upcoming Events</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredUpcomingEvents.map((event) => (
-            <div
-              key={event.id}
-              onClick={() => handleEventClick(event)}
-              className={`group bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl border-t-4 cursor-pointer ${
-                event.isCancelled 
-                  ? 'border-red-500 opacity-75' 
-                  : event.eligibility === 'male' 
-                    ? 'border-blue-500' 
-                    : 'border-pink-500'
-              }`}
-            >
-              <div className="relative h-48 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                {event.isCancelled && (
-                  <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center z-20">
-                    <span className="text-white text-2xl font-bold rotate-[-30deg] bg-red-500 px-6 py-2">
-                      CANCELLED
-                    </span>
-                  </div>
-                )}
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute bottom-4 left-4 right-4 z-20">
-                  <h3 className="text-xl font-bold text-white mb-1">{event.title}</h3>
-                  <p className="text-white/90 text-sm line-clamp-2">{event.description}</p>
-                </div>
-              </div>
-
-              <div className="p-4 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <FaMapMarkerAlt className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Location</p>
-                      <p className="text-sm font-medium text-gray-900">{event.location}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <FaCalendarAlt className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Date</p>
-                      <p className="text-sm font-medium text-gray-900">{event.date}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <FaUsers className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Eligibility</p>
-                      <p className="text-sm font-medium capitalize">{event.eligibility} only</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <FaRupeeSign className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Fee</p>
-                      <p className="text-sm font-medium">₹{event.fee}</p>
-                    </div>
+            <div key={event.id} className="relative group">
+              <EventsCard
+                {...event}
+                cardType="upcoming"
+                onClick={() => handleEventClick(event)}
+              />
+              {!event.isCancelled && (
+                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={(e) => handleCancelEvent(event.id, e)}
+                      className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-sm font-medium"
+                    >
+                      Cancel Event
+                    </button>
+                    <button
+                      onClick={(e) => handleAddUserClick(event.id, e)}
+                      className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200 text-sm font-medium"
+                    >
+                      Add User
+                    </button>
                   </div>
                 </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="text-sm font-medium text-gray-700">
-                      Available Seats
-                    </p>
-                    <p className="text-sm font-medium text-gray-700">
-                      {getAvailableSpots(event.spots).available} / {getAvailableSpots(event.spots).total}
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className={`h-2.5 rounded-full transition-all duration-300 ${
-                        event.eligibility === "male"
-                          ? "bg-blue-500"
-                          : event.eligibility === "female"
-                          ? "bg-pink-500"
-                          : "bg-purple-500"
-                      }`}
-                      style={{
-                        width: `${getAvailableSpots(event.spots).percentageAvailable}%`,
-                      }}
-                    />
-                  </div>
-                  {getAvailableSpots(event.spots).available <= 5 && (
-                    <p className="text-xs text-red-500 mt-1">
-                      Only {getAvailableSpots(event.spots).available} seats left!
-                    </p>
-                  )}
+              )}
+              {event.isCancelled && (
+                <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center">
+                  <span className="text-white text-2xl font-bold rotate-[-30deg] bg-red-500 px-6 py-2">
+                    CANCELLED
+                  </span>
                 </div>
-
-                {/* Cancel Event Button */}
-                {!event.isCancelled && (
-                  <button
-                    onClick={(e) => handleCancelEvent(event.id, e)}
-                    className="w-full mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
-                  >
-                    Cancel Event
-                  </button>
-                )}
-                
-                {event.isCancelled && (
-                  <div className="mt-4">
-                    <div className="text-center text-red-500 font-medium mb-2">
-                      This event has been cancelled
-                    </div>
-                    {event.cancellationReason && (
-                      <div className="bg-red-50 p-3 rounded-lg">
-                        <p className="text-sm text-gray-700">
-                          <span className="font-medium">Reason:</span> {event.cancellationReason}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-                
-                {/* Event ID */}
-                <div className="text-right">
-                  <p className="text-lg text-gray-500">
-                    Event Id: {`${event.id.toString().padStart(6, '0')}`}
-                  </p>
-                </div>
-
-                {/* Add User Button */}
-                {!event.isCancelled && (
-                  <button
-                    onClick={(e) => handleAddUserClick(event.id, e)}
-                    className="w-full mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
-                  >
-                    Add User Manually
-                  </button>
-                )}
-              </div>
+              )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Past Events Section */}
+      {/* Past Events */}
       <div className="mt-12">
         <div className="flex items-center mb-6">
           <div className="flex-1">
@@ -829,96 +623,15 @@ const UpcomingEventsPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPastEvents.map((event) => (
-            <div
+            <EventsCard
               key={event.id}
+              {...event}
+              cardType="past"
               onClick={() => handleEventClick(event)}
-              className={`group bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl border-t-4 cursor-pointer ${
-                event.eligibility === 'male' ? 'border-blue-500' : 'border-pink-500'
-              }`}
-            >
-              <div className="relative h-48 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute top-4 right-4 z-20">
-                  <span className="px-3 py-1 bg-gray-500 text-white text-sm font-medium rounded-full">
-                    Completed
-                  </span>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4 z-20">
-                  <h3 className="text-xl font-bold text-white mb-1">{event.title}</h3>
-                  <p className="text-white/90 text-sm line-clamp-2">{event.description}</p>
-                </div>
-              </div>
-
-              <div className="p-4 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <FaMapMarkerAlt className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Location</p>
-                      <p className="text-sm font-medium text-gray-900">{event.location}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <FaCalendarAlt className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Date</p>
-                      <p className="text-sm font-medium text-gray-900">{event.date}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <FaUsers className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Eligibility</p>
-                      <p className="text-sm font-medium capitalize">{event.eligibility} only</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <FaRupeeSign className={`${
-                      event.eligibility === 'male' ? 'text-blue-500' : 'text-pink-500'
-                    }`} />
-                    <div>
-                      <p className="text-xs text-gray-500">Fee</p>
-                      <p className="text-sm font-medium">₹{event.fee}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="text-sm font-medium text-gray-700">
-                      Final Participation
-                    </p>
-                    <p className="text-sm font-medium text-gray-700">
-                      {event.spots}
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className={`h-2.5 rounded-full transition-all duration-300 ${
-                        event.eligibility === 'male' ? 'bg-blue-500' : 'bg-pink-500'
-                      }`}
-                      style={{
-                        width: `${(parseInt(event.spots.split('/')[0]) / parseInt(event.spots.split('/')[1])) * 100}%`
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+              impact="High Impact"
+              participants={parseInt(event.spots.split('/')[0])}
+              achievement="Successfully Completed"
+            />
           ))}
         </div>
       </div>

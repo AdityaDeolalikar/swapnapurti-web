@@ -642,7 +642,7 @@ const AdminDashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="bg-white rounded-lg shadow p-4 md:p-6 hover:shadow-lg transition-shadow cursor-pointer"
-          onClick={() => router.push('/dashboard/admin/upcoming-event')}
+          onClick={() => router.push('/dashboard/admin/all-events')}
         >
           <h3 className="text-sm md:text-lg font-semibold mb-2">Active Events</h3>
           <p className="text-xl md:text-3xl font-bold text-green-600">{stats.activeEvents}</p>
@@ -662,7 +662,7 @@ const AdminDashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="bg-white rounded-lg shadow p-4 md:p-6 hover:shadow-lg transition-shadow cursor-pointer"
-          onClick={() => router.push('/dashboard/admin/organization-detail')}
+          onClick={() => router.push('/dashboard/admin/organization-detail-admin')}
         >
           <h3 className="text-sm md:text-lg font-semibold mb-2">Organizations</h3>
           <p className="text-xl md:text-3xl font-bold text-orange-600">{stats.totalOrganizations}</p>
