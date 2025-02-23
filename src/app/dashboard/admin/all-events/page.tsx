@@ -259,9 +259,6 @@ const UpcomingEventsPage = () => {
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'male' | 'female'>('all');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
-  const [showCancellationModal, setShowCancellationModal] = useState(false);
-  const [cancellationReason, setCancellationReason] = useState('');
-  const [eventToCancel, setEventToCancel] = useState<number | null>(null);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -403,32 +400,6 @@ const UpcomingEventsPage = () => {
     setSelectedEvent(null);
   };
 
-  const handleCancelEvent = (eventId: number, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event card click
-    setEventToCancel(eventId);
-    setShowCancellationModal(true);
-  };
-
-  const handleConfirmCancellation = () => {
-    if (eventToCancel && cancellationReason.trim()) {
-      setEvents(prevEvents => ({
-        ...prevEvents,
-        upcoming: prevEvents.upcoming.map(event =>
-          event.id === eventToCancel ? { ...event, isCancelled: true, cancellationReason } : event
-        )
-      }));
-      setShowCancellationModal(false);
-      setCancellationReason('');
-      setEventToCancel(null);
-    }
-  };
-
-  const handleCloseCancellationModal = () => {
-    setShowCancellationModal(false);
-    setCancellationReason('');
-    setEventToCancel(null);
-  };
-
   const handleAddUserClick = (eventId: number, e: React.MouseEvent) => {
     e.stopPropagation();
     const event = events.upcoming.find(event => event.id === eventId);
@@ -487,6 +458,23 @@ const UpcomingEventsPage = () => {
     setSelectedUsers([]);
     setShowAddUserModal(false);
     setSearchQuery('');
+  };
+
+  const handleCancelEvent = (eventId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEvents(prev => ({
+      ...prev,
+      upcoming: prev.upcoming.map(event => {
+        if (event.id === eventId) {
+          return {
+            ...event,
+            isCancelled: true,
+            cancellationReason: "Event cancelled by admin"
+          };
+        }
+        return event;
+      })
+    }));
   };
 
   // Filter users based on search query
@@ -577,25 +565,9 @@ const UpcomingEventsPage = () => {
                 {...event}
                 cardType="upcoming"
                 onClick={() => handleEventClick(event)}
+                onAddUser={(e) => handleAddUserClick(event.id, e)}
+                onCancelEvent={(e) => handleCancelEvent(event.id, e)}
               />
-              {!event.isCancelled && (
-                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={(e) => handleCancelEvent(event.id, e)}
-                      className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-sm font-medium"
-                    >
-                      Cancel Event
-                    </button>
-                    <button
-                      onClick={(e) => handleAddUserClick(event.id, e)}
-                      className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200 text-sm font-medium"
-                    >
-                      Add User
-                    </button>
-                  </div>
-                </div>
-              )}
               {event.isCancelled && (
                 <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center">
                   <span className="text-white text-2xl font-bold rotate-[-30deg] bg-red-500 px-6 py-2">
@@ -636,47 +608,13 @@ const UpcomingEventsPage = () => {
         </div>
       </div>
 
-      {/* Cancellation Modal */}
-      {showCancellationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4">Cancel Event</h3>
-            <p className="text-gray-600 mb-4">Please provide a reason for cancelling this event:</p>
-            <textarea
-              className="w-full border rounded-lg p-3 mb-4 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter cancellation reason..."
-              value={cancellationReason}
-              onChange={(e) => setCancellationReason(e.target.value)}
-            />
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={handleCloseCancellationModal}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleConfirmCancellation}
-                disabled={!cancellationReason.trim()}
-                className={`px-4 py-2 rounded-lg ${
-                  cancellationReason.trim()
-                    ? 'bg-red-500 text-white hover:bg-red-600'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                } transition-colors duration-200`}
-              >
-                Confirm Cancellation
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Event Details Modal */}
       {showEventDetails && selectedEvent && (
         <EventDetailsCard 
           event={selectedEvent} 
           onClose={closeEventDetails}
           onAttendanceChange={(attendanceKey, rating) => handleAttendanceChange(attendanceKey, rating)}
+          onAddUser={(eventId) => handleAddUserClick(eventId, { stopPropagation: () => {} } as React.MouseEvent)}
         />
       )}
 

@@ -454,12 +454,7 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
               <p className="text-sm font-medium text-white">Role</p>
               <p className="text-xs text-gray-400">Role@example.com</p>
             </div>
-            <button
-              className="p-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors"
-              onClick={() => console.log("Profile settings clicked")}
-            >
-              <FaCog className="w-4 h-4 text-gray-400" />
-            </button>
+           
           </div>
         </div>
       </aside>

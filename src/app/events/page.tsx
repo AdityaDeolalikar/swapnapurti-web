@@ -305,7 +305,7 @@ const EventsPage = () => {
           </span>
         </Link>
       </div>
-      <nav className="w-full z-50  shadow-md fixed bg-[#03626b]">
+      <nav className="w-full z-50  shadow-md fixed bg-[#87CEEB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
             {/* Logo and brand */}
@@ -443,7 +443,7 @@ const EventsPage = () => {
       </nav>
 
       {/* Events Content */}
-      <main className="md:pt-28 pt-28 px-4 sm:px-6 lg:px-8 pb-16  bg-[#d2f4e6]">
+      <main className="md:pt-28 pt-28 px-4 sm:px-6 lg:px-8 pb-16  bg-[#87CEEB]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold  mb-4">Upcoming Events</h1>

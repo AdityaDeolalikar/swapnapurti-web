@@ -67,7 +67,7 @@ const TeamsPage = () => {
     {
       id: '2',
       name: 'Michael Chen',
-      role: 'Accountant',
+      role: 'Finance Manager',
       email: 'michael.chen@swapnapurti.com',
       phone: '+1 (555) 234-5678',
       status: 'active',
@@ -131,7 +131,7 @@ const TeamsPage = () => {
     }
   ];
 
-  const roles = ['all', 'Managing Director', 'Accountant', 'Event Manager', 'Promoting Manager', 'Sells Manager'];
+  const roles = ['all', 'Managing Director', 'Finance Manager', 'Event Manager', 'Promoting Manager', 'Sales Manager'];
 
   // Get unique districts and organizations from team members
   const districts = ['all', ...new Set(teamMembers.map(member => member.district))];

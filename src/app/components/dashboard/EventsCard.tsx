@@ -45,6 +45,8 @@ export interface EventCardProps {
   progress?: Progress;
   cardType: "upcoming" | "ongoing" | "past";
   onClick: () => void;
+  onAddUser?: (e: React.MouseEvent) => void;
+  onCancelEvent?: (e: React.MouseEvent) => void;
 }
 
 // Helper function to format event ID
@@ -67,6 +69,8 @@ const EventsCard: React.FC<EventCardProps> = ({
   progress,
   cardType,
   onClick,
+  onAddUser,
+  onCancelEvent,
 }) => {
   const getCardStyles = () => {
     switch (cardType) {
@@ -219,7 +223,29 @@ const EventsCard: React.FC<EventCardProps> = ({
         )}
 
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          {cardType === "upcoming" && <p className="text-sm text-gray-600">{spots}</p>}
+          {cardType === "upcoming" && (
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 w-full">
+              <p className="text-sm text-gray-600">{spots}</p>
+              <div className="flex flex-wrap gap-2">
+                {onAddUser && (
+                  <button
+                    onClick={onAddUser}
+                    className={`px-3 py-1.5 text-sm rounded-lg text-white bg-green-500 hover:bg-green-600 transition-colors whitespace-nowrap`}
+                  >
+                    Add User
+                  </button>
+                )}
+                {onCancelEvent && (
+                  <button
+                    onClick={onCancelEvent}
+                    className={`px-3 py-1.5 text-sm rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors whitespace-nowrap`}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
           {cardType === "ongoing" && <span className="text-sm text-gray-600">In Progress</span>}
           {cardType === "past" && (
             <div className="flex items-center gap-2">
@@ -230,9 +256,9 @@ const EventsCard: React.FC<EventCardProps> = ({
           
           <button
             onClick={onClick}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-white ${styles.buttonBg} transition-colors`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-white ${styles.buttonBg} transition-colors whitespace-nowrap ml-auto`}
           >
-            {cardType === "upcoming" ? "Enroll" : "View Details"}
+            {cardType === "upcoming" ? "View Details" : "View Details"}
             <FaArrowRight className="transform group-hover:translate-x-1 transition-transform" />
           </button>
         </div>

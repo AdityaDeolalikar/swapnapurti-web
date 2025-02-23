@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from 'next/image'
 import admin from '../../../../public/icons/admin.png'
+import { FaBan } from 'react-icons/fa'
 
 interface UserCardProps {
   id: string;
@@ -19,6 +20,8 @@ interface UserCardProps {
   points: number;
   avatarUrl?: string;
   organization: string;
+  status: string;
+  isBlacklisted?: boolean;
   onUpdate: (id: string, updatedData: Partial<UserCardProps>) => void;
   onDelete: (id: string) => void;
 }
@@ -39,6 +42,8 @@ const UserCard: React.FC<UserCardProps> = ({
   points,
   avatarUrl = "",
   organization,
+  status,
+  isBlacklisted = false,
   onUpdate,
   onDelete,
 }) => {
@@ -59,6 +64,7 @@ const UserCard: React.FC<UserCardProps> = ({
     dateOfBirth,
     avatarUrl,
     organization,
+    status,
   });
 
   // Add effect to handle body scroll
@@ -127,16 +133,30 @@ const UserCard: React.FC<UserCardProps> = ({
   return (
     <>
       <div
-        className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer transform hover:-translate-y-1"
+        className={`bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer transform hover:-translate-y-1 ${
+          isBlacklisted ? 'border-2 border-red-500' : ''
+        }`}
         onClick={() => setIsModalOpen(true)}
       >
         <div className="p-6">
           <div className="flex items-center space-x-4">
             <div className="relative w-10 h-10 rounded-full overflow-hidden">
               <Image src={editedData.avatarUrl || admin} alt="" className="object-cover" width={40} height={40} />
+              {isBlacklisted && (
+                <div className="absolute inset-0 bg-red-500 bg-opacity-30 flex items-center justify-center">
+                  <FaBan className="text-red-500 text-lg" />
+                </div>
+              )}
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
+                {isBlacklisted && (
+                  <span className="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">
+                    Blacklisted
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-gray-500">{email}</p>
             </div>
           </div>
@@ -152,7 +172,14 @@ const UserCard: React.FC<UserCardProps> = ({
           >
             {/* Modal Header */}
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">User Details</h2>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800">User Details</h2>
+                {isBlacklisted && (
+                  <span className="mt-1 inline-block px-2 py-1 text-sm font-medium text-red-700 bg-red-100 rounded-full">
+                    Blacklisted User
+                  </span>
+                )}
+              </div>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-500 hover:text-gray-700"
@@ -422,7 +449,7 @@ const UserCard: React.FC<UserCardProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
+              <div className="flex justify-end space-x-4 mt-6">
                 {isEditing ? (
                   <>
                     <button
@@ -448,9 +475,13 @@ const UserCard: React.FC<UserCardProps> = ({
                     </button>
                     <button
                       onClick={handleDelete}
-                      className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800"
+                      className={`px-4 py-2 text-sm font-medium ${
+                        isBlacklisted
+                          ? 'text-green-600 hover:text-green-800'
+                          : 'text-red-600 hover:text-red-800'
+                      }`}
                     >
-                      Delete
+                      {isBlacklisted ? 'Restore' : 'Delete'}
                     </button>
                   </>
                 )}

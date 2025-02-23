@@ -58,9 +58,17 @@ interface EventDetailsCardProps {
   event: Event;
   onClose: () => void;
   onAttendanceChange?: (attendanceKey: string, rating: number) => void;
+  onAddUser?: (eventId: number) => void;
+  onCancelEvent?: (eventId: number) => void;
 }
 
-export default function EventDetailsCard({ event, onClose, onAttendanceChange }: EventDetailsCardProps) {
+export default function EventDetailsCard({ 
+  event, 
+  onClose, 
+  onAttendanceChange,
+  onAddUser,
+  onCancelEvent 
+}: EventDetailsCardProps) {
   const [selectedDay, setSelectedDay] = useState<string>("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<'morning' | 'afternoon' | 'evening' | ''>("" as const);
   const [studentRatings, setStudentRatings] = useState<{[key: string]: number}>({});
@@ -218,6 +226,20 @@ export default function EventDetailsCard({ event, onClose, onAttendanceChange }:
     // Reset form
     setStudentRatings({});
     setIsSubmitting(false);
+  };
+
+  const handleAddUserClick = (eventId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onAddUser) {
+      onAddUser(eventId);
+    }
+  };
+
+  const handleCancelEvent = (eventId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onCancelEvent) {
+      onCancelEvent(eventId);
+    }
   };
 
   return (
@@ -773,6 +795,8 @@ export default function EventDetailsCard({ event, onClose, onAttendanceChange }:
                               }}
                             />
                           </div>
+
+                         
 
                           <div className="flex items-center justify-between text-sm text-gray-500">
                             <div className="flex items-center gap-2">
