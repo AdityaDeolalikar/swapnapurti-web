@@ -135,6 +135,24 @@ export default function Home() {
         </main>
       </div>
 
+      {/* Running Text Section */}
+      <div className="bg-blue-600 py-4 overflow-hidden relative">
+        <div className="animate-marquee whitespace-nowrap flex items-center justify-center gap-8 text-white">
+          <div className="flex items-center gap-8 mx-4">
+            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🏕️ Adventure Awaits</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-semibold">⛺ Premium Camping Experience</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🌲 Nature at its Best</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🔥 Unforgettable Memories</span>
+          </div>
+          <div className="flex items-center gap-8 mx-4">
+            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🏕️ Adventure Awaits</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-semibold">⛺ Premium Camping Experience</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🌲 Nature at its Best</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🔥 Unforgettable Memories</span>
+          </div>
+        </div>
+      </div>
+
       {/* About us section */}
       <section id="about" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">

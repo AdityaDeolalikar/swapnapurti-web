@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from 'next/navigation';
 import { FaMapMarkerAlt, FaCalendar, FaUsers, FaClipboardList, FaInfoCircle, FaClock } from "react-icons/fa";
-
+import { Suspense } from "react";
 interface Site {
   id: number;
   name: string;
@@ -887,4 +887,16 @@ const AddEventPage = () => {
   );
 };
 
-export default AddEventPage;
+
+
+const AddEventWrapper = () => {
+  return (
+    <Suspense>
+      <AddEventPage />
+    </Suspense>
+  )
+}
+
+
+export default AddEventWrapper;
+

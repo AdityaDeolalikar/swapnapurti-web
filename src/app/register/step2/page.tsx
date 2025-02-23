@@ -38,7 +38,7 @@ const RegisterStep2 = () => {
   // Add state for step 1 phone number (you should get this from your actual registration flow)
   const [step1Phone, setStep1Phone] = useState(() => {
     // Get the phone from localStorage or your state management system
-    return localStorage.getItem('step1Phone') || '';
+    return typeof window !== 'undefined' ? window.localStorage.getItem('step1Phone') || '' : '';
   });
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']

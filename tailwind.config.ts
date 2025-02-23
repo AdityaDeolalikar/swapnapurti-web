@@ -26,9 +26,14 @@ export default {
             animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)',
           },
         },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        }
       },
       animation: {
         'bounce-slow': 'bounce-slow 3s infinite',
+        'marquee': 'marquee 30s linear infinite',
       },
     },
   },
