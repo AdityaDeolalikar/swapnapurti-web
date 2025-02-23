@@ -702,14 +702,15 @@ export default function EventDetailsCard({ event, onClose, onAttendanceChange }:
                       </div>
                     )}
 
-                    event.creator && (
+                    {/* Event Address Section */}
+                    {event.creator && (
                       <div className="bg-white rounded-xl shadow p-6 space-y-4">
                         <h4 className="text-lg font-semibold text-gray-900">
                           Event Address
                         </h4>
                         <div className="space-y-4">
                           <div className="flex items-center space-x-3">
-                            <FaUsers className="text-blue-500" />
+                            <FaMapMarkerAlt className="text-blue-500" />
                             <div>
                               <p className="text-sm text-gray-500">
                                 Detailed Address
@@ -720,12 +721,17 @@ export default function EventDetailsCard({ event, onClose, onAttendanceChange }:
                             </div>
                           </div>
                           <div className="flex items-center space-x-3">
-                            <FaUsers className="text-blue-500" />
+                            <FaMapMarkerAlt className="text-blue-500" />
                             <div>
-                              <p className="text-sm">Map Link</p>
-                              <p className="font-medium text-blue-500">
+                              <p className="text-sm text-gray-500">Map Link</p>
+                              <a 
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.creator.district)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-medium text-blue-500 hover:text-blue-600"
+                              >
                                 {event.creator.district}
-                              </p>
+                              </a>
                             </div>
                           </div>
                         </div>
