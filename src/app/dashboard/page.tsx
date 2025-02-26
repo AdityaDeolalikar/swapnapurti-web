@@ -1,172 +1,229 @@
 'use client'
-import React, { useState } from 'react';
-import { FaUser, FaCalendar, FaShoppingBag, FaMedal, FaTimes } from 'react-icons/fa';
-import Link from 'next/link';
+import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import Link from 'next/link'
+import { FaSignOutAlt, FaUser, FaCalendarAlt, FaMedal, FaShoppingBag, FaUserCircle, FaCog } from 'react-icons/fa'
 
-export default function Dashboard() {
-  const [showMedalsModal, setShowMedalsModal] = useState(false);
-  const [user, setUser] = useState({
-    name: "John Doe",
-    // Add other user fields as needed
-  });
+interface UserData {
+  id: string;
+  fullName: string;
+  email: string;
+  photo: string;
+  mobile?: string;
+  occupation?: string;
+  organization?: string;
+  district?: string;
+}
 
-  const medals = {
-    platinum: 1,
-    gold: 2,
-    silver: 3,
-    bronze: 4,
-  };
+const DashboardPage = () => {
+  const router = useRouter()
+  const [userData, setUserData] = useState<UserData | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      router.push('/login')
+      return
+    }
+
+    // Fetch user data
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/user/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data')
+        }
+
+        const data = await response.json()
+        setUserData(data.data.user)
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+        localStorage.removeItem('token')
+        router.push('/login')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUserData()
+  }, [router])
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    router.push('/login')
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#03626b]">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mb-4"></div>
+          <div className="text-white text-xl">Loading your dashboard...</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="space-y-8 p-6">
-      {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-white to-blue-50 rounded-xl p-8 shadow-lg border border-gray-100">
-        <h1 className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Welcome back, {user.name}!
-        </h1>
-        <p className="text-gray-600 mt-2 text-lg">Here&apos;s what&apos;s happening with your account today.</p>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Upcoming Events Card */}
-        <Link href="/dashboard/my-events?filter=past" className="transform transition-all duration-300 hover:scale-105">
-          <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl p-6 shadow-lg border border-gray-100 cursor-pointer hover:shadow-xl">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">My Events</p>
-                <h3 className="text-3xl font-bold text-gray-800 mt-2">5</h3>
-              </div>
-              <div className="bg-blue-100 p-4 rounded-full shadow-inner">
-                <FaCalendar className="text-blue-600 text-2xl" />
-              </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-blue-600">Welcome back, {userData?.fullName}!</h1>
+              <p className="text-gray-600 mt-1">Here&apos;s what&apos;s happening with your account today.</p>
             </div>
-          </div>
-        </Link>
-
-        {/* Medals Card */}
-        <div onClick={() => setShowMedalsModal(true)} className="transform transition-all duration-300 hover:scale-105">
-          <div className="bg-gradient-to-br from-green-50 to-white rounded-xl p-6 shadow-lg border border-gray-100 cursor-pointer hover:shadow-xl">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">Milestones</p>
-                <h3 className="text-3xl font-bold text-gray-800 mt-2">{Object.values(medals).reduce((a, b) => a + b, 0)}</h3>
-              </div>
-              <div className="bg-green-100 p-4 rounded-full shadow-inner">
-                <FaMedal className="text-green-600 text-2xl" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Shop Orders Card */}
-        <Link href="/dashboard/shop" className="transform transition-all duration-300 hover:scale-105">
-          <div className="bg-gradient-to-br from-purple-50 to-white rounded-xl p-6 shadow-lg border border-gray-100 cursor-pointer hover:shadow-xl">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">Shop Orders</p>
-                <h3 className="text-3xl font-bold text-gray-800 mt-2">2</h3>
-              </div>
-              <div className="bg-purple-100 p-4 rounded-full shadow-inner">
-                <FaShoppingBag className="text-purple-600 text-2xl" />
-              </div>
-            </div>
-          </div>
-        </Link>
-
-        {/* Profile Completion Card */}
-        <Link href="/dashboard/profile" className="transform transition-all duration-300 hover:scale-105">
-          <div className="bg-gradient-to-br from-yellow-50 to-white rounded-xl p-6 shadow-lg border border-gray-100 cursor-pointer hover:shadow-xl">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">Profile Completion</p>
-                <h3 className="text-3xl font-bold text-gray-800 mt-2">85%</h3>
-              </div>
-              <div className="bg-yellow-100 p-4 rounded-full shadow-inner">
-                <FaUser className="text-yellow-600 text-2xl" />
-              </div>
-            </div>
-          </div>
-        </Link>
-      </div>
-
-      {/* Medals Modal */}
-      {showMedalsModal && (
-        <div className="fixed inset-0 backdrop-blur-md bg-black/30 flex items-center justify-center z-10 transition-all duration-300">
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full mx-4 relative shadow-2xl transform transition-all duration-300 scale-100 opacity-100">
             <button
-              onClick={() => setShowMedalsModal(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              onClick={handleLogout}
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-300"
             >
-              <FaTimes className="text-xl" />
+              <FaSignOutAlt className="mr-2" />
+              Logout
             </button>
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Medals</h2>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-100 to-gray-50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <FaMedal className="text-3xl text-[#E5E4E2]" />
-                  <span className="font-semibold text-gray-800">Platinum</span>
-                </div>
-                <span className="text-2xl font-bold text-gray-800">{medals.platinum}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* My Events */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium">My Events</p>
+              <p className="text-4xl font-bold mt-2">5</p>
+            </div>
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+              <FaCalendarAlt className="w-6 h-6 text-blue-600" />
+            </div>
+          </div>
+
+          {/* Milestones */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium">Milestones</p>
+              <p className="text-4xl font-bold mt-2">10</p>
+            </div>
+            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+              <FaMedal className="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+
+          {/* Shop Orders */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium">Shop Orders</p>
+              <p className="text-4xl font-bold mt-2">2</p>
+            </div>
+            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+              <FaShoppingBag className="w-6 h-6 text-purple-600" />
+            </div>
+          </div>
+
+          {/* Profile Completion */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium">Profile Completion</p>
+              <p className="text-4xl font-bold mt-2">85%</p>
+            </div>
+            <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+              <FaUserCircle className="w-6 h-6 text-yellow-600" />
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm mb-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+          <div className="space-y-6">
+            <div className="flex items-start space-x-4">
+              <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <FaCalendarAlt className="w-5 h-5 text-blue-600" />
               </div>
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-100 to-gray-50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <FaMedal className="text-3xl text-yellow-500" />
-                  <span className="font-semibold text-gray-800">Gold</span>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-gray-900">Booked Camping Event</h3>
+                  <span className="text-sm text-gray-500">2 hours ago</span>
                 </div>
-                <span className="text-2xl font-bold text-gray-800">{medals.gold}</span>
+                <p className="text-gray-600 text-sm">Adventure Camp - June 15</p>
               </div>
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-100 to-gray-50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <FaMedal className="text-3xl text-gray-400" />
-                  <span className="font-semibold text-gray-800">Silver</span>
-                </div>
-                <span className="text-2xl font-bold text-gray-800">{medals.silver}</span>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <FaShoppingBag className="w-5 h-5 text-purple-600" />
               </div>
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-100 to-gray-50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <FaMedal className="text-3xl text-amber-700" />
-                  <span className="font-semibold text-gray-800">Bronze</span>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-gray-900">Purchased Camping Gear</h3>
+                  <span className="text-sm text-gray-500">1 day ago</span>
                 </div>
-                <span className="text-2xl font-bold text-gray-800">{medals.bronze}</span>
+                <p className="text-gray-600 text-sm">Camping Tent XL</p>
               </div>
             </div>
           </div>
         </div>
-      )}
 
-      {/* Recent Activity Section */}
-      <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-8 shadow-lg border border-gray-100">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Recent Activity</h2>
-        <div className="space-y-4">
-          {/* Activity Items */}
-          <div className="flex items-center justify-between p-4 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
-            <div className="flex items-center space-x-4">
-              <div className="bg-blue-100 p-3 rounded-full shadow-inner">
-                <FaCalendar className="text-blue-600 text-xl" />
+        {/* User Profile Section */}
+        <div className="bg-white rounded-2xl p-8 shadow-sm">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+            <div className="relative w-32 h-32 rounded-2xl overflow-hidden ring-4 ring-blue-100">
+              {userData?.photo ? (
+                <Image
+                  src={userData.photo}
+                  alt={userData.fullName}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-blue-50 flex items-center justify-center">
+                  <FaUser className="w-16 h-16 text-blue-300" />
+                </div>
+              )}
+            </div>
+            <div className="flex-1">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div className="text-center md:text-left mb-4 md:mb-0">
+                  <h2 className="text-2xl font-bold text-gray-900">{userData?.fullName}</h2>
+                  <p className="text-gray-600">{userData?.occupation || 'Member'}</p>
+                </div>
+                <Link
+                  href="/profile/edit"
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl text-white transition-all duration-300"
+                >
+                  <FaCog className="mr-2" />
+                  Edit Profile
+                </Link>
               </div>
-              <div>
-                <p className="text-gray-800 font-semibold">Booked Camping Event</p>
-                <p className="text-gray-500 text-sm">Adventure Camp - June 15</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div>
+                  <p className="text-gray-500 text-sm">Email</p>
+                  <p className="text-gray-900 font-medium">{userData?.email}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 text-sm">Phone</p>
+                  <p className="text-gray-900 font-medium">{userData?.mobile || 'Not provided'}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 text-sm">District</p>
+                  <p className="text-gray-900 font-medium">{userData?.district || 'Not provided'}</p>
+                </div>
               </div>
             </div>
-            <span className="text-gray-500 text-sm bg-gray-50 px-3 py-1 rounded-full">2 hours ago</span>
-          </div>
-
-          <div className="flex items-center justify-between p-4 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
-            <div className="flex items-center space-x-4">
-              <div className="bg-purple-100 p-3 rounded-full shadow-inner">
-                <FaShoppingBag className="text-purple-600 text-xl" />
-              </div>
-              <div>
-                <p className="text-gray-800 font-semibold">Purchased Camping Gear</p>
-                <p className="text-gray-500 text-sm">Camping Tent XL</p>
-              </div>
-            </div>
-            <span className="text-gray-500 text-sm bg-gray-50 px-3 py-1 rounded-full">1 day ago</span>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
+
+export default DashboardPage

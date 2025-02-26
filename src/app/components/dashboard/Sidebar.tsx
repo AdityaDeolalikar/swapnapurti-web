@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import admin from "../../../../public/icons/admin.png";
@@ -36,6 +36,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
+  const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -82,6 +83,41 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
   useEffect(() => {
     onSidebarStateChange?.(isOpen);
   }, [isOpen, onSidebarStateChange]);
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/');
+        return;
+      }
+
+      const response = await fetch('http://localhost:5000/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Clear token from localStorage
+        localStorage.removeItem('token');
+        // Redirect to landing page
+        router.push('/');
+      } else {
+        console.error('Logout failed:', data.message);
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Even if the API call fails, we should still clear the token and redirect
+      localStorage.removeItem('token');
+      router.push('/');
+    }
+  };
 
   const roleSpecificLinks: RoleLinks = {
     user: [
@@ -428,7 +464,7 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
             <ul className="space-y-2">
               <li>
                 <button
-                  onClick={() => console.log("Logout clicked")}
+                  onClick={handleLogout}
                   className="w-full flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-xl transition-all duration-200 group hover:bg-red-500/10"
                 >
                   <FaSignOutAlt className="w-5 h-5 text-gray-400 group-hover:text-red-400" />

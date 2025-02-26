@@ -238,14 +238,60 @@ const RegisterStep2 = () => {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     
-    if (!errors.password && !errors.confirmPassword && !errors.photo) {
-      console.log('Form submitted:', formData)
-      router.push('/')
+    // Basic validation
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match');
+      return;
     }
-  }
+
+    if (formData.emergencyMobile === localStorage.getItem('step1Phone')) {
+      alert('Emergency contact must be different from your primary number');
+      return;
+    }
+
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        alert('Session expired. Please start registration again.');
+        router.push('/register/step1');
+        return;
+      }
+
+      // Create FormData for file upload
+      const submitData = {
+        ...formData,
+        photo: previewUrl // Base64 string of the image
+      };
+      delete submitData.confirmPassword; // Remove confirmPassword as it's not needed
+
+      const response = await fetch(`http://localhost:5000/api/auth/register/step2/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Clear localStorage
+        localStorage.removeItem('userId');
+        localStorage.removeItem('step1Phone');
+        
+        // Redirect to success page or login
+        router.push('/login');
+      } else {
+        alert(data.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Registration failed. Please try again later.');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#03626b] to-[#024950] py-12 px-4 sm:px-6 lg:px-8">

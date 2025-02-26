@@ -24,10 +24,34 @@ const RegisterStep1 = () => {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setShowTerms(true)
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register/step1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Store the user ID in localStorage for step 2
+        localStorage.setItem('userId', data.data.userId);
+        localStorage.setItem('step1Phone', formData.mobile);
+        setShowTerms(true);
+      } else {
+        // Handle registration error
+        alert(data.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Registration failed. Please try again later.');
+    }
+  };
 
   const handleAcceptTerms = () => {
     setShowTerms(false)

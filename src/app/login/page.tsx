@@ -1,13 +1,17 @@
 'use client'
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { FaEnvelope, FaLock, FaArrowLeft } from 'react-icons/fa'
 
 const LoginPage = () => {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -17,12 +21,36 @@ const LoginPage = () => {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically handle login logic
-    console.log('Login attempted with:', formData)
-    // After successful login, redirect to home page
-    // router.push('/')
+    setError('')
+    setLoading(true)
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Store the token
+        localStorage.setItem('token', data.data.token);
+        // Redirect to dashboard
+        router.push('/dashboard');
+      } else {
+        setError(data.message || 'Login failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('An error occurred. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -49,6 +77,12 @@ const LoginPage = () => {
           </div>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
+                {error}
+              </div>
+            )}
+
             {/* Email Input */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -119,9 +153,12 @@ const LoginPage = () => {
             {/* Sign in button */}
             <button
               type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-[#03626b] hover:bg-[#024950] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              disabled={loading}
+              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-[#03626b] hover:bg-[#024950] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 ${
+                loading ? 'opacity-75 cursor-not-allowed' : ''
+              }`}
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
 
             {/* Register link */}
