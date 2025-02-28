@@ -4,20 +4,126 @@ import Footer from "./components/common/Footer";
 import Image from "next/image";
 import homepage5 from "../../public/images/homepage5.jpg";
 import homepage2 from "../../public/images/homepage2.jpg";
+import nature1 from "../../public/images/nature1.jpg";
+import nature2 from "../../public/images/nature2.jpg";
+import nature3 from "../../public/images/nature3.jpg";
+import nature4 from "../../public/images/nature4.jpg";
 import Link from "next/link";
 import CountUp from "react-countup";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
+
+// Slider data
+const sliderData = [
+  {
+    image: homepage5,
+    title: "Welcome to Swapnapurti Camping Site",
+    subtitle: "Experience the adventure of a lifetime",
+    buttonText: "Register Now",
+    buttonLink: "/register/step1"
+  },
+  {
+    image: homepage2,
+    title: "Discover Nature's Beauty",
+    subtitle: "Create unforgettable memories in the wilderness",
+    buttonText: "Explore More",
+    buttonLink: "/register/step1"
+  },
+  {
+    image: nature1,
+    title: "Adventure Awaits You",
+    subtitle: "Explore the untamed wilderness with expert guides",
+    buttonText: "Start Adventure",
+    buttonLink: "/register/step1"
+  },
+  {
+    image: nature2,
+    title: "Connect with Nature",
+    subtitle: "Find peace and tranquility in the great outdoors",
+    buttonText: "Book Now",
+    buttonLink: "/register/step1"
+  },
+  {
+    image: nature3,
+    title: "Camping Under the Stars",
+    subtitle: "Experience nights filled with wonder and adventure",
+    buttonText: "Join Us",
+    buttonLink: "/register/step1"
+  },
+  {
+    image: nature4,
+    title: "Family Adventures",
+    subtitle: "Create lasting memories with your loved ones",
+    buttonText: "Plan Trip",
+    buttonLink: "/register/step1"
+  }
+];
 
 export default function Home() {
   const [showToast, setShowToast] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const emergencyNumber = "8888330578"; // Demo emergency number
+
+  // Refs for scroll animations
+  const aboutRef = useRef(null);
+  const timelineRef = useRef(null);
+  const featuresRef = useRef(null);
+  const achievementsRef = useRef(null);
+  const contactRef = useRef(null);
+
+  // Check if sections are in view
+  const aboutInView = useInView(aboutRef, { once: true, margin: "-100px" });
+  const timelineInView = useInView(timelineRef, { once: true, margin: "-100px" });
+  const featuresInView = useInView(featuresRef, { once: true, margin: "-100px" });
+  const achievementsInView = useInView(achievementsRef, { once: true, margin: "-100px" });
+  const contactInView = useInView(contactRef, { once: true, margin: "-100px" });
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
+
+  // Auto slide functionality
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderData.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(timer);
+  }, []);
 
   const handleSOSClick = (e: React.MouseEvent) => {
     e.preventDefault();
     navigator.clipboard.writeText(emergencyNumber).then(() => {
       setShowToast(true);
-      setTimeout(() => setShowToast(false), 2000); // Hide toast after 2 seconds
+      setTimeout(() => setShowToast(false), 2000);
     });
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % sliderData.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + sliderData.length) % sliderData.length);
   };
 
   return (
@@ -98,19 +204,87 @@ export default function Home() {
         </button>
       </div>
 
+      {/* Hero Image Slider Section */}
       <div className="relative min-h-screen">
-        {/* Hero Image Section */}
-        <div className="absolute inset-0">
-          <Image
-            src={homepage5}
-            alt="Camping Site Hero Image"
-            fill
-            className="object-cover"
-            priority
-            quality={100}
-          />
-          {/* Overlay for better text visibility */}
-          <div className="absolute inset-0 bg-black/30" />
+        {/* Image Slider */}
+        <div className="absolute inset-0 w-full h-full">
+          {sliderData.map((slide, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                index === currentSlide ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <Image
+                src={slide.image}
+                alt={`Slide ${index + 1}`}
+                fill
+                className="object-cover"
+                priority={index === 0}
+                quality={100}
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/50" />
+            </div>
+          ))}
+
+          {/* Slider Navigation */}
+          <div className="absolute inset-0 flex items-center justify-between px-4 sm:px-8">
+            <button
+              onClick={prevSlide}
+              className="p-2 sm:p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
+              aria-label="Previous slide"
+            >
+              <svg
+                className="w-6 h-6 sm:w-8 sm:h-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+            <button
+              onClick={nextSlide}
+              className="p-2 sm:p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
+              aria-label="Next slide"
+            >
+              <svg
+                className="w-6 h-6 sm:w-8 sm:h-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Slide Indicators */}
+          <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
+            {sliderData.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  index === currentSlide
+                    ? "bg-white w-8"
+                    : "bg-white/50 hover:bg-white/80"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Navbar */}
@@ -119,18 +293,29 @@ export default function Home() {
         {/* Hero Content */}
         <main className="relative pt-32 sm:pt-48 md:pt-56 lg:pt-72 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center mt-40 md:mt-auto">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-4 sm:mb-6">
-              Welcome to Swapnapurti Camping Site
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 sm:mb-8 tracking-wide font-light max-w-3xl mx-auto">
-              Experience the adventure of a lifetime
-            </p>
-            <Link
-              href="/register/step1"
-              className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-base sm:text-lg tracking-wide transition-all duration-300 shadow-lg shadow-blue-500/20"
-            >
-              Register Now
-            </Link>
+            {sliderData.map((slide, index) => (
+              <div
+                key={index}
+                className={`transition-all duration-1000 absolute inset-x-0 ${
+                  index === currentSlide
+                    ? "opacity-100 transform translate-y-0"
+                    : "opacity-0 transform translate-y-8"
+                }`}
+              >
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-4 sm:mb-6">
+                  {slide.title}
+                </h1>
+                <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 sm:mb-8 tracking-wide font-light max-w-3xl mx-auto">
+                  {slide.subtitle}
+                </p>
+                <Link
+                  href={slide.buttonLink}
+                  className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-base sm:text-lg tracking-wide transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 transform hover:scale-105"
+                >
+                  {slide.buttonText}
+                </Link>
+              </div>
+            ))}
           </div>
         </main>
       </div>
@@ -154,20 +339,30 @@ export default function Home() {
       </div>
 
       {/* About us section */}
-      <section id="about" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <motion.section
+        ref={aboutRef}
+        initial="hidden"
+        animate={aboutInView ? "visible" : "hidden"}
+        variants={containerVariants}
+        id="about"
+        className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white"
+      >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20">
+          <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-3 sm:mb-4">
               About <span className="text-blue-600">Us</span>
             </h2>
             <p className="text-gray-600 text-base sm:text-lg px-4">
               Have questions about our camping programs? We&apos;re here to help you start your adventure!
             </p>
-          </div>
+          </motion.div>
           
           <div className="flex flex-col lg:flex-row items-center gap-8 sm:gap-12">
             {/* Image Card */}
-            <div className="w-full lg:w-1/2">
+            <motion.div
+              variants={itemVariants}
+              className="w-full lg:w-1/2"
+            >
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-300">
                 <Image
                   src={homepage2}
@@ -177,10 +372,13 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Content */}
-            <div className="w-full lg:w-1/2 space-y-4 sm:space-y-6 px-4 sm:px-0">
+            <motion.div
+              variants={itemVariants}
+              className="w-full lg:w-1/2 space-y-4 sm:space-y-6 px-4 sm:px-0"
+            >
               <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
                 Your Adventure Awaits at Swapnapurti
               </h3>
@@ -195,86 +393,579 @@ export default function Home() {
                 and discovery. From team-building activities to survival skills training, 
                 we offer a comprehensive outdoor education experience.
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
+
+      {/* Timeline Section */}
+      <motion.section
+        ref={timelineRef}
+        initial="hidden"
+        animate={timelineInView ? "visible" : "hidden"}
+        variants={containerVariants}
+        className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden"
+      >
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-grid-gray-100 opacity-[0.05] pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4 sm:mb-6">
+              Your <span className="text-blue-600">Adventure</span> Timeline
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg">
+              Experience an unforgettable journey through our carefully planned itinerary
+            </p>
+          </motion.div>
+
+          {/* Timeline Container */}
+          <motion.div variants={itemVariants} className="relative">
+            {/* Vertical Line */}
+            <div className="absolute left-4 sm:left-1/2 transform sm:-translate-x-1/2 w-1 h-full bg-gradient-to-b from-blue-600 via-purple-500 to-pink-500 rounded-full shadow-lg" />
+
+            {/* Timeline Items */}
+            <div className="space-y-12 sm:space-y-16">
+              {/* Pre-Trip Preparation */}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, x: -50 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+                }}
+                className="relative flex flex-col sm:flex-row items-center group"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white absolute left-0 sm:left-1/2 transform sm:-translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300 shadow-xl">
+                  <span className="text-xl">🎒</span>
+                </div>
+                <div className="ml-12 sm:ml-0 sm:w-1/2 sm:pr-16">
+                  <div className="bg-gradient-to-br from-blue-50 to-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-100/20">
+                    <h3 className="text-lg sm:text-xl font-bold text-blue-900 mb-2">Pre-Trip Preparation</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li className="flex items-center gap-2">
+                        <span className="text-blue-500">📝</span>
+                        <span>Booking & registration</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-blue-500">🎪</span>
+                        <span>Packing camping essentials</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-blue-500">🚗</span>
+                        <span>Traveling to the campsite</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Arrival & Setup */}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, x: 50 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+                }}
+                className="relative flex flex-col sm:flex-row items-center group"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-green-600 text-white absolute left-0 sm:left-1/2 transform sm:-translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300 shadow-xl">
+                  <span className="text-xl">🌿</span>
+                </div>
+                <div className="ml-12 sm:ml-0 sm:w-1/2 sm:pl-16 sm:ml-auto">
+                  <div className="bg-gradient-to-br from-green-50 to-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-green-100/20">
+                    <h3 className="text-lg sm:text-xl font-bold text-green-900 mb-2">Arrival & Setup</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500">📍</span>
+                        <span>Check-in & orientation</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500">⛺</span>
+                        <span>Setting up tents and fire pits</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500">🌲</span>
+                        <span>Exploring the campsite surroundings</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Adventure & Exploration */}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, x: -50 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+                }}
+                className="relative flex flex-col sm:flex-row items-center group"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white absolute left-0 sm:left-1/2 transform sm:-translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300 shadow-xl">
+                  <span className="text-xl">🏞️</span>
+                </div>
+                <div className="ml-12 sm:ml-0 sm:w-1/2 sm:pr-16">
+                  <div className="bg-gradient-to-br from-purple-50 to-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-purple-100/20">
+                    <h3 className="text-lg sm:text-xl font-bold text-purple-900 mb-2">Adventure & Exploration</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-500">🥾</span>
+                        <span>Nature walk or trail exploration</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-500">🏃</span>
+                        <span>Group hiking or trekking</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-500">📸</span>
+                        <span>Wildlife spotting or photography</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-500">🧗‍♂️</span>
+                        <span>Rock climbing or caving</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-500">🚣‍♂️</span>
+                        <span>Water activities</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Meals & Relaxation */}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, x: 50 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+                }}
+                className="relative flex flex-col sm:flex-row items-center group"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-white absolute left-0 sm:left-1/2 transform sm:-translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300 shadow-xl">
+                  <span className="text-xl">🍽️</span>
+                </div>
+                <div className="ml-12 sm:ml-0 sm:w-1/2 sm:pl-16 sm:ml-auto">
+                  <div className="bg-gradient-to-br from-amber-50 to-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-amber-100/20">
+                    <h3 className="text-lg sm:text-xl font-bold text-amber-900 mb-2">Meals & Relaxation</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li className="flex items-center gap-2">
+                        <span className="text-amber-500">🔥</span>
+                        <span>Campfire cooking or BBQ</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-amber-500">🧺</span>
+                        <span>Picnic-style meals in nature</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-amber-500">☕</span>
+                        <span>Tea/coffee break with scenic views</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-amber-500">🌅</span>
+                        <span>Resting in hammocks or open spaces</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Team & Survival Activities */}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, x: -50 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+                }}
+                className="relative flex flex-col sm:flex-row items-center group"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-red-600 text-white absolute left-0 sm:left-1/2 transform sm:-translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300 shadow-xl">
+                  <span className="text-xl">🎯</span>
+                </div>
+                <div className="ml-12 sm:ml-0 sm:w-1/2 sm:pr-16">
+                  <div className="bg-gradient-to-br from-red-50 to-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-red-100/20">
+                    <h3 className="text-lg sm:text-xl font-bold text-red-900 mb-2">Team & Survival Activities</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li className="flex items-center gap-2">
+                        <span className="text-red-500">🎮</span>
+                        <span>Outdoor games</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-red-500">🏹</span>
+                        <span>Survival skills workshop</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-red-500">🚑</span>
+                        <span>First-aid and emergency preparedness</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-red-500">🧭</span>
+                        <span>Fire-making and navigation training</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Evening & Night Activities */}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, x: 50 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+                }}
+                className="relative flex flex-col sm:flex-row items-center group"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 text-white absolute left-0 sm:left-1/2 transform sm:-translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300 shadow-xl">
+                  <span className="text-xl">🌙</span>
+                </div>
+                <div className="ml-12 sm:ml-0 sm:w-1/2 sm:pl-16 sm:ml-auto">
+                  <div className="bg-gradient-to-br from-indigo-50 to-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-indigo-100/20">
+                    <h3 className="text-lg sm:text-xl font-bold text-indigo-900 mb-2">Evening & Night Activities</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li className="flex items-center gap-2">
+                        <span className="text-indigo-500">🔥</span>
+                        <span>Bonfire with storytelling & music</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-indigo-500">✨</span>
+                        <span>Stargazing and astronomy sessions</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-indigo-500">🧘‍♂️</span>
+                        <span>Meditation under the stars</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-indigo-500">🔦</span>
+                        <span>Night trekking exploration</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-indigo-500">🎲</span>
+                        <span>Board games & group discussions</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Departure & Closing */}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, x: 50 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+                }}
+                className="relative flex flex-col sm:flex-row items-center group"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 text-white absolute left-0 sm:left-1/2 transform sm:-translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300 shadow-xl">
+                  <span className="text-xl">🌅</span>
+                </div>
+                <div className="ml-12 sm:ml-0 sm:w-1/2 sm:pr-16">
+                  <div className="bg-gradient-to-br from-pink-50 to-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-pink-100/20">
+                    <h3 className="text-lg sm:text-xl font-bold text-pink-900 mb-2">Departure & Closing</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li className="flex items-center gap-2">
+                        <span className="text-pink-500">🧘‍♀️</span>
+                        <span>Morning stretching or yoga</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-pink-500">🍳</span>
+                        <span>Final breakfast or light meal</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-pink-500">♻️</span>
+                        <span>Campsite cleanup</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-pink-500">📸</span>
+                        <span>Group photos and farewell</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* Features Section */}
+      <motion.section
+        ref={featuresRef}
+        initial="hidden"
+        animate={featuresInView ? "visible" : "hidden"}
+        variants={containerVariants}
+        className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-white to-gray-50"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4 sm:mb-6">
+              Experience the <span className="text-blue-600">Magic</span> of Nature
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg">
+              Discover all the amazing experiences waiting for you at Swapnapurti Camping
+            </p>
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
+            {/* Nature & Scenery Card */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+              }}
+              className="group relative overflow-hidden rounded-2xl shadow-lg"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 z-10" />
+              <Image
+                src={nature1}
+                alt="Nature and Scenery"
+                width={600}
+                height={400}
+                className="object-cover h-[400px] transform group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 z-20 p-6 flex flex-col justify-end">
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Nature & Scenery</h3>
+                <p className="text-white/90 text-sm sm:text-base mb-4">
+                  Explore breathtaking forests, serene rivers, pristine lakes, and majestic mountains
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Forests</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Rivers</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Lakes</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Mountains</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Camping Setup Card */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+              }}
+              className="group relative overflow-hidden rounded-2xl shadow-lg"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 z-10" />
+              <Image
+                src={nature2}
+                alt="Camping Setup"
+                width={600}
+                height={400}
+                className="object-cover h-[400px] transform group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 z-20 p-6 flex flex-col justify-end">
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Camping Setup</h3>
+                <p className="text-white/90 text-sm sm:text-base mb-4">
+                  Experience comfort in nature with our premium camping equipment and facilities
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Tents</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Campfires</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Gear</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Amenities</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Activities Card */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+              }}
+              className="group relative overflow-hidden rounded-2xl shadow-lg"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 z-10" />
+              <Image
+                src={nature3}
+                alt="Activities"
+                width={600}
+                height={400}
+                className="object-cover h-[400px] transform group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 z-20 p-6 flex flex-col justify-end">
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Activities</h3>
+                <p className="text-white/90 text-sm sm:text-base mb-4">
+                  Engage in exciting outdoor activities and adventures
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Hiking</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Fishing</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Kayaking</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Stargazing</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Events Card */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+              }}
+              className="group relative overflow-hidden rounded-2xl shadow-lg"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 z-10" />
+              <Image
+                src={nature4}
+                alt="Events and Gatherings"
+                width={600}
+                height={400}
+                className="object-cover h-[400px] transform group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 z-20 p-6 flex flex-col justify-end">
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Events & Gatherings</h3>
+                <p className="text-white/90 text-sm sm:text-base mb-4">
+                  Create memories with group activities and celebrations
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Group Activities</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Night Parties</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Celebrations</span>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm">Bonfire</span>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Call to Action */}
+          <motion.div variants={itemVariants} className="mt-12 sm:mt-16 text-center">
+            <Link
+              href="/register/step1"
+              className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold tracking-wide transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 transform hover:scale-105 group"
+            >
+              Start Your Adventure
+              <svg
+                className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
+              </svg>
+            </Link>
+          </motion.div>
+        </div>
+      </motion.section>
 
       {/* Achievements section */}
-      <section className="py-16 sm:py-20 md:py-24 bg-gray-900">
+      <motion.section
+        ref={achievementsRef}
+        initial="hidden"
+        animate={achievementsInView ? "visible" : "hidden"}
+        variants={containerVariants}
+        className="py-16 sm:py-20 md:py-24 bg-gray-900"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 sm:mb-16">
+          <motion.div variants={itemVariants} className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
               Our <span className="text-blue-500">Achievements</span>
             </h2>
             <p className="text-gray-400 text-base sm:text-lg">
               Numbers that speak for themselves
             </p>
-          </div>
+          </motion.div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {/* Visitors Card */}
-            <div className="bg-gray-800/90 backdrop-blur-sm p-5 sm:p-6 lg:p-8 rounded-2xl transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 group">
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+              }}
+              className="bg-gray-800/90 backdrop-blur-sm p-5 sm:p-6 lg:p-8 rounded-2xl"
+            >
               <div className="text-center">
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-500 mb-2 sm:mb-3 group-hover:text-blue-400 transition-colors">
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-500 mb-2 sm:mb-3">
                   <CountUp end={5000} duration={2.5} enableScrollSpy scrollSpyOnce />+
                 </div>
                 <h3 className="text-white text-base sm:text-lg font-semibold mb-1">Visitors</h3>
                 <p className="text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">And counting every day</p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Registered Users Card */}
-            <div className="bg-gray-800/90 backdrop-blur-sm p-5 sm:p-6 lg:p-8 rounded-2xl transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/10 group">
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+              }}
+              className="bg-gray-800/90 backdrop-blur-sm p-5 sm:p-6 lg:p-8 rounded-2xl"
+            >
               <div className="text-center">
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-green-500 mb-2 sm:mb-3 group-hover:text-green-400 transition-colors">
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-green-500 mb-2 sm:mb-3">
                   <CountUp end={1200} duration={2.5} enableScrollSpy scrollSpyOnce />+
                 </div>
                 <h3 className="text-white text-base sm:text-lg font-semibold mb-1">Registered Users</h3>
                 <p className="text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">Active community members</p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Events Card */}
-            <div className="bg-gray-800/90 backdrop-blur-sm p-5 sm:p-6 lg:p-8 rounded-2xl transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 group">
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+              }}
+              className="bg-gray-800/90 backdrop-blur-sm p-5 sm:p-6 lg:p-8 rounded-2xl"
+            >
               <div className="text-center">
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-purple-500 mb-2 sm:mb-3 group-hover:text-purple-400 transition-colors">
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-purple-500 mb-2 sm:mb-3">
                   <CountUp end={150} duration={2.5} enableScrollSpy scrollSpyOnce />+
                 </div>
                 <h3 className="text-white text-base sm:text-lg font-semibold mb-1">Events</h3>
                 <p className="text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">Successfully organized</p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Event Attendees Card */}
-            <div className="bg-gray-800/90 backdrop-blur-sm p-5 sm:p-6 lg:p-8 rounded-2xl transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10 group">
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+              }}
+              className="bg-gray-800/90 backdrop-blur-sm p-5 sm:p-6 lg:p-8 rounded-2xl"
+            >
               <div className="text-center">
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-yellow-500 mb-2 sm:mb-3 group-hover:text-yellow-400 transition-colors">
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-yellow-500 mb-2 sm:mb-3">
                   <CountUp end={3500} duration={2.5} enableScrollSpy scrollSpyOnce />+
                 </div>
                 <h3 className="text-white text-base sm:text-lg font-semibold mb-1">Event Attendees</h3>
                 <p className="text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">Happy campers</p>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Contact section */}
-      <section id="contact" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
+      <motion.section
+        ref={contactRef}
+        initial="hidden"
+        animate={contactInView ? "visible" : "hidden"}
+        variants={containerVariants}
+        id="contact"
+        className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white"
+      >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20">
+          <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-3 sm:mb-4">
               Contact <span className="text-blue-600">Us</span>
             </h2>
             <p className="text-gray-600 text-base sm:text-lg">
               Have questions about our camping programs? We&apos;re here to help you start your adventure!
             </p>
-          </div>
+          </motion.div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16">
+          <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16">
             {/* Contact Information */}
-            <div className="relative">
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, x: -50 },
+                visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+              }}
+              className="relative"
+            >
               <div className="absolute inset-0 bg-blue-500 rounded-3xl -rotate-3 opacity-5"></div>
               <div className="relative bg-white rounded-2xl p-6 sm:p-8 shadow-xl space-y-6 sm:space-y-8">
                 <div className="space-y-6">
@@ -319,10 +1010,16 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Contact Form */}
-            <div className="relative">
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, x: 50 },
+                visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+              }}
+              className="relative"
+            >
               <div className="absolute inset-0 bg-blue-500 rounded-3xl -rotate-3 opacity-5"></div>
               <div className="relative bg-white p-6 sm:p-8 rounded-2xl shadow-xl">
                 <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">Send us a Message</h3>
@@ -373,10 +1070,10 @@ export default function Home() {
                   </button>
                 </form>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
       
       {/* Footer */}
       <Footer />
