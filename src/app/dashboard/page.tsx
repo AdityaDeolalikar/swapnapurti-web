@@ -70,7 +70,6 @@ const DashboardPage = () => {
       </div>
     )
   }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -96,15 +95,17 @@ const DashboardPage = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* My Events */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">My Events</p>
-              <p className="text-4xl font-bold mt-2">5</p>
+          <Link href="/dashboard/all-events" className="block">
+            <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between cursor-pointer">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">My Events</p>
+                <p className="text-4xl font-bold mt-2">5</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <FaCalendarAlt className="w-6 h-6 text-blue-600" />
+              </div>
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <FaCalendarAlt className="w-6 h-6 text-blue-600" />
-            </div>
-          </div>
+          </Link>
 
           {/* Milestones */}
           <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between">
@@ -118,26 +119,30 @@ const DashboardPage = () => {
           </div>
 
           {/* Shop Orders */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Shop Orders</p>
-              <p className="text-4xl font-bold mt-2">2</p>
+          <Link href="/dashboard/shop" className="block">
+            <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between cursor-pointer">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Shop Orders</p>
+                <p className="text-4xl font-bold mt-2">3</p>
+              </div>
+              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                <FaShoppingBag className="w-6 h-6 text-orange-600" />
+              </div>
             </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <FaShoppingBag className="w-6 h-6 text-purple-600" />
-            </div>
-          </div>
+          </Link>
 
           {/* Profile Completion */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Profile Completion</p>
-              <p className="text-4xl font-bold mt-2">85%</p>
+          <Link href="/dashboard/profile" className="block">
+            <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center justify-between cursor-pointer">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Profile Completion</p>
+                <p className="text-4xl font-bold mt-2">85%</p>
+              </div>
+              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                <FaUserCircle className="w-6 h-6 text-yellow-600" />
+              </div>
             </div>
-            <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-              <FaUserCircle className="w-6 h-6 text-yellow-600" />
-            </div>
-          </div>
+          </Link>
         </div>
 
         {/* Recent Activity */}
@@ -225,5 +230,6 @@ const DashboardPage = () => {
     </div>
   )
 }
-
 export default DashboardPage
+
+
