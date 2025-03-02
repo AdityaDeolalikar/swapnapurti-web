@@ -102,13 +102,90 @@ interface PastEvent {
 }
 const MyEvents = () => {
   const searchParams = useSearchParams();
-  const initialFilter = (searchParams.get('filter') as 'all' | 'upcoming' | 'ongoing' | 'past') || 'all';
+  const initialFilter = (searchParams?.get('filter') as 'all' | 'upcoming' | 'ongoing' | 'past') || 'all';
   
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
   const [selectedPastEvent, setSelectedPastEvent] = useState<PastEvent | null>(null);
   const [showPastEventDetails, setShowPastEventDetails] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'upcoming' | 'ongoing' | 'past'>(initialFilter);
+  const [currentPage, setCurrentPage] = useState({
+    upcoming: 1,
+    ongoing: 1,
+    past: 1
+  });
+
+  const ITEMS_PER_PAGE = 3;
+
+  // Pagination helper functions
+  const paginateEvents = <T extends Event | PastEvent>(events: T[], page: number) => {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    return events.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  };
+
+  const getTotalPages = <T extends Event | PastEvent>(events: T[]) => Math.ceil(events.length / ITEMS_PER_PAGE);
+
+  // Pagination component
+  const Pagination = ({ 
+    totalPages, 
+    currentPage, 
+    onPageChange,
+    category 
+  }: { 
+    totalPages: number; 
+    currentPage: number; 
+    onPageChange: (page: number) => void;
+    category: 'upcoming' | 'ongoing' | 'past';
+  }) => {
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="flex justify-center items-center gap-2 mt-8">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`p-2 rounded-lg transition-all duration-200 ${
+            currentPage === 1
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-white text-blue-600 hover:bg-blue-50 active:bg-blue-100 border border-blue-200'
+          }`}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <button
+            key={`${category}-${page}`}
+            onClick={() => onPageChange(page)}
+            className={`w-8 h-8 rounded-lg font-medium transition-all duration-200 ${
+              currentPage === page
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-blue-600 hover:bg-blue-50 active:bg-blue-100 border border-blue-200'
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+        
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`p-2 rounded-lg transition-all duration-200 ${
+            currentPage === totalPages
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-white text-blue-600 hover:bg-blue-50 active:bg-blue-100 border border-blue-200'
+          }`}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    );
+  };
+
   const [feedback, setFeedback] = useState<{
     food: number;
     stay: number;
@@ -244,6 +321,58 @@ Day 3:
       image:
         "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=1474&fit=crop",
     },
+    {
+      id: 4,
+      title: "Survival Skills Workshop",
+      description: "Master essential survival skills in the wilderness with expert guides.",
+      date: "5-7 June, 2024",
+      location: "Sahyadri Mountains",
+      district: "Pune",
+      status: "Upcoming",
+      eligibility: "all" as const,
+      fee: 4000,
+      spots: "25 spots available",
+      image: "https://images.unsplash.com/photo-1508873696983-2dfd5898f08b?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 5,
+      title: "Rock Climbing Adventure",
+      description: "Challenge yourself with professional rock climbing training.",
+      date: "20-22 May, 2024",
+      location: "Duke's Nose, Lonavala",
+      district: "Pune",
+      status: "Upcoming",
+      eligibility: "all" as const,
+      fee: 3800,
+      spots: "15 spots available",
+      image: "https://images.unsplash.com/photo-1522163182402-834f871fd851?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 6,
+      title: "Riverside Camping Experience",
+      description: "Enjoy a peaceful camping experience by the riverside.",
+      date: "25-27 June, 2024",
+      location: "Kolad",
+      district: "Raigad",
+      status: "Upcoming",
+      eligibility: "all" as const,
+      fee: 2800,
+      spots: "40 spots available",
+      image: "https://images.unsplash.com/photo-1537905569824-f89f14cceb68?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 7,
+      title: "Wildlife Photography Trek",
+      description: "Capture the beauty of wildlife in their natural habitat.",
+      date: "8-10 July, 2024",
+      location: "Tadoba National Park",
+      district: "Chandrapur",
+      status: "Upcoming",
+      eligibility: "all" as const,
+      fee: 5500,
+      spots: "20 spots available",
+      image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1470&fit=crop",
+    },
   ];
 
   // Mock data for ongoing events
@@ -260,33 +389,6 @@ Day 3:
       fee: 3000,
       spots: "15/30 spots filled",
       image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1470&fit=crop",
-      schedule: `Week 1-2:
-08:00 AM - Morning Wildlife Survey
-10:00 AM - Data Collection
-01:00 PM - Lunch Break
-02:00 PM - Conservation Activities
-05:00 PM - Evening Review
-
-Week 3-4:
-07:00 AM - Habitat Monitoring
-09:00 AM - Species Documentation
-12:00 PM - Lunch Break
-01:00 PM - Conservation Planning
-04:00 PM - Progress Review`,
-      requirements: "Basic wildlife knowledge, Physical fitness, Camera, Field notebook",
-      creator: {
-        name: "Wildlife Conservation Team",
-        phone: "+91 98765 43210",
-        organization: "Sahyadri Wildlife Trust",
-        district: "Pune",
-        occupation: "Wildlife Conservationist",
-        profileImage: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=2940&fit=crop&auto=format"
-      },
-      progress: {
-        completed: 2,
-        total: 8,
-        status: "Week 2 of 8"
-      }
     },
     {
       id: 102,
@@ -300,12 +402,46 @@ Week 3-4:
       fee: 2500,
       spots: "20/25 spots filled",
       image: "https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?q=80&w=1470&fit=crop",
-      progress: {
-        completed: 1,
-        total: 4,
-        status: "Week 1 of 4"
-      }
-    }
+    },
+    {
+      id: 103,
+      title: "Mountain Leadership Program",
+      description: "Develop leadership skills through challenging mountain activities.",
+      date: "March 10 - April 10, 2024",
+      location: "Himalayan Base Camp",
+      district: "Uttarkashi",
+      status: "Active",
+      eligibility: "all" as const,
+      fee: 6000,
+      spots: "18/20 spots filled",
+      image: "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 104,
+      title: "Forest Conservation Project",
+      description: "Participate in ongoing forest conservation and restoration efforts.",
+      date: "March 20 - April 20, 2024",
+      location: "Western Ghats",
+      district: "Satara",
+      status: "Active",
+      eligibility: "all" as const,
+      fee: 2800,
+      spots: "25/30 spots filled",
+      image: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 105,
+      title: "Adventure Leadership Course",
+      description: "Comprehensive leadership training through adventure activities.",
+      date: "March 5 - April 5, 2024",
+      location: "Adventure Academy",
+      district: "Pune",
+      status: "Active",
+      eligibility: "all" as const,
+      fee: 4500,
+      spots: "22/25 spots filled",
+      image: "https://images.unsplash.com/photo-1516939884455-1445c8652f83?q=80&w=1470&fit=crop",
+    },
   ];
 
   // Mock data for past contributions
@@ -322,32 +458,12 @@ Week 3-4:
       participants: 75,
       role: "Participant",
       achievement: "Gold Badge",
-      image:
-        "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?q=80&w=1470&fit=crop",
-      schedule: `Day 1:
-08:00 AM - Team Briefing
-09:00 AM - Equipment Distribution
-10:00 AM - Cleanup Activity Begins
-01:00 PM - Lunch Break
-02:00 PM - Resume Cleanup
-05:00 PM - Waste Collection and Segregation
-06:00 PM - Team Debrief`,
-      requirements: "Gloves, Water bottle, Comfortable clothing, Hat",
-      creator: {
-        name: "Green Earth Initiative",
-        phone: "+91 98765 43210",
-        organization: "Environmental Conservation Group",
-        district: "Pune",
-        occupation: "Environmental Specialist",
-        profileImage:
-          "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=2787&auto=format",
-      },
+      image: "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?q=80&w=1470&fit=crop",
     },
     {
       id: 2,
       title: "Tree Plantation Drive",
-      description:
-        "Participated in a massive tree plantation initiative for a greener future.",
+      description: "Participated in a massive tree plantation initiative for a greener future.",
       date: "February 28, 2024",
       location: "City Park",
       district: "Mumbai",
@@ -356,26 +472,91 @@ Week 3-4:
       participants: 120,
       role: "Participant",
       achievement: "Silver Badge",
-      image:
-        "https://images.unsplash.com/photo-1513377888081-794d8e958972?q=80&w=1470&fit=crop",
-      schedule: `Day 1:
-07:00 AM - Registration
-08:00 AM - Orientation
-09:00 AM - Tree Planting Begins
-01:00 PM - Lunch Break
-02:00 PM - Continue Planting
-05:00 PM - Completion Ceremony`,
-      requirements: "Garden gloves, Water bottle, Hat, Comfortable clothing",
-      creator: {
-        name: "Green Mumbai",
-        phone: "+91 98765 43210",
-        organization: "City Environmental Department",
-        qualification: "Environmental Department Head",
-        district: "Mumbai",
-        occupation: "Environmental Officer",
-        profileImage:
-          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2787&auto=format",
-      },
+      image: "https://images.unsplash.com/photo-1513377888081-794d8e958972?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 3,
+      title: "Wildlife Conservation Project",
+      description: "Contributed to wildlife habitat preservation and monitoring.",
+      date: "January 15-20, 2024",
+      location: "National Park",
+      district: "Nagpur",
+      eligibility: "all" as const,
+      impact: "10 species monitored",
+      participants: 45,
+      role: "Team Leader",
+      achievement: "Gold Badge",
+      image: "https://images.unsplash.com/photo-1474511320723-9a56873867b5?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 4,
+      title: "River Cleanup Campaign",
+      description: "Organized and led a successful river cleanup initiative.",
+      date: "February 10-12, 2024",
+      location: "Krishna River",
+      district: "Satara",
+      eligibility: "all" as const,
+      impact: "200 kg waste removed",
+      participants: 90,
+      role: "Coordinator",
+      achievement: "Platinum Badge",
+      image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 5,
+      title: "Mountain Trail Restoration",
+      description: "Helped restore and maintain popular hiking trails.",
+      date: "January 5-8, 2024",
+      location: "Sahyadri Range",
+      district: "Pune",
+      eligibility: "all" as const,
+      impact: "5 km trail restored",
+      participants: 60,
+      role: "Volunteer",
+      achievement: "Silver Badge",
+      image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 6,
+      title: "Environmental Education Camp",
+      description: "Conducted environmental awareness sessions for local communities.",
+      date: "February 20-22, 2024",
+      location: "Community Center",
+      district: "Thane",
+      eligibility: "all" as const,
+      impact: "300 people educated",
+      participants: 150,
+      role: "Educator",
+      achievement: "Gold Badge",
+      image: "https://images.unsplash.com/photo-1503557122744-b650066ba62f?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 7,
+      title: "Sustainable Living Workshop",
+      description: "Taught sustainable living practices to local residents.",
+      date: "March 1-3, 2024",
+      location: "Eco Center",
+      district: "Mumbai",
+      eligibility: "all" as const,
+      impact: "200 households reached",
+      participants: 180,
+      role: "Instructor",
+      achievement: "Platinum Badge",
+      image: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1470&fit=crop",
+    },
+    {
+      id: 8,
+      title: "Beach Cleanup Drive",
+      description: "Organized a large-scale beach cleanup operation.",
+      date: "March 8-10, 2024",
+      location: "Juhu Beach",
+      district: "Mumbai",
+      eligibility: "all" as const,
+      impact: "300 kg waste collected",
+      participants: 200,
+      role: "Coordinator",
+      achievement: "Gold Badge",
+      image: "https://images.unsplash.com/photo-1520116468816-95b69f847357?q=80&w=1470&fit=crop",
     },
   ];
 
@@ -486,7 +667,7 @@ Week 3-4:
               </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {upcomingEvents.map((event) => (
+              {paginateEvents(upcomingEvents, currentPage.upcoming).map((event) => (
                 <EventsCard
                   key={event.id}
                   {...event}
@@ -495,6 +676,12 @@ Week 3-4:
                 />
               ))}
             </div>
+            <Pagination
+              totalPages={getTotalPages(upcomingEvents)}
+              currentPage={currentPage.upcoming}
+              onPageChange={(page) => setCurrentPage(prev => ({ ...prev, upcoming: page }))}
+              category="upcoming"
+            />
           </div>
         )}
         
@@ -507,7 +694,7 @@ Week 3-4:
               </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {ongoingEvents.map((event) => (
+              {paginateEvents(ongoingEvents, currentPage.ongoing).map((event) => (
                 <EventsCard
                   key={event.id}
                   {...event}
@@ -516,6 +703,12 @@ Week 3-4:
                 />
               ))}
             </div>
+            <Pagination
+              totalPages={getTotalPages(ongoingEvents)}
+              currentPage={currentPage.ongoing}
+              onPageChange={(page) => setCurrentPage(prev => ({ ...prev, ongoing: page }))}
+              category="ongoing"
+            />
           </div>
         )}
         
@@ -528,7 +721,7 @@ Week 3-4:
               </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {pastContributions.map((event) => (
+              {paginateEvents(pastContributions, currentPage.past).map((event) => (
                 <EventsCard
                   key={event.id}
                   {...event}
@@ -537,6 +730,12 @@ Week 3-4:
                 />
               ))}
             </div>
+            <Pagination
+              totalPages={getTotalPages(pastContributions)}
+              currentPage={currentPage.past}
+              onPageChange={(page) => setCurrentPage(prev => ({ ...prev, past: page }))}
+              category="past"
+            />
           </div>
         )}
 
