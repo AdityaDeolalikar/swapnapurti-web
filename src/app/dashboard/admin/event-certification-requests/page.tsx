@@ -341,6 +341,111 @@ const mockRequests: CertificationRequest[] = [
     requestDate: "2024-03-16",
     hasAppliedForCertificate: false,
     location: "Delhi"
+  },
+  {
+    id: 9,
+    name: "Robert Taylor",
+    eventName: "Rock Climbing Workshop",
+    eventDate: "2024-06-25",
+    role: "Safety Officer",
+    hoursContributed: 22,
+    status: "pending",
+    email: "r.taylor@example.com",
+    phone: "901-234-5678",
+    certificateType: "joining",
+    requestDate: "2024-03-22",
+    hasAppliedForCertificate: true,
+    location: "Bangalore"
+  },
+  {
+    id: 10,
+    name: "Sophie Lee",
+    eventName: "Nature Photography Camp",
+    eventDate: "2024-07-15",
+    role: "Photography Guide",
+    hoursContributed: 16,
+    status: "approved",
+    email: "s.lee@example.com",
+    phone: "012-345-6789",
+    certificateType: "recommendation",
+    requestDate: "2024-03-14",
+    hasAppliedForCertificate: true,
+    location: "Mumbai"
+  },
+  {
+    id: 11,
+    name: "Daniel Brown",
+    eventName: "Adventure Trekking",
+    eventDate: "2024-08-01",
+    role: "Trek Leader",
+    hoursContributed: 28,
+    status: "pending",
+    email: "d.brown@example.com",
+    phone: "123-456-7891",
+    certificateType: "joining",
+    requestDate: "2024-03-25",
+    hasAppliedForCertificate: true,
+    location: "Delhi"
+  },
+  {
+    id: 12,
+    name: "Emma White",
+    eventName: "Wildlife Conservation",
+    eventDate: "2024-06-10",
+    role: "Conservation Expert",
+    hoursContributed: 24,
+    status: "approved",
+    email: "e.white@example.com",
+    phone: "234-567-8902",
+    certificateType: "thanking",
+    requestDate: "2024-03-19",
+    hasAppliedForCertificate: true,
+    location: "Bangalore"
+  },
+  {
+    id: 13,
+    name: "Alex Turner",
+    eventName: "Mountain Biking Camp",
+    eventDate: "2024-07-20",
+    role: "Biking Instructor",
+    hoursContributed: 20,
+    status: "pending",
+    email: "a.turner@example.com",
+    phone: "345-678-9013",
+    certificateType: "recommendation",
+    requestDate: "2024-03-21",
+    hasAppliedForCertificate: false,
+    location: "Mumbai"
+  },
+  {
+    id: 14,
+    name: "Maria Garcia",
+    eventName: "Environmental Workshop",
+    eventDate: "2024-06-05",
+    role: "Environmental Educator",
+    hoursContributed: 15,
+    status: "rejected",
+    email: "m.garcia@example.com",
+    phone: "456-789-0124",
+    certificateType: "joining",
+    requestDate: "2024-03-17",
+    hasAppliedForCertificate: true,
+    location: "Delhi"
+  },
+  {
+    id: 15,
+    name: "Thomas Anderson",
+    eventName: "Camping Adventure",
+    eventDate: "2024-08-10",
+    role: "Camp Leader",
+    hoursContributed: 32,
+    status: "pending",
+    email: "t.anderson@example.com",
+    phone: "567-890-1235",
+    certificateType: "thanking",
+    requestDate: "2024-03-24",
+    hasAppliedForCertificate: true,
+    location: "Bangalore"
   }
 ];
 
@@ -354,6 +459,8 @@ const CertificationRequestsPage = () => {
     requestStatus: "all",
     location: "all"
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const requestsPerPage = 10;
 
   const handleStatusChange = (id: number, newStatus: "pending" | "approved" | "rejected") => {
     setRequests(requests.map(request =>
@@ -381,18 +488,60 @@ const CertificationRequestsPage = () => {
     return true;
   });
 
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredRequests.length / requestsPerPage);
+  const indexOfLastRequest = currentPage * requestsPerPage;
+  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
+  const currentRequests = filteredRequests.slice(indexOfFirstRequest, indexOfLastRequest);
+
   // Function to format ID to 6 digits
   const formatEventId = (id: number) => {
     return id.toString().padStart(6, '0');
+  };
+
+  // Function to handle page change
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Function to generate page numbers with ellipsis
+  const getPageNumbers = () => {
+    const delta = 2;
+    const range = [];
+    const rangeWithDots = [];
+
+    for (
+      let i = Math.max(2, currentPage - delta);
+      i <= Math.min(totalPages - 1, currentPage + delta);
+      i++
+    ) {
+      range.push(i);
+    }
+
+    if (currentPage - delta > 2) {
+      rangeWithDots.push(1, '...');
+    } else {
+      rangeWithDots.push(1);
+    }
+
+    rangeWithDots.push(...range);
+
+    if (currentPage + delta < totalPages - 1) {
+      rangeWithDots.push('...', totalPages);
+    } else if (totalPages > 1) {
+      rangeWithDots.push(totalPages);
+    }
+
+    return rangeWithDots;
   };
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Event Certification Requests</h1>
 
-     
+      {/* Filters Section */}
       <div className="mb-6 flex flex-col gap-4">
-       
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <select
             className="w-full border rounded-lg px-3 py-2"
@@ -426,7 +575,6 @@ const CertificationRequestsPage = () => {
           </select>
         </div>
 
-        {/* Second row filters - Location and Event filters */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <select
             className="w-full border rounded-lg px-3 py-2"
@@ -456,6 +604,11 @@ const CertificationRequestsPage = () => {
         </div>
       </div>
 
+      {/* Results Count */}
+      <div className="text-sm text-gray-600 mb-4">
+        Showing {indexOfFirstRequest + 1} to {Math.min(indexOfLastRequest, filteredRequests.length)} of {filteredRequests.length} entries
+      </div>
+
       {/* Requests Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border rounded-lg">
@@ -471,7 +624,7 @@ const CertificationRequestsPage = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {filteredRequests.map((request) => (
+            {currentRequests.map((request) => (
               <tr 
                 key={request.id} 
                 onClick={() => setSelectedRequest(request)}
@@ -499,6 +652,62 @@ const CertificationRequestsPage = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {filteredRequests.length > requestsPerPage && (
+        <div className="mt-6 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`inline-flex items-center px-3 py-2 rounded-lg transition-colors duration-200 ${
+                currentPage === 1
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+              }`}
+            >
+              <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Previous
+            </button>
+
+            <div className="hidden sm:flex items-center gap-2">
+              {getPageNumbers().map((number, index) => (
+                <button
+                  key={index}
+                  onClick={() => typeof number === 'number' && handlePageChange(number)}
+                  className={`inline-flex items-center justify-center w-10 h-10 rounded-lg transition-colors duration-200 ${
+                    number === currentPage
+                      ? 'bg-blue-600 text-white'
+                      : number === '...'
+                      ? 'text-gray-400 cursor-default'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                  disabled={number === '...'}
+                >
+                  {number}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`inline-flex items-center px-3 py-2 rounded-lg transition-colors duration-200 ${
+                currentPage === totalPages
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+              }`}
+            >
+              Next
+              <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
       {selectedRequest && (
         <RequestDetailsModal

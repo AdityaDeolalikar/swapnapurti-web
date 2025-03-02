@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaSearch, FaFilter, FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaRupeeSign, FaCheckCircle, FaTimes, FaEdit } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaRupeeSign, FaCheckCircle, FaTimes, FaEdit, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import EventDetailsCard from '@/app/components/dashboard/EventDetailsCard';
 
 interface Creator {
@@ -46,6 +46,8 @@ const PublishEventPage = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const eventsPerPage = 5;
 
   const [unpublishedEvents, setUnpublishedEvents] = useState<Event[]>([
     {
@@ -70,8 +72,157 @@ const PublishEventPage = () => {
         occupation: "Event Organizer",
         email: "john@example.com"
       }
+    },
+    {
+      id: 2,
+      title: "Riverside Camping Experience",
+      description: "Experience the serenity of camping by the riverside with expert guides...",
+      date: "2024-06-01",
+      location: "Riverside Campground",
+      district: "Nature District",
+      status: "pending",
+      eligibility: "all",
+      fee: 2000,
+      spots: "30",
+      image: "/images/cardImage.jpg",
+      schedule: "Day 1\n8:00 AM - Check-in\n9:00 AM - River Safety Briefing",
+      requirements: "Swimming gear, tent, sleeping bag",
+      creator: {
+        name: "Sarah Smith",
+        phone: "+1234567891",
+        organization: "River Adventures",
+        district: "Nature District",
+        occupation: "Camp Instructor",
+        email: "sarah@example.com"
+      }
+    },
+    {
+      id: 3,
+      title: "Forest Photography Camp",
+      description: "Learn nature photography while camping in the heart of the forest...",
+      date: "2024-06-15",
+      location: "Forest Reserve",
+      district: "Photography District",
+      status: "pending",
+      eligibility: "all",
+      fee: 2500,
+      spots: "20",
+      image: "/images/cardImage.jpg",
+      schedule: "Day 1\n7:00 AM - Photography Basics\n2:00 PM - Nature Walk",
+      requirements: "Camera, tripod (optional), hiking shoes",
+      creator: {
+        name: "Mike Johnson",
+        phone: "+1234567892",
+        organization: "Photo Wilderness",
+        district: "Photography District",
+        occupation: "Photography Instructor",
+        email: "mike@example.com"
+      }
+    },
+    {
+      id: 4,
+      title: "Adventure Rock Climbing Camp",
+      description: "Challenge yourself with guided rock climbing experiences...",
+      date: "2024-07-01",
+      location: "Rocky Mountains",
+      district: "Sports District",
+      status: "pending",
+      eligibility: "all",
+      fee: 3000,
+      spots: "15",
+      image: "/images/cardImage.jpg",
+      schedule: "Day 1\n8:00 AM - Safety Training\n10:00 AM - Basic Climbing",
+      requirements: "Athletic wear, climbing shoes (provided)",
+      creator: {
+        name: "Alex Turner",
+        phone: "+1234567893",
+        organization: "Peak Climbers",
+        district: "Sports District",
+        occupation: "Climbing Instructor",
+        email: "alex@example.com"
+      }
+    },
+    {
+      id: 5,
+      title: "Stargazing Night Camp",
+      description: "Explore the night sky while camping under the stars...",
+      date: "2024-07-15",
+      location: "Dark Sky Reserve",
+      district: "Astronomy District",
+      status: "pending",
+      eligibility: "all",
+      fee: 1800,
+      spots: "25",
+      image: "/images/cardImage.jpg",
+      schedule: "Day 1\n4:00 PM - Setup\n8:00 PM - Astronomy Session",
+      requirements: "Warm clothing, notebook",
+      creator: {
+        name: "Emily White",
+        phone: "+1234567894",
+        organization: "Star Gazers",
+        district: "Astronomy District",
+        occupation: "Astronomer",
+        email: "emily@example.com"
+      }
+    },
+    {
+      id: 6,
+      title: "Wildlife Photography Camp",
+      description: "Capture amazing wildlife moments in their natural habitat...",
+      date: "2024-08-01",
+      location: "Wildlife Sanctuary",
+      district: "Wildlife District",
+      status: "pending",
+      eligibility: "all",
+      fee: 2800,
+      spots: "15",
+      image: "/images/cardImage.jpg",
+      schedule: "Day 1\n6:00 AM - Wildlife Tracking\n2:00 PM - Photo Review",
+      requirements: "DSLR camera, telephoto lens",
+      creator: {
+        name: "David Brown",
+        phone: "+1234567895",
+        organization: "Wildlife Lens",
+        district: "Wildlife District",
+        occupation: "Wildlife Photographer",
+        email: "david@example.com"
+      }
+    },
+    {
+      id: 7,
+      title: "Mountain Biking Camp",
+      description: "Experience thrilling mountain biking trails with expert guidance...",
+      date: "2024-08-15",
+      location: "Mountain Trails",
+      district: "Sports District",
+      status: "pending",
+      eligibility: "all",
+      fee: 2200,
+      spots: "20",
+      image: "/images/cardImage.jpg",
+      schedule: "Day 1\n8:00 AM - Bike Setup\n9:00 AM - Trail Safety",
+      requirements: "Mountain bike (rentals available), helmet",
+      creator: {
+        name: "Chris Parker",
+        phone: "+1234567896",
+        organization: "Trail Riders",
+        district: "Sports District",
+        occupation: "Biking Instructor",
+        email: "chris@example.com"
+      }
     }
   ]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(unpublishedEvents.length / eventsPerPage);
+  const indexOfLastEvent = currentPage * eventsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+  const currentEvents = unpublishedEvents.slice(indexOfFirstEvent, indexOfLastEvent);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleEventClick = (event: Event) => {
     setSelectedEvent(event);
@@ -130,7 +281,7 @@ const PublishEventPage = () => {
 
       {/* Events Grid */}
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {unpublishedEvents.map((event) => (
+        {currentEvents.map((event) => (
           <div
             key={event.id}
             className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
@@ -229,6 +380,49 @@ const PublishEventPage = () => {
           </div>
         ))}
       </div>
+
+      {/* Pagination */}
+      {unpublishedEvents.length > eventsPerPage && (
+        <div className="mt-8 flex justify-center items-center gap-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`p-2 rounded-lg ${
+              currentPage === 1
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+            } transition-colors duration-200`}
+          >
+            <FaChevronLeft className="w-5 h-5" />
+          </button>
+          
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+            <button
+              key={pageNum}
+              onClick={() => handlePageChange(pageNum)}
+              className={`w-10 h-10 rounded-lg ${
+                currentPage === pageNum
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+              } transition-colors duration-200 font-medium`}
+            >
+              {pageNum}
+            </button>
+          ))}
+
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`p-2 rounded-lg ${
+              currentPage === totalPages
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+            } transition-colors duration-200`}
+          >
+            <FaChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      )}
 
       {/* Event Details Popup */}
       {showEventDetails && selectedEvent && (

@@ -23,6 +23,9 @@ type User = {
 };
 
 const UsersPage = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 20;
+
   // Mock data - replace with actual data fetching
   const [users, setUsers] = useState<User[]>([
     {
@@ -93,6 +96,363 @@ const UsersPage = () => {
       points: 2500,
       organization: "Swapnapurti Foundation"
     },
+    {
+      id: "5",
+      name: "Alex Thompson",
+      email: "alex@example.com",
+      mobileNumber: "+1 234 567 8904",
+      role: "Volunteer",
+      state: "Gujarat",
+      nationality: "Indian",
+      district: "Ahmedabad",
+      bloodGroup: "A-",
+      gender: "Male",
+      dateOfBirth: "1993-07-22",
+      status: "active",
+      visitedCamps: 12,
+      points: 3000,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "6",
+      name: "Emily Davis",
+      email: "emily@example.com",
+      mobileNumber: "+1 234 567 8905",
+      role: "Event Coordinator",
+      state: "Maharashtra",
+      nationality: "Indian",
+      district: "Pune",
+      bloodGroup: "B-",
+      gender: "Female",
+      dateOfBirth: "1991-12-15",
+      status: "active",
+      visitedCamps: 15,
+      points: 4200,
+      organization: "Swapnapurti NGO"
+    },
+    {
+      id: "7",
+      name: "Robert Chen",
+      email: "robert@example.com",
+      mobileNumber: "+1 234 567 8906",
+      role: "Volunteer",
+      state: "Karnataka",
+      nationality: "Indian",
+      district: "Mysore",
+      bloodGroup: "O-",
+      gender: "Male",
+      dateOfBirth: "1994-03-28",
+      status: "active",
+      visitedCamps: 7,
+      points: 1800,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "8",
+      name: "Priya Patel",
+      email: "priya@example.com",
+      mobileNumber: "+1 234 567 8907",
+      role: "Event Manager",
+      state: "Gujarat",
+      nationality: "Indian",
+      district: "Surat",
+      bloodGroup: "AB+",
+      gender: "Female",
+      dateOfBirth: "1989-09-14",
+      status: "active",
+      visitedCamps: 20,
+      points: 5000,
+      organization: "Swapnapurti NGO"
+    },
+    {
+      id: "9",
+      name: "David Wilson",
+      email: "david@example.com",
+      mobileNumber: "+1 234 567 8908",
+      role: "Accountant",
+      state: "Maharashtra",
+      nationality: "Indian",
+      district: "Nagpur",
+      bloodGroup: "A+",
+      gender: "Male",
+      dateOfBirth: "1987-11-30",
+      status: "active",
+      visitedCamps: 4,
+      points: 900,
+      organization: "Swapnapurti Trust"
+    },
+    {
+      id: "10",
+      name: "Sophia Lee",
+      email: "sophia@example.com",
+      mobileNumber: "+1 234 567 8909",
+      role: "Promoting Manager",
+      state: "Tamil Nadu",
+      nationality: "Indian",
+      district: "Coimbatore",
+      bloodGroup: "B+",
+      gender: "Female",
+      dateOfBirth: "1996-02-17",
+      status: "active",
+      visitedCamps: 10,
+      points: 2800,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "11",
+      name: "Raj Malhotra",
+      email: "raj@example.com",
+      mobileNumber: "+1 234 567 8910",
+      role: "Event Manager",
+      state: "Punjab",
+      nationality: "Indian",
+      district: "Amritsar",
+      bloodGroup: "O+",
+      gender: "Male",
+      dateOfBirth: "1990-08-25",
+      status: "active",
+      visitedCamps: 18,
+      points: 4500,
+      organization: "Swapnapurti NGO"
+    },
+    {
+      id: "12",
+      name: "Anita Kumar",
+      email: "anita@example.com",
+      mobileNumber: "+1 234 567 8911",
+      role: "Volunteer",
+      state: "Kerala",
+      nationality: "Indian",
+      district: "Kochi",
+      bloodGroup: "A+",
+      gender: "Female",
+      dateOfBirth: "1993-11-05",
+      status: "active",
+      visitedCamps: 9,
+      points: 2200,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "13",
+      name: "Thomas Anderson",
+      email: "thomas@example.com",
+      mobileNumber: "+1 234 567 8912",
+      role: "IT Manager",
+      state: "Maharashtra",
+      nationality: "Indian",
+      district: "Pune",
+      bloodGroup: "B-",
+      gender: "Male",
+      dateOfBirth: "1988-04-15",
+      status: "active",
+      visitedCamps: 6,
+      points: 1500,
+      organization: "Swapnapurti Trust"
+    },
+    {
+      id: "14",
+      name: "Meera Shah",
+      email: "meera@example.com",
+      mobileNumber: "+1 234 567 8913",
+      role: "Event Coordinator",
+      state: "Rajasthan",
+      nationality: "Indian",
+      district: "Jaipur",
+      bloodGroup: "AB+",
+      gender: "Female",
+      dateOfBirth: "1992-07-30",
+      status: "active",
+      visitedCamps: 14,
+      points: 3500,
+      organization: "Swapnapurti NGO"
+    },
+    {
+      id: "15",
+      name: "Arjun Reddy",
+      email: "arjun@example.com",
+      mobileNumber: "+1 234 567 8914",
+      role: "Volunteer",
+      state: "Telangana",
+      nationality: "Indian",
+      district: "Hyderabad",
+      bloodGroup: "O-",
+      gender: "Male",
+      dateOfBirth: "1995-09-12",
+      status: "active",
+      visitedCamps: 8,
+      points: 2000,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "16",
+      name: "Lisa Wang",
+      email: "lisa@example.com",
+      mobileNumber: "+1 234 567 8915",
+      role: "Marketing Manager",
+      state: "Karnataka",
+      nationality: "Indian",
+      district: "Bangalore",
+      bloodGroup: "A-",
+      gender: "Female",
+      dateOfBirth: "1991-03-20",
+      status: "active",
+      visitedCamps: 11,
+      points: 2700,
+      organization: "Swapnapurti Trust"
+    },
+    {
+      id: "17",
+      name: "Vikram Singh",
+      email: "vikram@example.com",
+      mobileNumber: "+1 234 567 8916",
+      role: "Field Coordinator",
+      state: "Madhya Pradesh",
+      nationality: "Indian",
+      district: "Bhopal",
+      bloodGroup: "B+",
+      gender: "Male",
+      dateOfBirth: "1989-12-08",
+      status: "active",
+      visitedCamps: 16,
+      points: 4000,
+      organization: "Swapnapurti NGO"
+    },
+    {
+      id: "18",
+      name: "Aisha Patel",
+      email: "aisha@example.com",
+      mobileNumber: "+1 234 567 8917",
+      role: "Community Manager",
+      state: "Gujarat",
+      nationality: "Indian",
+      district: "Vadodara",
+      bloodGroup: "AB-",
+      gender: "Female",
+      dateOfBirth: "1994-06-25",
+      status: "active",
+      visitedCamps: 13,
+      points: 3200,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "19",
+      name: "Samuel Joseph",
+      email: "samuel@example.com",
+      mobileNumber: "+1 234 567 8918",
+      role: "Program Director",
+      state: "Kerala",
+      nationality: "Indian",
+      district: "Trivandrum",
+      bloodGroup: "O+",
+      gender: "Male",
+      dateOfBirth: "1987-02-14",
+      status: "active",
+      visitedCamps: 22,
+      points: 5500,
+      organization: "Swapnapurti Trust"
+    },
+    {
+      id: "20",
+      name: "Neha Sharma",
+      email: "neha@example.com",
+      mobileNumber: "+1 234 567 8919",
+      role: "Volunteer Coordinator",
+      state: "Uttar Pradesh",
+      nationality: "Indian",
+      district: "Lucknow",
+      bloodGroup: "A+",
+      gender: "Female",
+      dateOfBirth: "1993-10-18",
+      status: "active",
+      visitedCamps: 15,
+      points: 3800,
+      organization: "Swapnapurti NGO"
+    },
+    {
+      id: "21",
+      name: "Rahul Verma",
+      email: "rahul@example.com",
+      mobileNumber: "+1 234 567 8920",
+      role: "Operations Manager",
+      state: "Bihar",
+      nationality: "Indian",
+      district: "Patna",
+      bloodGroup: "B+",
+      gender: "Male",
+      dateOfBirth: "1990-05-30",
+      status: "active",
+      visitedCamps: 17,
+      points: 4300,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "22",
+      name: "Maya Krishnan",
+      email: "maya@example.com",
+      mobileNumber: "+1 234 567 8921",
+      role: "Social Media Manager",
+      state: "Tamil Nadu",
+      nationality: "Indian",
+      district: "Madurai",
+      bloodGroup: "AB+",
+      gender: "Female",
+      dateOfBirth: "1996-08-22",
+      status: "active",
+      visitedCamps: 7,
+      points: 1800,
+      organization: "Swapnapurti Trust"
+    },
+    {
+      id: "23",
+      name: "Karthik Rajan",
+      email: "karthik@example.com",
+      mobileNumber: "+1 234 567 8922",
+      role: "Project Coordinator",
+      state: "Karnataka",
+      nationality: "Indian",
+      district: "Mysore",
+      bloodGroup: "O-",
+      gender: "Male",
+      dateOfBirth: "1992-01-15",
+      status: "active",
+      visitedCamps: 12,
+      points: 3000,
+      organization: "Swapnapurti NGO"
+    },
+    {
+      id: "24",
+      name: "Zara Khan",
+      email: "zara@example.com",
+      mobileNumber: "+1 234 567 8923",
+      role: "Event Planner",
+      state: "Maharashtra",
+      nationality: "Indian",
+      district: "Nashik",
+      bloodGroup: "A-",
+      gender: "Female",
+      dateOfBirth: "1994-04-08",
+      status: "active",
+      visitedCamps: 9,
+      points: 2300,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "25",
+      name: "Dev Kapoor",
+      email: "dev@example.com",
+      mobileNumber: "+1 234 567 8924",
+      role: "Resource Manager",
+      state: "Haryana",
+      nationality: "Indian",
+      district: "Gurugram",
+      bloodGroup: "B+",
+      gender: "Male",
+      dateOfBirth: "1991-11-28",
+      status: "active",
+      visitedCamps: 19,
+      points: 4700,
+      organization: "Swapnapurti Trust"
+    }
   ]);
 
   // Add blacklist state with proper typing
@@ -205,6 +565,17 @@ const UsersPage = () => {
   };
 
   const displayedUsers = showBlacklist ? blacklistedUsers : filteredUsers;
+
+  // Pagination logic
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = displayedUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(displayedUsers.length / usersPerPage);
+
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="p-6 md:ml-5">
@@ -385,7 +756,7 @@ const UsersPage = () => {
 
       {/* Users Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {displayedUsers.map((user) => (
+        {currentUsers.map((user) => (
           <UserCard
             key={user.id}
             {...user}
@@ -404,6 +775,54 @@ const UsersPage = () => {
       )}
 
       {/* Pagination */}
+      {displayedUsers.length > 0 && (
+        <div className="mt-8 flex flex-col items-center gap-4">
+          <div className="text-sm text-gray-700">
+            Showing <span className="font-medium">{indexOfFirstUser + 1}</span> to{" "}
+            <span className="font-medium">
+              {Math.min(indexOfLastUser, displayedUsers.length)}
+            </span>{" "}
+            of <span className="font-medium">{displayedUsers.length}</span> entries
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-3 py-1 rounded-lg border ${
+                currentPage === 1
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              Previous
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+              <button
+                key={number}
+                onClick={() => paginate(number)}
+                className={`px-3 py-1 rounded-lg border ${
+                  currentPage === number
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                {number}
+              </button>
+            ))}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-1 rounded-lg border ${
+                currentPage === totalPages
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

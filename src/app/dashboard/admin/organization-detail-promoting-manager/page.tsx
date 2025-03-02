@@ -193,6 +193,10 @@ const AddOrganization = () => {
     organization: null
   });
 
+  // Add pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+
   const [districts, setDistricts] = useState<Option[]>(mockDistricts);
   const [organizationOptions, setOrganizationOptions] = useState<Option[]>(mockOrganizations);
   const [organizations, setOrganizations] = useState<Organization[]>(initialData);
@@ -207,6 +211,48 @@ const AddOrganization = () => {
     dataCollected: null,
     hasEntry: null
   });
+
+  // Calculate pagination values
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredOrganizations.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredOrganizations.length / itemsPerPage);
+
+  // Handle page change
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Generate page numbers array
+  const getPageNumbers = () => {
+    const delta = 2;
+    const range = [];
+    const rangeWithDots = [];
+
+    for (
+      let i = Math.max(2, currentPage - delta);
+      i <= Math.min(totalPages - 1, currentPage + delta);
+      i++
+    ) {
+      range.push(i);
+    }
+
+    if (currentPage - delta > 2) {
+      rangeWithDots.push(1, '...');
+    } else {
+      rangeWithDots.push(1);
+    }
+
+    rangeWithDots.push(...range);
+
+    if (currentPage + delta < totalPages - 1) {
+      rangeWithDots.push('...', totalPages);
+    } else if (totalPages > 1) {
+      rangeWithDots.push(totalPages);
+    }
+
+    return rangeWithDots;
+  };
 
   // Filter organizations based on search term and selected district
   useEffect(() => {
@@ -650,7 +696,7 @@ const AddOrganization = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredOrganizations.map((item) => (
+                {currentItems.map((item) => (
                   <tr key={item.id} className="hover:bg-gray-50 transition-colors duration-150">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.id}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.district}</td>
@@ -737,6 +783,67 @@ const AddOrganization = () => {
                 )}
               </tbody>
             </table>
+
+            {/* Pagination Component */}
+            {filteredOrganizations.length > 0 && (
+              <div className="px-6 py-4 bg-white border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center text-sm text-gray-500">
+                    <span>
+                      Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredOrganizations.length)} of {filteredOrganizations.length} entries
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                        currentPage === 1
+                          ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                          : 'text-gray-700 bg-white hover:bg-gray-50 border border-gray-300'
+                      }`}
+                    >
+                      <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                      Previous
+                    </button>
+                    <div className="hidden sm:flex space-x-2">
+                      {getPageNumbers().map((number, index) => (
+                        <button
+                          key={index}
+                          onClick={() => typeof number === 'number' && handlePageChange(number)}
+                          className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                            number === currentPage
+                              ? 'bg-blue-600 text-white'
+                              : number === '...'
+                              ? 'text-gray-400 cursor-default'
+                              : 'text-gray-700 bg-white hover:bg-gray-50 border border-gray-300'
+                          }`}
+                          disabled={number === '...'}
+                        >
+                          {number}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                        currentPage === totalPages
+                          ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                          : 'text-gray-700 bg-white hover:bg-gray-50 border border-gray-300'
+                      }`}
+                    >
+                      Next
+                      <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

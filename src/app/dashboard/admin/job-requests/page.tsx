@@ -525,6 +525,8 @@ const UserDetailsModal = ({ request, onClose, onStatusChange }: UserDetailsModal
 
 const JobRequestsPage = () => {
   const [selectedRequest, setSelectedRequest] = useState<JobRequest | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   
   // Sample data - replace with actual API data
   const [jobRequests, setJobRequests] = useState<JobRequest[]>([
@@ -627,6 +629,126 @@ const JobRequestsPage = () => {
     "hasAppliedForJoining": false,
     "hasAppliedForThanking": false,
     "hasAppliedForRecommendation": false
+  },
+  {
+    "id": 7,
+    "name": "Arjun Reddy",
+    "role": "Managing Director",
+    "location": "Mumbai",
+    "experience": 12,
+    "startDate": "2024-10-01",
+    "resumeUrl": "#",
+    "status": "pending",
+    "email": "arjun.reddy@example.com",
+    "phone": "+91 9876543210",
+    "education": "MBA from IIM Ahmedabad",
+    "skills": ["Strategic Planning", "Team Leadership", "Business Development"],
+    "whyHireYou": "Proven track record of scaling businesses and leading teams to success.",
+    "expectedSalary": "₹45-50 LPA",
+    "endDate": "2024-10-15",
+    "hasAppliedForJoining": false,
+    "hasAppliedForThanking": false,
+    "hasAppliedForRecommendation": false
+  },
+  {
+    "id": 8,
+    "name": "Sanjay Kumar",
+    "role": "Event Manager",
+    "location": "Pune",
+    "experience": 6,
+    "startDate": "2024-10-15",
+    "resumeUrl": "#",
+    "status": "approved",
+    "email": "sanjay.kumar@example.com",
+    "phone": "+91 9876543211",
+    "education": "Diploma in Event Management",
+    "skills": ["Event Planning", "Vendor Management", "Budget Planning"],
+    "whyHireYou": "Successfully managed over 100 corporate events with excellent feedback.",
+    "expectedSalary": "₹15-18 LPA",
+    "endDate": "2024-10-30",
+    "hasAppliedForJoining": true,
+    "hasAppliedForThanking": false,
+    "hasAppliedForRecommendation": false
+  },
+  {
+    "id": 9,
+    "name": "Meera Patel",
+    "role": "Cook",
+    "location": "Mumbai",
+    "experience": 8,
+    "startDate": "2024-11-01",
+    "resumeUrl": "#",
+    "status": "pending",
+    "email": "meera.patel@example.com",
+    "phone": "+91 9876543212",
+    "education": "Culinary Arts Certificate",
+    "skills": ["Indian Cuisine", "International Cuisine", "Menu Planning"],
+    "whyHireYou": "Expert in multiple cuisines with experience in 5-star hotels.",
+    "expectedSalary": "₹12-15 LPA",
+    "endDate": "2024-11-15",
+    "hasAppliedForJoining": false,
+    "hasAppliedForThanking": false,
+    "hasAppliedForRecommendation": false
+  },
+  {
+    "id": 10,
+    "role": "Security Guard",
+    "name": "Rajesh Singh",
+    "location": "Delhi",
+    "experience": 5,
+    "startDate": "2024-11-15",
+    "resumeUrl": "#",
+    "status": "approved",
+    "email": "rajesh.singh@example.com",
+    "phone": "+91 9876543213",
+    "education": "Security Management Certificate",
+    "skills": ["Security Protocols", "Emergency Response", "Surveillance"],
+    "whyHireYou": "Ex-military personnel with extensive security management experience.",
+    "expectedSalary": "₹5-7 LPA",
+    "endDate": "2024-11-30",
+    "hasAppliedForJoining": true,
+    "hasAppliedForThanking": true,
+    "hasAppliedForRecommendation": false
+  },
+  {
+    "id": 11,
+    "name": "Anita Desai",
+    "role": "Social Media Handler",
+    "location": "Bangalore",
+    "experience": 4,
+    "startDate": "2024-12-01",
+    "resumeUrl": "#",
+    "status": "pending",
+    "email": "anita.desai@example.com",
+    "phone": "+91 9876543214",
+    "education": "Bachelor's in Mass Communication",
+    "skills": ["Social Media Marketing", "Content Creation", "Analytics"],
+    "whyHireYou": "Grew social media engagement by 200% in previous role.",
+    "expectedSalary": "₹8-10 LPA",
+    "endDate": "2024-12-15",
+    "hasAppliedForJoining": false,
+    "hasAppliedForThanking": false,
+    "hasAppliedForRecommendation": false
+  },
+  {
+    "id": 12,
+    "name": "Suresh Menon",
+    "role": "Electrician",
+    "location": "Chennai",
+    "experience": 7,
+    "startDate": "2024-12-15",
+    "resumeUrl": "#",
+    "status": "approved",
+    "email": "suresh.menon@example.com",
+    "phone": "+91 9876543215",
+    "education": "ITI in Electrical",
+    "skills": ["Electrical Systems", "Maintenance", "Troubleshooting"],
+    "whyHireYou": "Licensed electrician with industrial and commercial experience.",
+    "expectedSalary": "₹6-8 LPA",
+    "endDate": "2024-12-30",
+    "hasAppliedForJoining": true,
+    "hasAppliedForThanking": false,
+    "hasAppliedForRecommendation": false
   }
   ]);
 
@@ -705,6 +827,136 @@ const JobRequestsPage = () => {
       prevRequests.map(request =>
         request.id === id ? { ...request, status: newStatus } : request
       )
+    );
+  };
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedRequests = filteredRequests.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Pagination component
+  const Pagination = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <div className="flex items-center justify-between px-4 py-3 sm:px-6 mt-4 bg-white rounded-lg shadow">
+        <div className="flex-1 flex justify-between sm:hidden">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+              currentPage === 1
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+              currentPage === totalPages
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            Next
+          </button>
+        </div>
+        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm text-gray-700">
+              Showing{' '}
+              <span className="font-medium">{startIndex + 1}</span>
+              {' '}-{' '}
+              <span className="font-medium">
+                {Math.min(startIndex + itemsPerPage, filteredRequests.length)}
+              </span>{' '}
+              of{' '}
+              <span className="font-medium">{filteredRequests.length}</span>{' '}
+              results
+            </p>
+          </div>
+          <div>
+            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+              <button
+                onClick={() => handlePageChange(1)}
+                disabled={currentPage === 1}
+                className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${
+                  currentPage === 1
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-500 hover:bg-gray-50'
+                }`}
+              >
+                First
+              </button>
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium ${
+                  currentPage === 1
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-500 hover:bg-gray-50'
+                }`}
+              >
+                Previous
+              </button>
+              {pageNumbers.map((number) => (
+                <button
+                  key={number}
+                  onClick={() => handlePageChange(number)}
+                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                    currentPage === number
+                      ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                  }`}
+                >
+                  {number}
+                </button>
+              ))}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium ${
+                  currentPage === totalPages
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-500 hover:bg-gray-50'
+                }`}
+              >
+                Next
+              </button>
+              <button
+                onClick={() => handlePageChange(totalPages)}
+                disabled={currentPage === totalPages}
+                className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
+                  currentPage === totalPages
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-500 hover:bg-gray-50'
+                }`}
+              >
+                Last
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
     );
   };
 
@@ -858,7 +1110,7 @@ const JobRequestsPage = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredRequests.map((request) => (
+            {paginatedRequests.map((request) => (
               <tr key={request.id} className="hover:bg-gray-50 cursor-pointer">
                 <td 
                   className="px-6 py-4 whitespace-nowrap"
@@ -931,6 +1183,9 @@ const JobRequestsPage = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      <Pagination />
 
       {/* User Details Modal */}
       {selectedRequest && (

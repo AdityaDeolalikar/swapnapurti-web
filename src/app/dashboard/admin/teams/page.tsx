@@ -38,6 +38,8 @@ const TeamsPage = () => {
   const [editFormData, setEditFormData] = useState<TeamMember | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [addMode, setAddMode] = useState<'select' | 'manual'>('select');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6);
   const [newMemberData, setNewMemberData] = useState<Partial<TeamMember>>({
     status: 'active',
     joinedDate: new Date().toISOString().split('T')[0],
@@ -103,6 +105,155 @@ const TeamsPage = () => {
       department: 'Marketing',
       bloodGroup: 'AB+',
       district: 'Thane'
+    },
+    {
+      id: '5',
+      name: 'Rahul Sharma',
+      role: 'Sales Manager',
+      email: 'rahul.sharma@swapnapurti.com',
+      phone: '+91 98765 43213',
+      status: 'active',
+      joinedDate: '2023-05-15',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Sales',
+      bloodGroup: 'B-',
+      organization: 'Swapnapurti Academy',
+      district: 'Pune'
+    },
+    {
+      id: '6',
+      name: 'Priya Desai',
+      role: 'Event Manager',
+      email: 'priya.desai@swapnapurti.com',
+      phone: '+91 98765 43214',
+      status: 'active',
+      joinedDate: '2023-06-01',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Events',
+      bloodGroup: 'O-',
+      district: 'Mumbai'
+    },
+    {
+      id: '7',
+      name: 'David Wilson',
+      role: 'Finance Manager',
+      email: 'david.wilson@swapnapurti.com',
+      phone: '+1 (555) 567-8901',
+      status: 'inactive',
+      joinedDate: '2023-03-25',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Finance',
+      bloodGroup: 'A-',
+      district: 'Nashik'
+    },
+    {
+      id: '8',
+      name: 'Anita Patel',
+      role: 'Promoting Manager',
+      email: 'anita.patel@swapnapurti.com',
+      phone: '+91 98765 43215',
+      status: 'active',
+      joinedDate: '2023-07-10',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Marketing',
+      bloodGroup: 'AB-',
+      organization: 'Marketing Solutions',
+      district: 'Thane'
+    },
+    {
+      id: '9',
+      name: 'James Anderson',
+      role: 'Sales Manager',
+      email: 'james.anderson@swapnapurti.com',
+      phone: '+1 (555) 678-9012',
+      status: 'active',
+      joinedDate: '2023-08-01',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Sales',
+      bloodGroup: 'O+',
+      district: 'Pune'
+    },
+    {
+      id: '10',
+      name: 'Neha Gupta',
+      role: 'Event Manager',
+      email: 'neha.gupta@swapnapurti.com',
+      phone: '+91 98765 43216',
+      status: 'active',
+      joinedDate: '2023-09-15',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Events',
+      bloodGroup: 'B+',
+      organization: 'Event Solutions Inc',
+      district: 'Mumbai'
+    },
+    {
+      id: '11',
+      name: 'Robert Martinez',
+      role: 'Finance Manager',
+      email: 'robert.martinez@swapnapurti.com',
+      phone: '+1 (555) 789-0123',
+      status: 'active',
+      joinedDate: '2023-10-01',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Finance',
+      bloodGroup: 'A+',
+      district: 'Nashik'
+    },
+    {
+      id: '12',
+      name: 'Sneha Kumar',
+      role: 'Promoting Manager',
+      email: 'sneha.kumar@swapnapurti.com',
+      phone: '+91 98765 43217',
+      status: 'active',
+      joinedDate: '2023-11-20',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Marketing',
+      bloodGroup: 'AB+',
+      organization: 'Marketing Solutions',
+      district: 'Thane'
+    },
+    {
+      id: '13',
+      name: 'William Taylor',
+      role: 'Sales Manager',
+      email: 'william.taylor@swapnapurti.com',
+      phone: '+1 (555) 890-1234',
+      status: 'inactive',
+      joinedDate: '2023-12-05',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Sales',
+      bloodGroup: 'O-',
+      district: 'Pune'
+    },
+    {
+      id: '14',
+      name: 'Meera Shah',
+      role: 'Event Manager',
+      email: 'meera.shah@swapnapurti.com',
+      phone: '+91 98765 43218',
+      status: 'active',
+      joinedDate: '2024-01-10',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Events',
+      bloodGroup: 'B-',
+      organization: 'Event Solutions Inc',
+      district: 'Mumbai'
+    },
+    {
+      id: '15',
+      name: 'Thomas Brown',
+      role: 'Managing Director',
+      email: 'thomas.brown@swapnapurti.com',
+      phone: '+1 (555) 901-2345',
+      status: 'active',
+      joinedDate: '2024-02-01',
+      avatar: 'https://via.placeholder.com/150',
+      department: 'Executive Management',
+      bloodGroup: 'A-',
+      organization: 'Swapnapurti Academy',
+      district: 'Nashik'
     }
   ]);
 
@@ -147,6 +298,15 @@ const TeamsPage = () => {
       member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.department.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+  // Calculate pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredMembers.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
+
+  // Change page
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   // Filter pending members based on search query
   const filteredPendingMembers = pendingMembers.filter(member => 
@@ -459,8 +619,8 @@ const TeamsPage = () => {
         </div>
 
         {/* Team Members Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMembers.map((member, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {currentItems.map((member, index) => (
             <motion.div
               key={member.id}
               initial={{ opacity: 0, y: 20 }}
@@ -515,6 +675,87 @@ const TeamsPage = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Pagination */}
+        {filteredMembers.length > itemsPerPage && (
+          <div className="flex justify-center items-center space-x-2 py-4">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-3 py-1 rounded-lg transition-colors duration-200 ${
+                currentPage === 1
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+              }`}
+            >
+              Previous
+            </button>
+            
+            <div className="flex items-center space-x-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => {
+                // Show ellipsis for many pages
+                if (totalPages > 7) {
+                  if (
+                    number === 1 ||
+                    number === totalPages ||
+                    (number >= currentPage - 1 && number <= currentPage + 1)
+                  ) {
+                    return (
+                      <button
+                        key={number}
+                        onClick={() => paginate(number)}
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors duration-200 ${
+                          currentPage === number
+                            ? 'bg-[#03626b] text-white'
+                            : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                        }`}
+                      >
+                        {number}
+                      </button>
+                    );
+                  } else if (
+                    number === currentPage - 2 ||
+                    number === currentPage + 2
+                  ) {
+                    return (
+                      <span key={number} className="text-gray-400">
+                        ...
+                      </span>
+                    );
+                  }
+                  return null;
+                }
+
+                // Show all pages if total pages <= 7
+                return (
+                  <button
+                    key={number}
+                    onClick={() => paginate(number)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors duration-200 ${
+                      currentPage === number
+                        ? 'bg-[#03626b] text-white'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                    }`}
+                  >
+                    {number}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-1 rounded-lg transition-colors duration-200 ${
+                currentPage === totalPages
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Details Modal */}

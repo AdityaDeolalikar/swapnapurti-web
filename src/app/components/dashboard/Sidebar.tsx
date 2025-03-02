@@ -214,8 +214,8 @@ export default function Sidebar({ onSidebarStateChange }: SidebarProps) {
         icon: <FaUsers className="w-5 h-5" />,
       },
       {
-        name: "Online Shopping",
-        path: "/dashboard/admin/online-shop",
+        name: "Sales Manager",
+        path: "/dashboard/admin/sales-manager",
         icon: <FaShoppingBag className="w-5 h-5" />,
       },
       {

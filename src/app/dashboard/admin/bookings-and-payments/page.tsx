@@ -156,6 +156,329 @@ const UsersPage = () => {
       visitedCamps: 15,
       points: 4200,
       organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "9",
+      eventId: "000009",
+      name: "Aisha Khan",
+      email: "aisha@example.com",
+      mobileNumber: "+1 234 567 8908",
+      role: "Event Coordinator",
+      state: "Uttar Pradesh",
+      nationality: "Indian",
+      district: "Lucknow",
+      location: "Hazratganj",
+      bloodGroup: "B+",
+      gender: "Female",
+      dateOfBirth: "1996-08-12",
+      status: "active",
+      visitedCamps: 7,
+      points: 2100,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "10",
+      eventId: "000010",
+      name: "David Wilson",
+      email: "david@example.com",
+      mobileNumber: "+1 234 567 8909",
+      role: "Volunteer",
+      state: "Maharashtra",
+      nationality: "Indian",
+      district: "Pune",
+      location: "Koregaon Park",
+      bloodGroup: "A+",
+      gender: "Male",
+      dateOfBirth: "1993-11-25",
+      status: "active",
+      visitedCamps: 4,
+      points: 900,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "11",
+      eventId: "000011",
+      name: "Neha Sharma",
+      email: "neha@example.com",
+      mobileNumber: "+1 234 567 8910",
+      role: "Camp Manager",
+      state: "Delhi",
+      nationality: "Indian",
+      district: "South Delhi",
+      location: "Greater Kailash",
+      bloodGroup: "O+",
+      gender: "Female",
+      dateOfBirth: "1994-03-18",
+      status: "active",
+      visitedCamps: 9,
+      points: 2800,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "12",
+      eventId: "000012",
+      name: "Rahul Verma",
+      email: "rahul@example.com",
+      mobileNumber: "+1 234 567 8911",
+      role: "Event Manager",
+      state: "Gujarat",
+      nationality: "Indian",
+      district: "Surat",
+      location: "Vesu",
+      bloodGroup: "AB+",
+      gender: "Male",
+      dateOfBirth: "1992-07-30",
+      status: "active",
+      visitedCamps: 11,
+      points: 3400,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "13",
+      eventId: "000013",
+      name: "Ananya Patel",
+      email: "ananya@example.com",
+      mobileNumber: "+1 234 567 8912",
+      role: "Volunteer",
+      state: "Karnataka",
+      nationality: "Indian",
+      district: "Mysore",
+      location: "Gokulam",
+      bloodGroup: "B-",
+      gender: "Female",
+      dateOfBirth: "1997-09-15",
+      status: "active",
+      visitedCamps: 3,
+      points: 600,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "14",
+      eventId: "000014",
+      name: "Vikram Singh",
+      email: "vikram@example.com",
+      mobileNumber: "+1 234 567 8913",
+      role: "Marketing Coordinator",
+      state: "Punjab",
+      nationality: "Indian",
+      district: "Amritsar",
+      location: "Lawrence Road",
+      bloodGroup: "O-",
+      gender: "Male",
+      dateOfBirth: "1991-12-05",
+      status: "active",
+      visitedCamps: 8,
+      points: 2400,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "15",
+      eventId: "000015",
+      name: "Pooja Reddy",
+      email: "pooja@example.com",
+      mobileNumber: "+1 234 567 8914",
+      role: "Event Coordinator",
+      state: "Telangana",
+      nationality: "Indian",
+      district: "Hyderabad",
+      location: "Banjara Hills",
+      bloodGroup: "A-",
+      gender: "Female",
+      dateOfBirth: "1995-04-22",
+      status: "active",
+      visitedCamps: 6,
+      points: 1800,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "16",
+      eventId: "000016",
+      name: "Arjun Kumar",
+      email: "arjun@example.com",
+      mobileNumber: "+1 234 567 8915",
+      role: "Camp Coordinator",
+      state: "Bihar",
+      nationality: "Indian",
+      district: "Patna",
+      location: "Boring Road",
+      bloodGroup: "B+",
+      gender: "Male",
+      dateOfBirth: "1993-08-14",
+      status: "active",
+      visitedCamps: 5,
+      points: 1500,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "17",
+      eventId: "000017",
+      name: "Zara Ahmed",
+      email: "zara@example.com",
+      mobileNumber: "+1 234 567 8916",
+      role: "Volunteer",
+      state: "West Bengal",
+      nationality: "Indian",
+      district: "Kolkata",
+      location: "Salt Lake",
+      bloodGroup: "AB-",
+      gender: "Female",
+      dateOfBirth: "1996-11-30",
+      status: "active",
+      visitedCamps: 4,
+      points: 1200,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "18",
+      eventId: "000018",
+      name: "Karthik Menon",
+      email: "karthik@example.com",
+      mobileNumber: "+1 234 567 8917",
+      role: "Event Manager",
+      state: "Kerala",
+      nationality: "Indian",
+      district: "Trivandrum",
+      location: "Pattom",
+      bloodGroup: "O+",
+      gender: "Male",
+      dateOfBirth: "1994-02-28",
+      status: "active",
+      visitedCamps: 7,
+      points: 2100,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "19",
+      eventId: "000019",
+      name: "Riya Chatterjee",
+      email: "riya@example.com",
+      mobileNumber: "+1 234 567 8918",
+      role: "Marketing Manager",
+      state: "West Bengal",
+      nationality: "Indian",
+      district: "Kolkata",
+      location: "Park Street",
+      bloodGroup: "A+",
+      gender: "Female",
+      dateOfBirth: "1992-06-17",
+      status: "active",
+      visitedCamps: 10,
+      points: 3000,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "20",
+      eventId: "000020",
+      name: "Sanjay Gupta",
+      email: "sanjay@example.com",
+      mobileNumber: "+1 234 567 8919",
+      role: "Camp Manager",
+      state: "Madhya Pradesh",
+      nationality: "Indian",
+      district: "Bhopal",
+      location: "Arera Colony",
+      bloodGroup: "B+",
+      gender: "Male",
+      dateOfBirth: "1991-09-08",
+      status: "active",
+      visitedCamps: 12,
+      points: 3600,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "21",
+      eventId: "000021",
+      name: "Maya Iyer",
+      email: "maya@example.com",
+      mobileNumber: "+1 234 567 8920",
+      role: "Event Coordinator",
+      state: "Tamil Nadu",
+      nationality: "Indian",
+      district: "Coimbatore",
+      location: "RS Puram",
+      bloodGroup: "O-",
+      gender: "Female",
+      dateOfBirth: "1995-12-12",
+      status: "active",
+      visitedCamps: 6,
+      points: 1800,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "22",
+      eventId: "000022",
+      name: "Rajesh Kumar",
+      email: "rajesh@example.com",
+      mobileNumber: "+1 234 567 8921",
+      role: "Volunteer",
+      state: "Uttar Pradesh",
+      nationality: "Indian",
+      district: "Varanasi",
+      location: "Assi Ghat",
+      bloodGroup: "AB+",
+      gender: "Male",
+      dateOfBirth: "1997-03-25",
+      status: "active",
+      visitedCamps: 3,
+      points: 900,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "23",
+      eventId: "000023",
+      name: "Priya Malhotra",
+      email: "priyam@example.com",
+      mobileNumber: "+1 234 567 8922",
+      role: "Marketing Coordinator",
+      state: "Haryana",
+      nationality: "Indian",
+      district: "Gurgaon",
+      location: "Cyber City",
+      bloodGroup: "A-",
+      gender: "Female",
+      dateOfBirth: "1994-08-19",
+      status: "active",
+      visitedCamps: 8,
+      points: 2400,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "24",
+      eventId: "000024",
+      name: "Arun Nair",
+      email: "arun@example.com",
+      mobileNumber: "+1 234 567 8923",
+      role: "Camp Coordinator",
+      state: "Kerala",
+      nationality: "Indian",
+      district: "Kochi",
+      location: "Marine Drive",
+      bloodGroup: "B-",
+      gender: "Male",
+      dateOfBirth: "1993-05-14",
+      status: "active",
+      visitedCamps: 9,
+      points: 2700,
+      organization: "Swapnapurti Foundation"
+    },
+    {
+      id: "25",
+      eventId: "000025",
+      name: "Shreya Desai",
+      email: "shreya@example.com",
+      mobileNumber: "+1 234 567 8924",
+      role: "Event Manager",
+      state: "Gujarat",
+      nationality: "Indian",
+      district: "Vadodara",
+      location: "Alkapuri",
+      bloodGroup: "O+",
+      gender: "Female",
+      dateOfBirth: "1992-10-31",
+      status: "active",
+      visitedCamps: 11,
+      points: 3300,
+      organization: "Swapnapurti Foundation"
     }
   ]);
 
@@ -784,6 +1107,79 @@ const UsersPage = () => {
     setSelectedCategory(category === selectedCategory ? 'all' : category);
   };
 
+  // Add pagination state
+  const [categoryPagination, setCategoryPagination] = useState({
+    postponed: 1,
+    upcoming: 1,
+    ongoing: 1,
+    backdated: 1
+  });
+
+  const ITEMS_PER_PAGE = 6;
+
+  // Pagination component
+  const Pagination = ({ 
+    currentPage, 
+    totalPages, 
+    onPageChange,
+    category 
+  }: { 
+    currentPage: number; 
+    totalPages: number; 
+    onPageChange: (page: number) => void;
+    category: string;
+  }) => {
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="flex items-center justify-center space-x-2 mt-6">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`p-2 rounded-lg transition-all duration-200 ${
+            currentPage === 1
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-white text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100'
+          }`}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <div className="flex items-center space-x-1">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => onPageChange(page)}
+              className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                currentPage === page
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-white text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100'
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`p-2 rounded-lg transition-all duration-200 ${
+            currentPage === totalPages
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-white text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100'
+          }`}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4 md:p-6 lg:p-8">
       {/* Add Modal component */}
@@ -1194,6 +1590,19 @@ const UsersPage = () => {
               if (users.length === 0) return null;
 
               const config = categoryConfig[category as keyof typeof categoryConfig];
+              
+              // Calculate pagination
+              const currentPage = categoryPagination[category as keyof typeof categoryPagination];
+              const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
+              const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+              const paginatedUsers = users.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+              const handlePageChange = (page: number) => {
+                setCategoryPagination(prev => ({
+                  ...prev,
+                  [category]: page
+                }));
+              };
 
               return (
                 <div key={category} className="space-y-4">
@@ -1208,8 +1617,8 @@ const UsersPage = () => {
                   </div>
 
                   {/* Users Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {users.map((user) => (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+                    {paginatedUsers.map((user) => (
                       <UserCard
                         key={user.id}
                         {...user}
@@ -1218,6 +1627,14 @@ const UsersPage = () => {
                       />
                     ))}
                   </div>
+
+                  {/* Pagination */}
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    category={category}
+                  />
                 </div>
               );
             });

@@ -198,6 +198,9 @@ const AddOrganization = () => {
     organization: null
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+
   const [districts, setDistricts] = useState<Option[]>(mockDistricts);
   const [organizationOptions, setOrganizationOptions] = useState<Option[]>(mockOrganizations);
   const [organizations, setOrganizations] = useState<Organization[]>(initialData);
@@ -215,6 +218,25 @@ const AddOrganization = () => {
 
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
+
+  // Calculate pagination values
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredOrganizations.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredOrganizations.length / itemsPerPage);
+
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Add this function to handle page changes
+  const handlePageChange = (direction: 'prev' | 'next') => {
+    if (direction === 'prev' && currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+    } else if (direction === 'next' && currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
 
   // Filter organizations based on search term and selected district
   useEffect(() => {
@@ -547,7 +569,7 @@ const AddOrganization = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredOrganizations.map((item) => (
+                {currentItems.map((item) => (
                   <tr key={item.id} className="hover:bg-gray-50 transition-colors duration-150">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.id}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.district}</td>
@@ -644,6 +666,66 @@ const AddOrganization = () => {
                 )}
               </tbody>
             </table>
+
+            {/* Pagination Controls */}
+            {filteredOrganizations.length > 0 && (
+              <div className="px-6 py-4 bg-white border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center text-sm text-gray-500">
+                    <span>
+                      Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredOrganizations.length)} of {filteredOrganizations.length} entries
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handlePageChange('prev')}
+                      disabled={currentPage === 1}
+                      className={`inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium ${
+                        currentPage === 1
+                          ? 'text-gray-400 bg-gray-50 cursor-not-allowed'
+                          : 'text-gray-700 bg-white hover:bg-gray-50 active:bg-gray-100'
+                      } transition-colors duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                    >
+                      <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                      Previous
+                    </button>
+                    
+                    <div className="flex items-center space-x-2">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                        <button
+                          key={number}
+                          onClick={() => paginate(number)}
+                          className={`inline-flex items-center justify-center w-8 h-8 border ${
+                            currentPage === number
+                              ? 'border-blue-500 bg-blue-50 text-blue-600'
+                              : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                          } rounded-md text-sm font-medium transition-colors duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                        >
+                          {number}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => handlePageChange('next')}
+                      disabled={currentPage === totalPages}
+                      className={`inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium ${
+                        currentPage === totalPages
+                          ? 'text-gray-400 bg-gray-50 cursor-not-allowed'
+                          : 'text-gray-700 bg-white hover:bg-gray-50 active:bg-gray-100'
+                      } transition-colors duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                    >
+                      Next
+                      <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

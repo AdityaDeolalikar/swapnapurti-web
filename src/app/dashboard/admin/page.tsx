@@ -107,11 +107,33 @@ const AdminDashboard = () => {
   const [userData] = useState([
     { id: 1, name: 'John Doe', district: 'Mumbai', bloodGroup: 'A+', organization: 'Org 1', gender: 'Male' },
     { id: 2, name: 'Jane Smith', district: 'Pune', bloodGroup: 'B+', organization: 'Org 2', gender: 'Female' },
-    { id: 3, name: 'Jane Smith', district: 'Nagpur', bloodGroup: 'O+', organization: 'Org 2', gender: 'Female' },
-    { id: 4, name: 'Jane Smith', district: 'Nashik', bloodGroup: 'A-', organization: 'Org 2', gender: 'Female' },
-    { id: 5, name: 'Jane Smith', district: 'Ahilyanagar', bloodGroup: 'A-', organization: 'Org 2', gender: 'Female' },
-    // Add more mock data as needed
+    { id: 3, name: 'Mike Johnson', district: 'Nagpur', bloodGroup: 'O+', organization: 'Org 2', gender: 'Male' },
+    { id: 4, name: 'Sarah Wilson', district: 'Nashik', bloodGroup: 'A-', organization: 'Org 3', gender: 'Female' },
+    { id: 5, name: 'David Brown', district: 'Ahilyanagar', bloodGroup: 'A-', organization: 'Org 2', gender: 'Male' },
+    { id: 6, name: 'Emma Davis', district: 'Mumbai', bloodGroup: 'AB+', organization: 'Org 1', gender: 'Female' },
+    { id: 7, name: 'James Wilson', district: 'Pune', bloodGroup: 'O-', organization: 'Org 4', gender: 'Male' },
+    { id: 8, name: 'Olivia Taylor', district: 'Nagpur', bloodGroup: 'B-', organization: 'Org 3', gender: 'Female' },
+    { id: 9, name: 'William Lee', district: 'Mumbai', bloodGroup: 'A+', organization: 'Org 2', gender: 'Male' },
+    { id: 10, name: 'Sophia Chen', district: 'Nashik', bloodGroup: 'AB-', organization: 'Org 1', gender: 'Female' },
+    { id: 11, name: 'Lucas Martin', district: 'Pune', bloodGroup: 'B+', organization: 'Org 4', gender: 'Male' },
+    { id: 12, name: 'Ava White', district: 'Nagpur', bloodGroup: 'O+', organization: 'Org 2', gender: 'Female' },
+    { id: 13, name: 'Ethan Clark', district: 'Mumbai', bloodGroup: 'A-', organization: 'Org 3', gender: 'Male' },
+    { id: 14, name: 'Isabella King', district: 'Ahilyanagar', bloodGroup: 'B-', organization: 'Org 1', gender: 'Female' },
+    { id: 15, name: 'Mason Scott', district: 'Nashik', bloodGroup: 'AB+', organization: 'Org 4', gender: 'Male' },
+    { id: 16, name: 'Mia Rodriguez', district: 'Pune', bloodGroup: 'O-', organization: 'Org 2', gender: 'Female' },
+    { id: 17, name: 'Noah Turner', district: 'Mumbai', bloodGroup: 'A+', organization: 'Org 3', gender: 'Male' },
+    { id: 18, name: 'Charlotte Adams', district: 'Nagpur', bloodGroup: 'B+', organization: 'Org 1', gender: 'Female' },
+    { id: 19, name: 'Liam Foster', district: 'Nashik', bloodGroup: 'O+', organization: 'Org 4', gender: 'Male' },
+    { id: 20, name: 'Amelia Cooper', district: 'Ahilyanagar', bloodGroup: 'AB-', organization: 'Org 2', gender: 'Female' },
+    { id: 21, name: 'Benjamin Hall', district: 'Mumbai', bloodGroup: 'A-', organization: 'Org 1', gender: 'Male' },
+    { id: 22, name: 'Harper Morgan', district: 'Pune', bloodGroup: 'B-', organization: 'Org 3', gender: 'Female' },
+    { id: 23, name: 'Henry Phillips', district: 'Nagpur', bloodGroup: 'O-', organization: 'Org 2', gender: 'Male' },
+    { id: 24, name: 'Evelyn Carter', district: 'Nashik', bloodGroup: 'AB+', organization: 'Org 4', gender: 'Female' },
+    { id: 25, name: 'Alexander Ward', district: 'Mumbai', bloodGroup: 'A+', organization: 'Org 1', gender: 'Male' },
   ]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const entriesPerPage = 10;
 
   const handleFilterChange = (filterName: string, value: string) => {
     setFilters(prev => ({
@@ -612,6 +634,23 @@ const AdminDashboard = () => {
     } : {}),
   });
 
+  // Calculate pagination
+  const filteredData = userData.filter(user => {
+    return (!filters.district || user.district === filters.district) &&
+           (!filters.bloodGroup || user.bloodGroup === filters.bloodGroup) &&
+           (!filters.organization || user.organization === filters.organization) &&
+           (!filters.gender || user.gender === filters.gender);
+  });
+
+  const totalPages = Math.ceil(filteredData.length / entriesPerPage);
+  const indexOfLastEntry = currentPage * entriesPerPage;
+  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
+  const currentEntries = filteredData.slice(indexOfFirstEntry, indexOfLastEntry);
+
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div className="p-4 md:p-3 md:ml-1">
       <motion.h1 
@@ -845,9 +884,9 @@ const AdminDashboard = () => {
 
         {/* Preview Table */}
         <div className="mt-6">
-          <div className="max-h-[240px] overflow-y-auto">
+          <div className="overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-200">
-              <thead className="bg-gray-50 sticky top-0">
+              <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">District</th>
@@ -857,32 +896,64 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {userData
-                  .filter(user => {
-                    return (!filters.district || user.district === filters.district) &&
-                           (!filters.bloodGroup || user.bloodGroup === filters.bloodGroup) &&
-                           (!filters.organization || user.organization === filters.organization) &&
-                           (!filters.gender || user.gender === filters.gender);
-                  })
-                  .map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.district}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.bloodGroup}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.organization}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.gender}</td>
-                    </tr>
-                  ))}
+                {currentEntries.map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.district}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.bloodGroup}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.organization}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.gender}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
-          {userData.filter(user => {
-            return (!filters.district || user.district === filters.district) &&
-                   (!filters.bloodGroup || user.bloodGroup === filters.bloodGroup) &&
-                   (!filters.organization || user.organization === filters.organization) &&
-                   (!filters.gender || user.gender === filters.gender);
-          }).length === 0 && (
+
+          {filteredData.length === 0 ? (
             <div className="text-center py-4 text-gray-500">No data matches the selected filters</div>
+          ) : (
+            <div className="mt-4 flex flex-col sm:flex-row justify-between items-center px-4">
+              <div className="text-sm text-gray-700 mb-4 sm:mb-0">
+                Showing {indexOfFirstEntry + 1} to {Math.min(indexOfLastEntry, filteredData.length)} of {filteredData.length} entries
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`px-3 py-1 rounded-md ${
+                    currentPage === 1
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-white text-blue-600 hover:bg-blue-50'
+                  } border border-gray-300`}
+                >
+                  Previous
+                </button>
+                {[...Array(totalPages)].map((_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => paginate(index + 1)}
+                    className={`hidden sm:block px-3 py-1 rounded-md border ${
+                      currentPage === index + 1
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-white text-blue-600 hover:bg-blue-50'
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`px-3 py-1 rounded-md ${
+                    currentPage === totalPages
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-white text-blue-600 hover:bg-blue-50'
+                  } border border-gray-300`}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </motion.div>

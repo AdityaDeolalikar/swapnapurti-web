@@ -155,6 +155,45 @@ Day 2:
     fee: 6000,
     spots: `${28}/${30}`,
     image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D"
+  },
+  {
+    id: 10,
+    title: "Wildlife Photography Camp",
+    description: "Learn wildlife photography techniques in natural habitats.",
+    location: "Bandipur, Karnataka",
+    date: "20-25 April, 2024",
+    district: "Chamarajanagar",
+    status: "upcoming",
+    eligibility: "all",
+    fee: 7500,
+    spots: `${15}/${30}`,
+    image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D"
+  },
+  {
+    id: 11,
+    title: "Rock Climbing Workshop",
+    description: "Master the art of rock climbing with expert instructors.",
+    location: "Hampi, Karnataka",
+    date: "5-10 May, 2024",
+    district: "Ballari",
+    status: "upcoming",
+    eligibility: "all",
+    fee: 5500,
+    spots: `${20}/${40}`,
+    image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D"
+  },
+  {
+    id: 12,
+    title: "Riverside Camping Experience",
+    description: "Camp along the beautiful riverside and learn water activities.",
+    location: "Gokarna, Karnataka",
+    date: "15-20 May, 2024",
+    district: "Uttara Kannada",
+    status: "upcoming",
+    eligibility: "all",
+    fee: 4500,
+    spots: `${25}/${35}`,
+    image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D"
   }
 ];
 
@@ -213,6 +252,34 @@ Day 2:
     fee: 6500,
     spots: `${32}/${35}`,
     image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D"
+  },
+  {
+    id: 8,
+    title: "Forest Survival Camp",
+    description: "Learn essential survival skills in dense forest environments.",
+    location: "Dandeli, Karnataka",
+    district: "Dandeli",
+    date: "8-12 March, 2024",
+    status: "ongoing",
+    eligibility: "all",
+    fee: 5500,
+    spots: `${30}/${30}`,
+    image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D",
+    students: []
+  },
+  {
+    id: 9,
+    title: "Mountain Biking Camp",
+    description: "Experience thrilling mountain biking adventures.",
+    location: "Munnar, Kerala",
+    district: "Idukki",
+    date: "7-11 March, 2024",
+    status: "ongoing",
+    eligibility: "all",
+    fee: 6000,
+    spots: `${25}/${25}`,
+    image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D",
+    students: []
   }
 ];
 
@@ -250,6 +317,45 @@ const pastEvents: Event[] = [
     status: "completed",
     eligibility: "female",
     fee: 7500,
+    spots: `${35}/${35}`,
+    image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D"
+  },
+  {
+    id: 13,
+    title: "Beach Camping Adventure",
+    description: "Experience camping on pristine beaches with water sports.",
+    location: "Gokarna, Karnataka",
+    date: "1-5 January, 2024",
+    district: "Uttara Kannada",
+    status: "completed",
+    eligibility: "all",
+    fee: 5000,
+    spots: `${40}/${40}`,
+    image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D"
+  },
+  {
+    id: 14,
+    title: "Himalayan Trek",
+    description: "Trek through the majestic Himalayas with experienced guides.",
+    location: "Manali, Himachal Pradesh",
+    date: "10-20 January, 2024",
+    district: "Kullu",
+    status: "completed",
+    eligibility: "all",
+    fee: 8500,
+    spots: `${30}/${30}`,
+    image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D"
+  },
+  {
+    id: 15,
+    title: "Jungle Safari Camp",
+    description: "Explore wildlife in their natural habitat with expert naturalists.",
+    location: "Ranthambore, Rajasthan",
+    date: "5-10 February, 2024",
+    district: "Sawai Madhopur",
+    status: "completed",
+    eligibility: "all",
+    fee: 7000,
     spots: `${35}/${35}`,
     image: "https://images.unsplash.com/photo-1528892677828-8862216f3665?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y2FtcHxlbnwwfHwwfHx8MA%3D%3D"
   }
@@ -321,6 +427,80 @@ const UpcomingEventsPage = () => {
     })),
     past: pastEvents
   });
+
+  const [currentPage, setCurrentPage] = useState({
+    ongoing: 1,
+    upcoming: 1,
+    past: 1
+  });
+  
+  const ITEMS_PER_PAGE = 3;
+
+  // Pagination helper function
+  const paginateEvents = (events: Event[], page: number) => {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    return events.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  };
+
+  // Get total pages for each category
+  const getTotalPages = (events: Event[]) => Math.ceil(events.length / ITEMS_PER_PAGE);
+
+  // Pagination component
+  const Pagination = ({ 
+    totalPages, 
+    currentPage, 
+    onPageChange,
+    category 
+  }: { 
+    totalPages: number; 
+    currentPage: number; 
+    onPageChange: (page: number) => void;
+    category: 'ongoing' | 'upcoming' | 'past';
+  }) => {
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="flex justify-center items-center space-x-2 mt-4 mb-8">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`px-3 py-1 rounded-lg ${
+            currentPage === 1
+              ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-500 text-white hover:bg-blue-600'
+          } transition-colors duration-200`}
+        >
+          Previous
+        </button>
+        
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <button
+            key={`${category}-${page}`}
+            onClick={() => onPageChange(page)}
+            className={`w-8 h-8 rounded-full ${
+              currentPage === page
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            } transition-colors duration-200`}
+          >
+            {page}
+          </button>
+        ))}
+        
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`px-3 py-1 rounded-lg ${
+            currentPage === totalPages
+              ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-500 text-white hover:bg-blue-600'
+          } transition-colors duration-200`}
+        >
+          Next
+        </button>
+      </div>
+    );
+  };
 
   const handleAttendanceChange = (attendanceKey: string, rating: number) => {
     const [eventDate, timeSlot, studentId] = attendanceKey.split('-');
@@ -483,6 +663,22 @@ const UpcomingEventsPage = () => {
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Update the filtered events to include pagination
+  const paginatedOngoingEvents = paginateEvents(
+    filteredOngoingEvents,
+    currentPage.ongoing
+  );
+
+  const paginatedUpcomingEvents = paginateEvents(
+    filteredUpcomingEvents,
+    currentPage.upcoming
+  );
+
+  const paginatedPastEvents = paginateEvents(
+    filteredPastEvents,
+    currentPage.past
+  );
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Header Section */}
@@ -539,7 +735,7 @@ const UpcomingEventsPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredOngoingEvents.map((event) => (
+          {paginatedOngoingEvents.map((event) => (
             <EventsCard
               key={event.id}
               {...event}
@@ -553,13 +749,20 @@ const UpcomingEventsPage = () => {
             />
           ))}
         </div>
+        
+        <Pagination
+          totalPages={getTotalPages(filteredOngoingEvents)}
+          currentPage={currentPage.ongoing}
+          onPageChange={(page) => setCurrentPage(prev => ({ ...prev, ongoing: page }))}
+          category="ongoing"
+        />
       </div>
 
       {/* Upcoming Events */}
       <div>
         <h2 className="text-2xl font-bold text-gray-900 mb-6">Upcoming Events</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredUpcomingEvents.map((event) => (
+          {paginatedUpcomingEvents.map((event) => (
             <div key={event.id} className="relative group">
               <EventsCard
                 {...event}
@@ -578,6 +781,13 @@ const UpcomingEventsPage = () => {
             </div>
           ))}
         </div>
+
+        <Pagination
+          totalPages={getTotalPages(filteredUpcomingEvents)}
+          currentPage={currentPage.upcoming}
+          onPageChange={(page) => setCurrentPage(prev => ({ ...prev, upcoming: page }))}
+          category="upcoming"
+        />
       </div>
 
       {/* Past Events */}
@@ -594,7 +804,7 @@ const UpcomingEventsPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPastEvents.map((event) => (
+          {paginatedPastEvents.map((event) => (
             <EventsCard
               key={event.id}
               {...event}
@@ -606,6 +816,13 @@ const UpcomingEventsPage = () => {
             />
           ))}
         </div>
+
+        <Pagination
+          totalPages={getTotalPages(filteredPastEvents)}
+          currentPage={currentPage.past}
+          onPageChange={(page) => setCurrentPage(prev => ({ ...prev, past: page }))}
+          category="past"
+        />
       </div>
 
       {/* Event Details Modal */}

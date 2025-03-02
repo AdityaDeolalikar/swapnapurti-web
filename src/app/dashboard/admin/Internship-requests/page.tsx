@@ -147,8 +147,130 @@ const mockRequests: RequestUser[] = [
     endDate: "2025-01-31",
     resumeUrl: "#",
     status: 'approved'
+  },
+  {
+    id: 11,
+    name: "Sarah Anderson",
+    type: 'internship',
+    role: "Full Stack Developer",
+    duration: "6 months",
+    location: "Mumbai",
+    startDate: "2024-07-01",
+    endDate: "2024-12-31",
+    resumeUrl: "#",
+    status: 'pending',
+    hasAppliedJoining: true,
+    hasAppliedThanking: false,
+    hasAppliedRecommendation: false
+  },
+  {
+    id: 12,
+    name: "David Lee",
+    type: 'apprenticeship',
+    role: "Mobile Developer",
+    duration: "11 months",
+    location: "Bangalore",
+    startDate: "2024-08-15",
+    endDate: "2025-07-15",
+    resumeUrl: "#",
+    status: 'approved'
+  },
+  {
+    id: 13,
+    name: "Emma Wilson",
+    type: 'internship',
+    role: "Data Scientist",
+    duration: "3 months",
+    location: "Pune",
+    startDate: "2024-09-01",
+    endDate: "2024-11-30",
+    resumeUrl: "#",
+    status: 'pending'
+  },
+  {
+    id: 14,
+    name: "Ryan Thompson",
+    type: 'apprenticeship',
+    role: "System Architect",
+    duration: "11 months",
+    location: "Hyderabad",
+    startDate: "2024-10-01",
+    endDate: "2025-09-01",
+    resumeUrl: "#",
+    status: 'approved'
+  },
+  {
+    id: 15,
+    name: "Sophia Chen",
+    type: 'internship',
+    role: "AI Engineer",
+    duration: "6 months",
+    location: "Mumbai",
+    startDate: "2024-11-15",
+    endDate: "2025-05-15",
+    resumeUrl: "#",
+    status: 'rejected'
+  },
+  {
+    id: 16,
+    name: "Lucas Garcia",
+    type: 'apprenticeship',
+    role: "DevOps Engineer",
+    duration: "11 months",
+    location: "Bangalore",
+    startDate: "2024-12-01",
+    endDate: "2025-11-01",
+    resumeUrl: "#",
+    status: 'pending'
+  },
+  {
+    id: 17,
+    name: "Isabella Kim",
+    type: 'internship',
+    role: "UX Researcher",
+    duration: "3 months",
+    location: "Delhi",
+    startDate: "2025-01-15",
+    endDate: "2025-04-15",
+    resumeUrl: "#",
+    status: 'approved'
+  },
+  {
+    id: 18,
+    name: "Ethan Patel",
+    type: 'apprenticeship',
+    role: "Security Engineer",
+    duration: "11 months",
+    location: "Chennai",
+    startDate: "2025-02-01",
+    endDate: "2026-01-01",
+    resumeUrl: "#",
+    status: 'pending'
+  },
+  {
+    id: 19,
+    name: "Ava Rodriguez",
+    type: 'internship',
+    role: "Product Designer",
+    duration: "6 months",
+    location: "Pune",
+    startDate: "2025-03-15",
+    endDate: "2025-09-15",
+    resumeUrl: "#",
+    status: 'approved'
+  },
+  {
+    id: 20,
+    name: "Noah Singh",
+    type: 'apprenticeship',
+    role: "ML Engineer",
+    duration: "11 months",
+    location: "Kolkata",
+    startDate: "2025-04-01",
+    endDate: "2026-03-01",
+    resumeUrl: "#",
+    status: 'rejected'
   }
-  // Add more mock data as needed
 ];
 
 // UserDetailsModal Component
@@ -612,6 +734,10 @@ const InternshipRequestsPage = () => {
   // Add state for selected user and modal
   const [selectedUser, setSelectedUser] = useState<RequestUser | null>(null);
 
+  // Add pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const requestsPerPage = 10;
+
   // Handle request type change
   const handleRequestTypeChange = (type: string) => {
     setRequestType(type);
@@ -678,6 +804,112 @@ const InternshipRequestsPage = () => {
            matchesDuration && matchesRole && matchesDateRange && 
            matchesApplicationStatus && matchesCertificateType && matchesRequestStatus;
   });
+
+  // Get current requests
+  const indexOfLastRequest = currentPage * requestsPerPage;
+  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
+  const currentRequests = filteredRequests.slice(indexOfFirstRequest, indexOfLastRequest);
+  const totalPages = Math.ceil(filteredRequests.length / requestsPerPage);
+
+  // Change page
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  // Pagination component
+  const Pagination = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <div className="flex items-center justify-between px-4 py-3 sm:px-6 bg-white border-t border-gray-200 rounded-b-xl">
+        <div className="flex-1 flex justify-between sm:hidden">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+              currentPage === 1
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+              currentPage === totalPages
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            Next
+          </button>
+        </div>
+        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm text-gray-700">
+              Showing{' '}
+              <span className="font-medium">{indexOfFirstRequest + 1}</span>
+              {' '}-{' '}
+              <span className="font-medium">
+                {Math.min(indexOfLastRequest, filteredRequests.length)}
+              </span>{' '}
+              of{' '}
+              <span className="font-medium">{filteredRequests.length}</span>{' '}
+              results
+            </p>
+          </div>
+          <div>
+            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${
+                  currentPage === 1
+                    ? 'text-gray-300 cursor-not-allowed'
+                    : 'text-gray-500 hover:bg-gray-50'
+                }`}
+              >
+                <span className="sr-only">Previous</span>
+                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
+              {pageNumbers.map((number) => (
+                <button
+                  key={number}
+                  onClick={() => paginate(number)}
+                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                    currentPage === number
+                      ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                  }`}
+                >
+                  {number}
+                </button>
+              ))}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
+                  currentPage === totalPages
+                    ? 'text-gray-300 cursor-not-allowed'
+                    : 'text-gray-500 hover:bg-gray-50'
+                }`}
+              >
+                <span className="sr-only">Next</span>
+                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   // Handle row click
   const handleRowClick = (user: RequestUser) => {
@@ -854,7 +1086,7 @@ const InternshipRequestsPage = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredRequests.map((request) => (
+              {currentRequests.map((request) => (
                 <tr 
                   key={request.id} 
                   className="hover:bg-gray-50 cursor-pointer transition-colors"
@@ -900,7 +1132,7 @@ const InternshipRequestsPage = () => {
                   </td>
                 </tr>
               ))}
-              {filteredRequests.length === 0 && (
+              {currentRequests.length === 0 && (
                 <tr>
                   <td colSpan={8} className="px-4 sm:px-6 py-4 text-center text-sm text-gray-500">
                     No requests found matching the selected filters
@@ -910,11 +1142,12 @@ const InternshipRequestsPage = () => {
             </tbody>
           </table>
         </div>
+        <Pagination />
       </div>
 
       {/* Requests Cards - Mobile Version */}
       <div className="sm:hidden space-y-4">
-        {filteredRequests.map((request) => (
+        {currentRequests.map((request) => (
           <div
             key={request.id}
             className="bg-white rounded-xl shadow-sm p-4 cursor-pointer hover:bg-gray-50 transition-colors"
@@ -971,11 +1204,12 @@ const InternshipRequestsPage = () => {
             </div>
           </div>
         ))}
-        {filteredRequests.length === 0 && (
+        {currentRequests.length === 0 && (
           <div className="bg-white rounded-xl shadow-sm p-4 text-center text-sm text-gray-500">
             No requests found matching the selected filters
           </div>
         )}
+        <Pagination />
       </div>
 
       {/* User Details Modal */}

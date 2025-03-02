@@ -23,6 +23,8 @@ const DonationRequests = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   // Mock data - replace with actual API call
   const donationRequests: DonationRequest[] = [
@@ -54,6 +56,92 @@ const DonationRequests = () => {
       description: 'Adventure training instructor - weekends',
       status: 'pending',
       date: '2024-03-18'
+    },
+    {
+      id: '4',
+      name: 'Sarah Wilson',
+      amount: 10000,
+      panCardNumber: 'PQRST3456U',
+      type: 'money',
+      status: 'approved',
+      date: '2024-03-17'
+    },
+    {
+      id: '5',
+      name: 'David Brown',
+      amount: 0,
+      panCardNumber: 'UVWXY7890Z',
+      type: 'goods',
+      description: 'Sleeping bags and camping stoves',
+      status: 'rejected',
+      date: '2024-03-16'
+    },
+    {
+      id: '6',
+      name: 'Emily Davis',
+      amount: 7500,
+      panCardNumber: 'BCDEF4567G',
+      type: 'money',
+      status: 'pending',
+      date: '2024-03-15'
+    },
+    {
+      id: '7',
+      name: 'Alex Turner',
+      amount: 0,
+      panCardNumber: 'GHIJK8901L',
+      type: 'services',
+      description: 'First aid training sessions',
+      status: 'approved',
+      date: '2024-03-14'
+    },
+    {
+      id: '8',
+      name: 'Lisa Anderson',
+      amount: 15000,
+      panCardNumber: 'MNOPQ2345R',
+      type: 'money',
+      status: 'pending',
+      date: '2024-03-13'
+    },
+    {
+      id: '9',
+      name: 'Tom Wilson',
+      amount: 0,
+      panCardNumber: 'RSTUV6789W',
+      type: 'goods',
+      description: 'Outdoor cooking equipment',
+      status: 'pending',
+      date: '2024-03-12'
+    },
+    {
+      id: '10',
+      name: 'Rachel Green',
+      amount: 0,
+      panCardNumber: 'WXYZA1234B',
+      type: 'services',
+      description: 'Weekend camping guide',
+      status: 'approved',
+      date: '2024-03-11'
+    },
+    {
+      id: '11',
+      name: 'Chris Martin',
+      amount: 12000,
+      panCardNumber: 'CDEFG5678H',
+      type: 'money',
+      status: 'rejected',
+      date: '2024-03-10'
+    },
+    {
+      id: '12',
+      name: 'Emma Thompson',
+      amount: 0,
+      panCardNumber: 'IJKLM9012N',
+      type: 'goods',
+      description: 'Solar-powered camping lights',
+      status: 'pending',
+      date: '2024-03-09'
     }
   ];
 
@@ -65,6 +153,18 @@ const DonationRequests = () => {
       (request.description?.toLowerCase() || '').includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+  const paginatedRequests = filteredRequests.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -203,13 +303,13 @@ const DonationRequests = () => {
 
       {/* Results Count */}
       <p className="text-sm text-gray-500 mb-6">
-        Showing {filteredRequests.length} {filteredRequests.length === 1 ? 'request' : 'requests'}
+        Showing {paginatedRequests.length} of {filteredRequests.length} {filteredRequests.length === 1 ? 'request' : 'requests'}
       </p>
 
       {/* Donation Request Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <AnimatePresence>
-          {filteredRequests.map((request) => (
+          {paginatedRequests.map((request) => (
             <motion.div
               key={request.id}
               initial={{ opacity: 0, y: 20 }}
@@ -256,6 +356,51 @@ const DonationRequests = () => {
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No requests found</h3>
           <p className="text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-8 flex justify-center items-center gap-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`p-2 rounded-lg border ${
+              currentPage === 1
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            Previous
+          </button>
+          
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+            <motion.button
+              key={pageNumber}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handlePageChange(pageNumber)}
+              className={`w-10 h-10 rounded-lg font-medium transition-all ${
+                currentPage === pageNumber
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border'
+              }`}
+            >
+              {pageNumber}
+            </motion.button>
+          ))}
+          
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`p-2 rounded-lg border ${
+              currentPage === totalPages
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            Next
+          </button>
         </div>
       )}
 
