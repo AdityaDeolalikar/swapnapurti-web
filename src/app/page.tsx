@@ -130,9 +130,9 @@ export default function Home() {
     <>
       {/* Toast Notification */}
       {showToast && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] bg-green-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg transition-all duration-300 flex items-center gap-2 text-sm sm:text-base mx-4">
+        <div className="fixed top-2 sm:top-4 left-1/2 transform -translate-x-1/2 z-[9999] bg-green-500 text-white px-3 sm:px-6 py-1.5 sm:py-3 rounded-lg shadow-lg transition-all duration-300 flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base mx-2 sm:mx-4">
           <svg
-            className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
+            className="w-3 h-3 sm:w-5 sm:h-5 flex-shrink-0"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -150,16 +150,16 @@ export default function Home() {
       )}
 
       {/* Fixed Enroll Button */}
-      <div className="fixed bottom-8 right-4 sm:right-8 z-50 animate-bounce-slow">
+      <div className="fixed bottom-4 sm:bottom-8 right-2 sm:right-8 z-50 animate-bounce-slow">
         <Link
           href="/register/step1"
-          className="group relative inline-flex items-center justify-center px-4 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full text-white font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-blue-500 hover:to-blue-600"
+          className="group relative inline-flex items-center justify-center px-3 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full text-white font-semibold text-sm sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-blue-500 hover:to-blue-600"
         >
           <span className="absolute inset-0 bg-white/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          <span className="relative flex items-center gap-2">
+          <span className="relative flex items-center gap-1 sm:gap-2">
             Enroll Now
             <svg
-              className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform duration-200"
+              className="w-3 h-3 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform duration-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -177,16 +177,16 @@ export default function Home() {
       </div>
 
       {/* Fixed SOS Button */}
-      <div className="fixed bottom-8 left-4 sm:left-8 z-50">
+      <div className="fixed bottom-4 sm:bottom-8 left-2 sm:left-8 z-50">
         <button
           onClick={handleSOSClick}
-          className="group relative inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-red-600 to-red-500 rounded-full text-white font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-red-500 hover:to-red-600 animate-pulse"
+          className="group relative inline-flex items-center justify-center px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-red-600 to-red-500 rounded-full text-white font-bold text-sm sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-red-500 hover:to-red-600 animate-pulse"
           aria-label="Copy emergency number"
         >
           <span className="absolute inset-0 bg-white/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          <span className="relative flex items-center gap-2">
+          <span className="relative flex items-center gap-1 sm:gap-2">
             <svg
-              className="w-5 h-5 sm:w-6 sm:h-6"
+              className="w-4 h-4 sm:w-6 sm:h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -229,14 +229,14 @@ export default function Home() {
           ))}
 
           {/* Slider Navigation */}
-          <div className="absolute inset-0 flex items-center justify-between px-4 sm:px-8">
+          <div className="absolute inset-0 flex items-center justify-between px-2 sm:px-8">
             <button
               onClick={prevSlide}
-              className="p-2 sm:p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
+              className="p-1.5 sm:p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
               aria-label="Previous slide"
             >
               <svg
-                className="w-6 h-6 sm:w-8 sm:h-8"
+                className="w-4 h-4 sm:w-8 sm:h-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -251,11 +251,11 @@ export default function Home() {
             </button>
             <button
               onClick={nextSlide}
-              className="p-2 sm:p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
+              className="p-1.5 sm:p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
               aria-label="Next slide"
             >
               <svg
-                className="w-6 h-6 sm:w-8 sm:h-8"
+                className="w-4 h-4 sm:w-8 sm:h-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -271,14 +271,14 @@ export default function Home() {
           </div>
 
           {/* Slide Indicators */}
-          <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
+          <div className="absolute bottom-4 sm:bottom-8 left-0 right-0 flex justify-center gap-1.5 sm:gap-2">
             {sliderData.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                className={`w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300 ${
                   index === currentSlide
-                    ? "bg-white w-8"
+                    ? "bg-white w-6 sm:w-8"
                     : "bg-white/50 hover:bg-white/80"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
@@ -291,8 +291,8 @@ export default function Home() {
         <Navbar />
 
         {/* Hero Content */}
-        <main className="relative pt-32 sm:pt-48 md:pt-56 lg:pt-72 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto text-center mt-40 md:mt-auto">
+        <main className="relative pt-16 sm:pt-32 md:pt-48 lg:pt-72 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto text-center mt-20 sm:mt-40 md:mt-auto">
             {sliderData.map((slide, index) => (
               <div
                 key={index}
@@ -302,15 +302,15 @@ export default function Home() {
                     : "opacity-0 transform translate-y-8"
                 }`}
               >
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-4 sm:mb-6">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold tracking-tight text-white mb-2 sm:mb-4 px-4">
                   {slide.title}
                 </h1>
-                <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 sm:mb-8 tracking-wide font-light max-w-3xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-4 sm:mb-6 tracking-wide font-light max-w-3xl mx-auto px-4">
                   {slide.subtitle}
                 </p>
                 <Link
                   href={slide.buttonLink}
-                  className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-base sm:text-lg tracking-wide transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 transform hover:scale-105"
+                  className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-5 sm:px-8 py-2 sm:py-3 rounded-full text-sm sm:text-lg tracking-wide transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 transform hover:scale-105"
                 >
                   {slide.buttonText}
                 </Link>
@@ -321,19 +321,19 @@ export default function Home() {
       </div>
 
       {/* Running Text Section */}
-      <div className="bg-blue-600 py-4 overflow-hidden relative">
-        <div className="animate-marquee whitespace-nowrap flex items-center justify-center gap-8 text-white">
-          <div className="flex items-center gap-8 mx-4">
-            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🏕️ Adventure Awaits</span>
-            <span className="text-lg sm:text-xl md:text-2xl font-semibold">⛺ Premium Camping Experience</span>
-            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🌲 Nature at its Best</span>
-            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🔥 Unforgettable Memories</span>
+      <div className="bg-blue-600 py-2 sm:py-4 overflow-hidden relative">
+        <div className="animate-marquee whitespace-nowrap flex items-center justify-center gap-4 sm:gap-8 text-white">
+          <div className="flex items-center gap-4 sm:gap-8 mx-2 sm:mx-4">
+            <span className="text-base sm:text-xl md:text-2xl font-semibold">🏕️ Adventure Awaits</span>
+            <span className="text-base sm:text-xl md:text-2xl font-semibold">⛺ Premium Camping</span>
+            <span className="text-base sm:text-xl md:text-2xl font-semibold">🌲 Nature at its Best</span>
+            <span className="text-base sm:text-xl md:text-2xl font-semibold">🔥 Memories</span>
           </div>
-          <div className="flex items-center gap-8 mx-4">
-            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🏕️ Adventure Awaits</span>
-            <span className="text-lg sm:text-xl md:text-2xl font-semibold">⛺ Premium Camping Experience</span>
-            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🌲 Nature at its Best</span>
-            <span className="text-lg sm:text-xl md:text-2xl font-semibold">🔥 Unforgettable Memories</span>
+          <div className="flex items-center gap-4 sm:gap-8 mx-2 sm:mx-4">
+            <span className="text-base sm:text-xl md:text-2xl font-semibold">🏕️ Adventure Awaits</span>
+            <span className="text-base sm:text-xl md:text-2xl font-semibold">⛺ Premium Camping</span>
+            <span className="text-base sm:text-xl md:text-2xl font-semibold">🌲 Nature at its Best</span>
+            <span className="text-base sm:text-xl md:text-2xl font-semibold">🔥 Memories</span>
           </div>
         </div>
       </div>
