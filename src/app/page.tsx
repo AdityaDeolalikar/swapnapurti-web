@@ -153,7 +153,7 @@ export default function Home() {
       <div className="fixed bottom-4 sm:bottom-8 right-2 sm:right-8 z-50 animate-bounce-slow">
         <Link
           href="/register/step1"
-          className="group relative inline-flex items-center justify-center px-3 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full text-white font-semibold text-sm sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-blue-500 hover:to-blue-600"
+          className="group relative inline-flex items-center justify-center px-2 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full text-white font-semibold text-xs sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-blue-500 hover:to-blue-600"
         >
           <span className="absolute inset-0 bg-white/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
           <span className="relative flex items-center gap-1 sm:gap-2">
@@ -180,7 +180,7 @@ export default function Home() {
       <div className="fixed bottom-4 sm:bottom-8 left-2 sm:left-8 z-50">
         <button
           onClick={handleSOSClick}
-          className="group relative inline-flex items-center justify-center px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-red-600 to-red-500 rounded-full text-white font-bold text-sm sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-red-500 hover:to-red-600 animate-pulse"
+          className="group relative inline-flex items-center justify-center px-2 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-red-600 to-red-500 rounded-full text-white font-bold text-xs sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-red-500 hover:to-red-600 animate-pulse"
           aria-label="Copy emergency number"
         >
           <span className="absolute inset-0 bg-white/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
@@ -205,7 +205,7 @@ export default function Home() {
       </div>
 
       {/* Hero Image Slider Section */}
-      <div className="relative min-h-screen">
+      <div className="relative min-h-screen w-full overflow-x-hidden">
         {/* Image Slider */}
         <div className="absolute inset-0 w-full h-full">
           {sliderData.map((slide, index) => (
@@ -229,14 +229,14 @@ export default function Home() {
           ))}
 
           {/* Slider Navigation */}
-          <div className="absolute inset-0 flex items-center justify-between px-2 sm:px-8">
+          <div className="absolute inset-0 flex items-center justify-between px-1 sm:px-8">
             <button
               onClick={prevSlide}
-              className="p-1.5 sm:p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
+              className="p-1 sm:p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
               aria-label="Previous slide"
             >
               <svg
-                className="w-4 h-4 sm:w-8 sm:h-8"
+                className="w-3 h-3 sm:w-8 sm:h-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -251,11 +251,11 @@ export default function Home() {
             </button>
             <button
               onClick={nextSlide}
-              className="p-1.5 sm:p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
+              className="p-1 sm:p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
               aria-label="Next slide"
             >
               <svg
-                className="w-4 h-4 sm:w-8 sm:h-8"
+                className="w-3 h-3 sm:w-8 sm:h-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -291,7 +291,7 @@ export default function Home() {
         <Navbar />
 
         {/* Hero Content */}
-        <main className="relative pt-16 sm:pt-32 md:pt-48 lg:pt-72 px-4 sm:px-6 lg:px-8">
+        <main className="relative pt-16 sm:pt-32 md:pt-48 lg:pt-72 px-2 sm:px-6 lg:px-8 w-full">
           <div className="max-w-7xl mx-auto text-center mt-20 sm:mt-40 md:mt-auto">
             {sliderData.map((slide, index) => (
               <div
@@ -302,10 +302,10 @@ export default function Home() {
                     : "opacity-0 transform translate-y-8"
                 }`}
               >
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold tracking-tight text-white mb-2 sm:mb-4 px-4">
+                <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-6xl font-bold tracking-tight text-white mb-2 sm:mb-4 px-2 sm:px-4">
                   {slide.title}
                 </h1>
-                <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-4 sm:mb-6 tracking-wide font-light max-w-3xl mx-auto px-4">
+                <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-4 sm:mb-6 tracking-wide font-light max-w-3xl mx-auto px-2 sm:px-4">
                   {slide.subtitle}
                 </p>
                 <Link
@@ -321,19 +321,19 @@ export default function Home() {
       </div>
 
       {/* Running Text Section */}
-      <div className="bg-blue-600 py-2 sm:py-4 overflow-hidden relative">
-        <div className="animate-marquee whitespace-nowrap flex items-center justify-center gap-4 sm:gap-8 text-white">
-          <div className="flex items-center gap-4 sm:gap-8 mx-2 sm:mx-4">
-            <span className="text-base sm:text-xl md:text-2xl font-semibold">🏕️ Adventure Awaits</span>
-            <span className="text-base sm:text-xl md:text-2xl font-semibold">⛺ Premium Camping</span>
-            <span className="text-base sm:text-xl md:text-2xl font-semibold">🌲 Nature at its Best</span>
-            <span className="text-base sm:text-xl md:text-2xl font-semibold">🔥 Memories</span>
+      <div className="bg-blue-600 py-2 sm:py-4 overflow-hidden relative w-full">
+        <div className="animate-marquee whitespace-nowrap flex items-center justify-center gap-2 sm:gap-8 text-white">
+          <div className="flex items-center gap-2 sm:gap-8 mx-1 sm:mx-4">
+            <span className="text-sm sm:text-xl md:text-2xl font-semibold">🏕️ Adventure Awaits</span>
+            <span className="text-sm sm:text-xl md:text-2xl font-semibold">⛺ Premium Camping</span>
+            <span className="text-sm sm:text-xl md:text-2xl font-semibold">🌲 Nature at its Best</span>
+            <span className="text-sm sm:text-xl md:text-2xl font-semibold">🔥 Memories</span>
           </div>
-          <div className="flex items-center gap-4 sm:gap-8 mx-2 sm:mx-4">
-            <span className="text-base sm:text-xl md:text-2xl font-semibold">🏕️ Adventure Awaits</span>
-            <span className="text-base sm:text-xl md:text-2xl font-semibold">⛺ Premium Camping</span>
-            <span className="text-base sm:text-xl md:text-2xl font-semibold">🌲 Nature at its Best</span>
-            <span className="text-base sm:text-xl md:text-2xl font-semibold">🔥 Memories</span>
+          <div className="flex items-center gap-2 sm:gap-8 mx-1 sm:mx-4">
+            <span className="text-sm sm:text-xl md:text-2xl font-semibold">🏕️ Adventure Awaits</span>
+            <span className="text-sm sm:text-xl md:text-2xl font-semibold">⛺ Premium Camping</span>
+            <span className="text-sm sm:text-xl md:text-2xl font-semibold">🌲 Nature at its Best</span>
+            <span className="text-sm sm:text-xl md:text-2xl font-semibold">🔥 Memories</span>
           </div>
         </div>
       </div>
@@ -345,23 +345,23 @@ export default function Home() {
         animate={aboutInView ? "visible" : "hidden"}
         variants={containerVariants}
         id="about"
-        className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white"
+        className="py-12 sm:py-16 md:py-20 px-2 sm:px-6 lg:px-8 bg-white w-full overflow-x-hidden"
       >
         <div className="max-w-7xl mx-auto">
-          <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-3 sm:mb-4">
+          <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 sm:mb-4">
               About <span className="text-blue-600">Us</span>
             </h2>
-            <p className="text-gray-600 text-base sm:text-lg px-4">
+            <p className="text-gray-600 text-sm sm:text-lg px-2 sm:px-4">
               Have questions about our camping programs? We&apos;re here to help you start your adventure!
             </p>
           </motion.div>
           
-          <div className="flex flex-col lg:flex-row items-center gap-8 sm:gap-12">
+          <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-12">
             {/* Image Card */}
             <motion.div
               variants={itemVariants}
-              className="w-full lg:w-1/2"
+              className="w-full lg:w-1/2 px-2 sm:px-0"
             >
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-300">
                 <Image
@@ -377,17 +377,17 @@ export default function Home() {
             {/* Content */}
             <motion.div
               variants={itemVariants}
-              className="w-full lg:w-1/2 space-y-4 sm:space-y-6 px-4 sm:px-0"
+              className="w-full lg:w-1/2 space-y-3 sm:space-y-6 px-2 sm:px-0"
             >
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
+              <h3 className="text-lg sm:text-2xl font-bold text-gray-900">
                 Your Adventure Awaits at Swapnapurti
               </h3>
-              <p className="text-gray-600 leading-relaxed text-base sm:text-lg">
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-lg">
                 Welcome to Swapnapurti Academy Camping, where adventure meets education. 
                 We believe in creating unforgettable experiences that combine the thrill 
                 of outdoor exploration with valuable life lessons.
               </p>
-              <p className="text-gray-600 leading-relaxed text-base sm:text-lg">
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-lg">
                 Our expert guides and state-of-the-art facilities ensure that every 
                 camping trip is not just an adventure, but a journey of personal growth 
                 and discovery. From team-building activities to survival skills training, 
@@ -404,7 +404,7 @@ export default function Home() {
         initial="hidden"
         animate={timelineInView ? "visible" : "hidden"}
         variants={containerVariants}
-        className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden"
+        className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden w-full"
       >
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-grid-gray-100 opacity-[0.05] pointer-events-none" />
@@ -425,7 +425,7 @@ export default function Home() {
             <div className="absolute left-4 sm:left-1/2 transform sm:-translate-x-1/2 w-1 h-full bg-gradient-to-b from-blue-600 via-purple-500 to-pink-500 rounded-full shadow-lg" />
 
             {/* Timeline Items */}
-            <div className="space-y-12 sm:space-y-16">
+            <div className="space-y-8 sm:space-y-12 px-2 sm:px-0">
               {/* Pre-Trip Preparation */}
               <motion.div
                 variants={{
@@ -688,7 +688,7 @@ export default function Home() {
         initial="hidden"
         animate={featuresInView ? "visible" : "hidden"}
         variants={containerVariants}
-        className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-white to-gray-50"
+        className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-white to-gray-50 w-full overflow-x-hidden"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20">
@@ -700,7 +700,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
+          <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 px-2 sm:px-0">
             {/* Nature & Scenery Card */}
             <motion.div
               variants={{
@@ -854,7 +854,7 @@ export default function Home() {
         initial="hidden"
         animate={achievementsInView ? "visible" : "hidden"}
         variants={containerVariants}
-        className="py-16 sm:py-20 md:py-24 bg-gray-900"
+        className="py-16 sm:py-20 md:py-24 bg-gray-900 w-full overflow-x-hidden"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div variants={itemVariants} className="text-center mb-12 sm:mb-16">
@@ -866,7 +866,7 @@ export default function Home() {
             </p>
           </motion.div>
           
-          <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 px-2 sm:px-0">
             {/* Visitors Card */}
             <motion.div
               variants={{
@@ -945,7 +945,7 @@ export default function Home() {
         animate={contactInView ? "visible" : "hidden"}
         variants={containerVariants}
         id="contact"
-        className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white"
+        className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white w-full overflow-x-hidden"
       >
         <div className="max-w-7xl mx-auto">
           <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20">
@@ -957,7 +957,7 @@ export default function Home() {
             </p>
           </motion.div>
           
-          <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16">
+          <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 px-2 sm:px-0">
             {/* Contact Information */}
             <motion.div
               variants={{
