@@ -291,8 +291,8 @@ export default function Home() {
         <Navbar />
 
         {/* Hero Content */}
-        <main className="relative pt-16 sm:pt-32 md:pt-48 lg:pt-72 px-2 sm:px-6 lg:px-8 w-full">
-          <div className="max-w-7xl mx-auto text-center mt-20 sm:mt-40 md:mt-auto">
+        <main className="relative flex items-center justify-center min-h-screen px-2 sm:px-6 lg:px-8 w-full">
+          <div className="max-w-7xl mx-auto text-center">
             {sliderData.map((slide, index) => (
               <div
                 key={index}
@@ -302,15 +302,15 @@ export default function Home() {
                     : "opacity-0 transform translate-y-8"
                 }`}
               >
-                <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-6xl font-bold tracking-tight text-white mb-2 sm:mb-4 px-2 sm:px-4">
+                <h1 className="text-3xl sm:text-3xl md:text-4xl lg:text-6xl font-bold tracking-tight text-white mb-4 sm:mb-4 px-2 sm:px-4">
                   {slide.title}
                 </h1>
-                <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-4 sm:mb-6 tracking-wide font-light max-w-3xl mx-auto px-2 sm:px-4">
+                <p className="text-lg sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-6 sm:mb-6 tracking-wide font-light max-w-3xl mx-auto px-2 sm:px-4">
                   {slide.subtitle}
                 </p>
                 <Link
                   href={slide.buttonLink}
-                  className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-5 sm:px-8 py-2 sm:py-3 rounded-full text-sm sm:text-lg tracking-wide transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 transform hover:scale-105"
+                  className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-3 rounded-full text-base sm:text-lg tracking-wide transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 transform hover:scale-105"
                 >
                   {slide.buttonText}
                 </Link>
